@@ -1,17 +1,12 @@
 #include "stdafx.h"
 #include "New3D.h"
+#include "ShaderManager.h"
 
-#include "CameraManager.h"
-#include "CameraManager.h"
-#include "CameraManager.h"
-#include "CameraManager.h"
-#include "Shader.h"
-#include "CameraManager.h"
 
 
 New3D::New3D() : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
-, VBO_texure{ NULL }, EBO{ NULL }, uniformWorld{ NULL }, model{ nullptr }
-, mode{ GL_TRIANGLES }
+                 , VBO_texure{ NULL }, EBO{ NULL }, uniformWorld{ NULL }, model{ nullptr }
+                 , mode{ GL_TRIANGLES }
 {
 	model = new Model("NULL");
 	worldTransform = glm::mat4(1.0f);
@@ -20,7 +15,7 @@ New3D::New3D() : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
 	translate_factor = glm::vec3(0, 0, 0);
 	rotate_factor = glm::vec3(0, 0, 0);
 
-	uniformWorld = glGetUniformLocation(Shader::Instance()->GetID(), "world");
+	uniformWorld = glGetUniformLocation(ShaderManager::Instance()->GetID(), "world");
 	
 
 	InitBuffer();
@@ -40,7 +35,7 @@ New3D::New3D(const string& path) : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL
 	rotate_factor = glm::vec3(0, 0, 0);
 
 
-	uniformWorld = glGetUniformLocation(Shader::Instance()->GetID(), "world");
+	uniformWorld = glGetUniformLocation(ShaderManager::Instance()->GetID(), "world");
 
 
 	InitBuffer();
@@ -136,7 +131,7 @@ void New3D::update()
 
 void New3D::draw()
 {
-	//GLuint shaderProgram = Shader::Instance()->GetID();
+	//GLuint shaderProgram = ShaderManager::Instance()->GetID();
 	glUniformMatrix4fv(uniformWorld, 1, GL_FALSE, glm::value_ptr(worldTransform));
 
 

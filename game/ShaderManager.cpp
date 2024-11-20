@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "Shader.h"
+#include "ShaderManager.h"
 
-Shader::Shader() : shaderProgramID(NULL)
+ShaderManager::ShaderManager() : shaderProgramID(NULL)
 {
 }
-Shader::~Shader()
+ShaderManager::~ShaderManager()
 {
 }
 
-void Shader::make_ShaderProgram(const string& vertexPath, const string& fragmentPath)
+void ShaderManager::make_ShaderProgram(const string& vertexPath, const string& fragmentPath)
 {
 	GLint vertexShader = make_vertexShaders(vertexPath);
 	GLint fragmentShader = make_fragmentShaders(fragmentPath);
@@ -41,7 +41,7 @@ void Shader::make_ShaderProgram(const string& vertexPath, const string& fragment
 }
 
 
-GLint Shader::make_fragmentShaders(const string& fragmentfile)
+GLint ShaderManager::make_fragmentShaders(const string& fragmentfile)
 {
 	string buf = filetobuf(fragmentfile);
 	const GLchar* fragmentSource = buf.c_str();
@@ -66,7 +66,7 @@ GLint Shader::make_fragmentShaders(const string& fragmentfile)
 	}
 }
 
-GLint Shader::make_vertexShaders(const string& vertexfile)
+GLint ShaderManager::make_vertexShaders(const string& vertexfile)
 {
 	string buf = filetobuf(vertexfile);
 
@@ -91,7 +91,7 @@ GLint Shader::make_vertexShaders(const string& vertexfile)
 	}
 }
 
-string Shader::filetobuf(const string& filename)
+string ShaderManager::filetobuf(const string& filename)
 {
 	string buf{};
 	ifstream vertexShaderFile(filename);

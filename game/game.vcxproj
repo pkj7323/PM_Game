@@ -23,10 +23,13 @@
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="New3D.cpp" />
     <ClCompile Include="object.cpp" />
-    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateMachine.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="TextureLoadManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="소스.cpp" />
@@ -37,7 +40,7 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="New3D.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />

@@ -33,5 +33,6 @@ using std::function;
 
 #include "define.h"
 
-#include "Shader.h"
+//#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 

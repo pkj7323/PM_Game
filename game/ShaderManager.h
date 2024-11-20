@@ -1,8 +1,8 @@
 #pragma once
 #include "stdafx.h"
-class Shader
+class ShaderManager
 {
-	SINGLE(Shader)
+	SINGLE(ShaderManager)
 public:
 	void make_ShaderProgram(const string& vertexPath, const string& fragmentPath);
 	void Use()

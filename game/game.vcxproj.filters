@@ -75,7 +75,7 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>1_Manager\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="ShaderManager.cpp">
       <Filter>1_Manager\Shader</Filter>
     </ClCompile>
     <ClCompile Include="TextureLoadManager.cpp">
@@ -110,7 +110,7 @@
     <ClInclude Include="CollisionManager.h">
       <Filter>1_Manager\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="ShaderManager.h">
       <Filter>1_Manager\Shader</Filter>
     </ClInclude>
     <ClInclude Include="TextureLoadManager.h">
