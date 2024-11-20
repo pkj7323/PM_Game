@@ -13,5 +13,114 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="0_Object">
+      <UniqueIdentifier>{1fa90f19-7c43-479d-a141-5290f70bb82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager">
+      <UniqueIdentifier>{0f67ca74-1fe5-4685-92e4-e5c0e5097072}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Common">
+      <UniqueIdentifier>{575761a4-c64f-45ed-b62f-806ad16033e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3_State">
+      <UniqueIdentifier>{c0f1c234-506a-4b9b-9fa4-1af069472917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="4_PCH">
+      <UniqueIdentifier>{1ef1f67d-278a-4ac7-aee8-3db87f12e7c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="5_Shape">
+      <UniqueIdentifier>{124fc649-0bee-4ca7-8417-933a4a0e18a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Camara">
+      <UniqueIdentifier>{9d457a11-211d-44ab-b75a-6af60dc5cbf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Collision">
+      <UniqueIdentifier>{4c3c19ee-44dc-4a35-a3e4-919ee0c7759d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Shader">
+      <UniqueIdentifier>{e4035fb1-15bb-467f-a9b3-2aebf0b37309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Texture">
+      <UniqueIdentifier>{0d0c15db-b2fe-4864-afe3-2bc808e21979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0_Object\Objects">
+      <UniqueIdentifier>{1b4e1c69-9cb4-4dd7-a220-9d62597dbcd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Time">
+      <UniqueIdentifier>{3069edd2-068b-4c87-875e-1d94a8c44195}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="소스.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>0_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>3_State</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine.cpp">
+      <Filter>3_State</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>4_PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="New3D.cpp">
+      <Filter>5_Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>1_Manager\Camara</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>1_Manager\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>1_Manager\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoadManager.cpp">
+      <Filter>1_Manager\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>1_Manager\Time</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="object.h">
+      <Filter>0_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>3_State</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>3_State</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>4_PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>4_PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="New3D.h">
+      <Filter>5_Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>1_Manager\Camara</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>1_Manager\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>1_Manager\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoadManager.h">
+      <Filter>1_Manager\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>1_Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>2_Common</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
