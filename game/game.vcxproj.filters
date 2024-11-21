@@ -148,5 +148,11 @@
     <None Include="basic_light_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="materials_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="materials_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

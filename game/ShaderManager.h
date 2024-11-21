@@ -13,63 +13,30 @@ public:
 	GLuint GetID() {
 		return this->shaderProgramID;
 	}
+	GLint findLocation(const string& name) const;
+
+
 	// -------------------------------------------------------------------------
-    void setBool(const std::string& name, bool value) const
-    {
-        glUniform1i(glGetUniformLocation(shaderProgramID, name.c_str()), (int)value);
-    }
+    void setBool(const std::string& name, bool value) const;
     // ------------------------------------------------------------------------
-    void setInt(const std::string& name, int value) const
-    {
-        glUniform1i(glGetUniformLocation(shaderProgramID, name.c_str()), value);
-    }
+    void setInt(const std::string& name, int value) const;
     // ------------------------------------------------------------------------
-    void setFloat(const std::string& name, float value) const
-    {
-        glUniform1f(glGetUniformLocation(shaderProgramID, name.c_str()), value);
-    }
+    void setFloat(const std::string& name, float value) const;
     // ------------------------------------------------------------------------
-    void setVec2(const std::string& name, const glm::vec2& value) const
-    {
-        glUniform2fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
-    }
-    void setVec2(const std::string& name, float x, float y) const
-    {
-        glUniform2f(glGetUniformLocation(shaderProgramID, name.c_str()), x, y);
-    }
+    void setVec2(const std::string& name, const glm::vec2& value) const;
+    void setVec2(const std::string& name, float x, float y) const;
     // ------------------------------------------------------------------------
-    void setVec3(const std::string& name, const glm::vec3& value) const
-    {
-        glUniform3fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
-    }
-    void setVec3(const std::string& name, float x, float y, float z) const
-    {
-        glUniform3f(glGetUniformLocation(shaderProgramID, name.c_str()), x, y, z);
-    }
+    void setVec3(const std::string& name, const glm::vec3& value) const;
+    void setVec3(const std::string& name, float x, float y, float z) const;
     // ------------------------------------------------------------------------
-    void setVec4(const std::string& name, const glm::vec4& value) const
-    {
-        glUniform4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
-    }
-    void setVec4(const std::string& name, float x, float y, float z, float w) const
-    {
-        glUniform4f(glGetUniformLocation(shaderProgramID, name.c_str()), x, y, z, w);
-    }
+    void setVec4(const std::string& name, const glm::vec4& value) const;
+    void setVec4(const std::string& name, float x, float y, float z, float w) const;
     // ------------------------------------------------------------------------
-    void setMat2(const std::string& name, const glm::mat2& mat) const
-    {
-        glUniformMatrix2fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
-    }
+    void setMat2(const std::string& name, const glm::mat2& mat) const;
     // ------------------------------------------------------------------------
-    void setMat3(const std::string& name, const glm::mat3& mat) const
-    {
-        glUniformMatrix3fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
-    }
+    void setMat3(const std::string& name, const glm::mat3& mat) const;
     // ------------------------------------------------------------------------
-    void setMat4(const std::string& name, const glm::mat4& mat) const
-    {
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
-    }
+    void setMat4(const std::string& name, const glm::mat4& mat) const;
 	
 private:
 	GLint	make_fragmentShaders(const string& fragmentfile);

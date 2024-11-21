@@ -56,6 +56,8 @@
     <None Include="fragment.glsl" />
     <None Include="light_fragment.glsl" />
     <None Include="light_vertex.glsl" />
+    <None Include="materials_fs.glsl" />
+    <None Include="materials_vs.glsl" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

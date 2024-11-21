@@ -21,7 +21,7 @@ std::uniform_real_distribution<float> dis{ -1.f, 1.f };
 bool firstMouse = true;
 float lastX = 400, lastY = 400;
 float g_speed = 30.0f;
-glm::vec3 g_lightPos(0, 0, 5);
+glm::vec3 g_lightPos(1.2f, 1.0f, 2.0f);
 
 
 
@@ -121,7 +121,7 @@ void main(int argc, char** argv)
 		std::cout << "GLEW Initialized\n";
 	}
 
-	lightShader.make_ShaderProgram("basic_light_vs.glsl", "basic_light_fs.glsl");
+	lightShader.make_ShaderProgram("materials_vs.glsl", "materials_fs.glsl");
 	lightCubeShader.make_ShaderProgram("basic_light_object_vs.glsl", "basic_light_object_fs.glsl");
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
@@ -271,9 +271,10 @@ void game_loop()
 	}
 
 }
+float timer = 0;
 void update_world()
 {
-
+	timer += DT;
 	CollisionManager::Instance()->Update();
 }
 
@@ -281,15 +282,33 @@ GLvoid drawScene()
 {
 	//--- 변경된 배경색 설정
 	//--- 화면 지우기(invaildRect)
-	glClearColor(0, 0, 0, 0);
+	glClearColor(0.1, 0.1, 0.1, 0.1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	{
+		
+		// be sure to activate shader when setting uniforms/drawing objects
 		lightShader.Use();
-		lightShader.setVec3("objectColor", 1.0f,5.0f,0.3f);
-		lightShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		lightShader.setVec3("lightPos", g_lightPos);
+		lightShader.setVec3("light.position", g_lightPos);
 		lightShader.setVec3("viewPos", g_camera1->GetPosition());
+
+		//light properties
+		glm::vec3 lightColor;
+		lightColor.x = static_cast<float>(sin(timer * 2.0));
+		lightColor.y = static_cast<float>(sin(timer * 0.7));
+		lightColor.z = static_cast<float>(sin(timer * 1.3));
+		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
+		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+		lightShader.setVec3("light.ambient", ambientColor);
+		lightShader.setVec3("light.diffuse", diffuseColor);
+		lightShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+		// material properties
+		lightShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+		lightShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+		lightShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		// specular lighting doesn't have full effect on this object's material
+		lightShader.setFloat("material.shininess", 32.0f);
 
 		lightShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
 		lightShader.setMat4("view", g_camera1->GetViewMatrix());
