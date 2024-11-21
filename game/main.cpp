@@ -124,7 +124,7 @@ void main(int argc, char** argv)
 	lightShader.make_ShaderProgram("basic_light_vs.glsl", "basic_light_fs.glsl");
 	lightCubeShader.make_ShaderProgram("basic_light_object_vs.glsl", "basic_light_object_fs.glsl");
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	glutSetCursor(GLUT_CURSOR_NONE);
 

@@ -84,9 +84,6 @@
     <ClCompile Include="TimeManager.cpp">
       <Filter>1_Manager\Time</Filter>
     </ClCompile>
-    <ClCompile Include="basic_light_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object.h">
@@ -146,6 +143,9 @@
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="basic_light_object_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="basic_light_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>

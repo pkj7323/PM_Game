@@ -60,7 +60,7 @@ public:
 	void SetMode(unsigned int mode) { this->mode = mode; }
 	unsigned int GetMode() const { return this->mode; }
 
-	GLint GetUniformWorld() const { return uniformWorld; }
+
 
 
 private:

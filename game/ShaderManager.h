@@ -3,6 +3,8 @@
 class ShaderManager
 {
 public:
+	ShaderManager();
+	~ShaderManager();
 	void make_ShaderProgram(const string& vertexPath, const string& fragmentPath);
 	void Use()
 	{
