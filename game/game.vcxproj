@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="basic_light_fs.glsl" />
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="New3D.cpp" />
@@ -49,6 +50,9 @@
     <ClInclude Include="TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="basic_light_object_fs.glsl" />
+    <None Include="basic_light_object_vs.glsl" />
+    <None Include="basic_light_vs.glsl" />
     <None Include="fragment.glsl" />
     <None Include="light_fragment.glsl" />
     <None Include="light_vertex.glsl" />

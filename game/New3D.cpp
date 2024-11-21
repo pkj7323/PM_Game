@@ -5,7 +5,7 @@
 
 
 New3D::New3D() : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
-                 , VBO_texure{ NULL }, EBO{ NULL }, uniformWorld{ NULL }, model{ nullptr }
+                 , VBO_texure{ NULL }, EBO{ NULL }, model{ nullptr }
                  , mode{ GL_TRIANGLES }
 {
 	model = new Model("NULL");
@@ -15,14 +15,14 @@ New3D::New3D() : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
 	translate_factor = glm::vec3(0, 0, 0);
 	rotate_factor = glm::vec3(0, 0, 0);
 
-	uniformWorld = glGetUniformLocation(ShaderManager::Instance()->GetID(), "world");
+	
 	
 
 	InitBuffer();
 }
 
 New3D::New3D(const string& path) : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
-, VBO_texure{ NULL }, EBO{ NULL }, uniformWorld{ NULL }, model{ nullptr }
+, VBO_texure{ NULL }, EBO{ NULL }, model{ nullptr }
 , mode{ GL_TRIANGLES }
 {
 	
@@ -35,7 +35,7 @@ New3D::New3D(const string& path) : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL
 	rotate_factor = glm::vec3(0, 0, 0);
 
 
-	uniformWorld = glGetUniformLocation(ShaderManager::Instance()->GetID(), "world");
+	
 
 
 	InitBuffer();
@@ -132,7 +132,7 @@ void New3D::update()
 void New3D::draw()
 {
 	//GLuint shaderProgram = ShaderManager::Instance()->GetID();
-	glUniformMatrix4fv(uniformWorld, 1, GL_FALSE, glm::value_ptr(worldTransform));
+	//월드 행렬 부르기
 
 
 

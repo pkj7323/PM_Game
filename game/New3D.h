@@ -70,7 +70,6 @@ private:
 	GLuint VBO_texure;
 	GLuint EBO;
 
-	GLint uniformWorld;
 
 
 	Model* model;

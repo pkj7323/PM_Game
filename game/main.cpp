@@ -31,30 +31,58 @@ CameraManager* g_camera1 = nullptr;
 
 GLuint texture;
 
-GLint lightPosLocation;
-GLint lightColorLocation;
-GLint objColorLocation;
-GLint viewPosLocation;
-GLint projectionLocation;
-GLint viewLocation;
-GLint worldLocation;
-GLint useTextureLocation;
+
 
 
 float vertices[] = {
-	// positions          // normals           // texture coords
-	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-	-0.5f, 0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   0.0f, 1.0f, // bottom right
-	-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // bottom left
-	 0.5f,  -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   1.0f, 0.0f  // top left 
-};
-unsigned int indices[] = {
-	0, 1, 3, // first triangle
-	1, 2, 3  // second triangle
-};
-unsigned int VBO, VAO, EBO;
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+};
+// first, configure the cube's VAO (and VBO)
+unsigned int VBO, cubeVAO;
+unsigned int lightCubeVAO;
+
+ShaderManager lightShader;
+ShaderManager lightCubeShader;
 
 ///------ 함수
 GLvoid drawScene(GLvoid);
@@ -93,21 +121,15 @@ void main(int argc, char** argv)
 		std::cout << "GLEW Initialized\n";
 	}
 
-	ShaderManager::Instance()->make_ShaderProgram("light_vertex.glsl", "light_fragment.glsl");
+	lightShader.make_ShaderProgram("basic_light_vs.glsl", "basic_light_fs.glsl");
+	lightCubeShader.make_ShaderProgram("basic_light_object_vs.glsl", "basic_light_object_fs.glsl");
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
-	GLuint ID = ShaderManager::Instance()->GetID();
-	lightPosLocation = glGetUniformLocation(ID, "lightPos");
-	lightColorLocation = glGetUniformLocation(ID, "lightColor");
-	objColorLocation = glGetUniformLocation(ID, "objectColor");
-	viewPosLocation = glGetUniformLocation(ID, "viewPos");
-	projectionLocation = glGetUniformLocation(ID, "projection");
-	viewLocation = glGetUniformLocation(ID, "view");
-	worldLocation = glGetUniformLocation(ID, "world");
-	useTextureLocation = glGetUniformLocation(ID, "useTexture");
+	
+	
 
 
 	//--- 윈도우 출력하고 콜백함수 설정
@@ -186,27 +208,32 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 void init_world()
 {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &VBO);
 
-	glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindVertexArray(cubeVAO);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+	
+	glGenVertexArrays(1, &lightCubeVAO);
+	glBindVertexArray(lightCubeVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	// note that we update the lamp's position attribute's stride to reflect the updated buffer data
+    // 램프의 위치 속성의 스트라이드를 업데이트하는 것을 주의하세요.
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	// texture coord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	//카메라 초기화
 	{
@@ -257,65 +284,33 @@ GLvoid drawScene()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	ShaderManager::Instance()->Use();
-
-
-
-
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(g_camera1->GetPerspectiveMatrix()));
-	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(g_camera1->GetViewMatrix()));
 	{
+		lightShader.Use();
+		lightShader.setVec3("objectColor", 1.0f,5.0f,0.3f);
+		lightShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		lightShader.setVec3("lightPos", g_lightPos);
+		lightShader.setVec3("viewPos", g_camera1->GetPosition());
+
+		lightShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
+		lightShader.setMat4("view", g_camera1->GetViewMatrix());
+		glm::mat4 model = glm::mat4(1.0f);
+		lightShader.setMat4("model", model);
+
+		glBindVertexArray(cubeVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
-		glUniform1i(useTextureLocation, GL_TRUE);
-		TextureLoadManager::Instance()->Use("wall"); //---texture 적용
+		// also draw the lamp object
+		lightCubeShader.Use();
+		lightCubeShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
+		lightCubeShader.setMat4("view", g_camera1->GetViewMatrix());
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, g_lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		lightCubeShader.setMat4("model", model);
 
-		glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-
-		//--- lightPos 값 전달: (0.0, 0.0, 5.0) 위치에 빛이 있다고 가정
-		glUniform3fv(lightPosLocation, 1, glm::value_ptr(g_lightPos));
-
-		//--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
-		glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
-
-		//--- object Color값 전달: (1.0, 0.5, 0.3)의 색
-		glUniform3f(objColorLocation, 1.0, 0.5, 0.3);
-
-		//--- viewPos 값 전달: 카메라 위치
-		glUniform3f(viewPosLocation, g_camera1->GetPosition().x
-			, g_camera1->GetPosition().y
-			, g_camera1->GetPosition().z);
-
-
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindVertexArray(0);
-
-
-
-
-		auto mat = glm::translate(glm::mat4(1.0f), glm::vec3(0, 3, 0));
-		glUniform1i(useTextureLocation, GL_FALSE);
-		glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mat));
-
-		//--- lightPos 값 전달: (0.0, 0.0, 5.0) 위치에 빛이 있다고 가정
-		glUniform3fv(lightPosLocation, 1, glm::value_ptr(g_lightPos));
-
-		//--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
-		glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
-
-		//--- object Color값 전달: (1.0, 0.5, 0.3)의 색
-		glUniform3f(objColorLocation, 1.0, 0, 0);
-
-		//--- viewPos 값 전달: 카메라 위치
-		glUniform3f(viewPosLocation, g_camera1->GetPosition().x
-			, g_camera1->GetPosition().y
-			, g_camera1->GetPosition().z);
-
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		glBindVertexArray(lightCubeVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	}
 
