@@ -29,10 +29,8 @@ using std::function;
 #include <gl/glm/glm.hpp>
 #include <gl/glm/ext.hpp>
 #include <gl/glm/gtc/matrix_transform.hpp>
-
-
 #include "define.h"
 
-//#define STB_IMAGE_IMPLEMENTATION
+
 #include "stb_image.h"
 

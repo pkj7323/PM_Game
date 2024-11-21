@@ -31,12 +31,12 @@ void main ()
     specularLight = pow(specularLight, shininess);
     vec3 specular = specularLight * lightColor;
     
-    vec3 lighting = ambient + diffuse + specular;
+    vec3 lighting = ambient + ((diffuse + specular) / distance(FragPos ,lightPos));
     if (useTexture) {
         vec4 texColor = texture(Texture, TexCoord);
         FragColor = vec4(texColor.rgb * lighting, texColor.a);
     } else {
-        vec3 result = (ambient + diffuse + specular) * objectColor;
+        vec3 result = lighting * objectColor;
         FragColor = vec4(result, 1.0); // 텍스처가 없을 때 기본 색상 사용
     }
 }

@@ -32,7 +32,7 @@
     </ClCompile>
     <ClCompile Include="TextureLoadManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
-    <ClCompile Include="소스.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraManager.h" />
@@ -47,6 +47,12 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TextureLoadManager.h" />
     <ClInclude Include="TimeManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.glsl" />
+    <None Include="light_fragment.glsl" />
+    <None Include="light_vertex.glsl" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

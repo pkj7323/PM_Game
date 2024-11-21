@@ -48,7 +48,7 @@ public:
     void ProcessMouseScroll(float yoffset);
 
    
-
+    glm::vec3 GetPosition() const { return Position; }
 	// calculate the perspective matrix zoom=degree
     void SetPerspective(float zoom, float _aspect, float _near,float _far );
 

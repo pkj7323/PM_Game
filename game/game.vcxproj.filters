@@ -51,7 +51,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="소스.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
@@ -122,5 +122,19 @@
     <ClInclude Include="define.h">
       <Filter>2_Common</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="light_fragment.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="light_vertex.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="vertex.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
