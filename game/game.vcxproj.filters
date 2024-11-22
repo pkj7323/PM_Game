@@ -154,5 +154,28 @@
     <None Include="materials_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="light_map_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="light_map_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="container.jpg">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="wall.jpg">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="awesomeface.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="container2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="container2_specular.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

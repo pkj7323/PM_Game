@@ -55,10 +55,19 @@
     <None Include="basic_light_vs.glsl" />
     <None Include="fragment.glsl" />
     <None Include="light_fragment.glsl" />
+    <None Include="light_map_fs.glsl" />
+    <None Include="light_map_vs.glsl" />
     <None Include="light_vertex.glsl" />
     <None Include="materials_fs.glsl" />
     <None Include="materials_vs.glsl" />
     <None Include="vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="awesomeface.png" />
+    <Image Include="container.jpg" />
+    <Image Include="container2.png" />
+    <Image Include="container2_specular.png" />
+    <Image Include="wall.jpg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
