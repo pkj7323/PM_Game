@@ -498,9 +498,9 @@ private:
 #define MAX_LINE_LENGTH 1024
 struct Vertex
 {
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texCoords;
+	glm::vec3 Position;
+	glm::vec3 Normal;
+	glm::vec2 TexCoords;
 };
 struct Texture
 {

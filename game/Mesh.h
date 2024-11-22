@@ -1,13 +1,20 @@
 ﻿#pragma once
 
 
+class Shader;
 class Mesh
 {
 public:
+	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+	~Mesh();
+	void Draw(Shader shader);
+
+
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
+private:
 
-	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
-	void Draw(Shader shader);
+	GLuint VAO, VBO, EBO;
+	void setupMesh();
 };
