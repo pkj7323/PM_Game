@@ -4,7 +4,7 @@
 #include "CollisionManager.h"
 #include "TimeManager.h"
 #include "TextureLoadManager.h"
-#include "ShaderManager.h"
+#include "Shader.h"
 #include "New3D.h"
 // 요 아래에 헤더 파일 추가
 
@@ -82,8 +82,8 @@ float vertices[] = {
 unsigned int VBO, cubeVAO;
 unsigned int lightCubeVAO;
 
-ShaderManager lightShader;
-ShaderManager lightCubeShader;
+Shader lightShader;
+Shader lightCubeShader;
 
 ///------ 함수
 GLvoid drawScene(GLvoid);

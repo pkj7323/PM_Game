@@ -75,7 +75,7 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>1_Manager\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderManager.cpp">
+    <ClCompile Include="Shader.cpp">
       <Filter>1_Manager\Shader</Filter>
     </ClCompile>
     <ClCompile Include="TextureLoadManager.cpp">
@@ -83,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
       <Filter>1_Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>5_Shape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,7 +113,7 @@
     <ClInclude Include="CollisionManager.h">
       <Filter>1_Manager\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderManager.h">
+    <ClInclude Include="Shader.h">
       <Filter>1_Manager\Shader</Filter>
     </ClInclude>
     <ClInclude Include="TextureLoadManager.h">
@@ -119,8 +122,11 @@
     <ClInclude Include="TimeManager.h">
       <Filter>1_Manager\Time</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>5_Shape</Filter>
+    </ClInclude>
     <ClInclude Include="define.h">
-      <Filter>2_Common</Filter>
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

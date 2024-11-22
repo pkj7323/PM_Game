@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "ShaderManager.h"
+#include "Shader.h"
 
-ShaderManager::ShaderManager() : shaderProgramID(NULL)
+Shader::Shader() : shaderProgramID(NULL)
 {
 }
-ShaderManager::~ShaderManager()
+Shader::~Shader()
 {
 }
 
-void ShaderManager::make_ShaderProgram(const string& vertexPath, const string& fragmentPath)
+void Shader::make_ShaderProgram(const string& vertexPath, const string& fragmentPath)
 {
 	GLint vertexShader = make_vertexShaders(vertexPath);
 	GLint fragmentShader = make_fragmentShaders(fragmentPath);
@@ -41,7 +41,7 @@ void ShaderManager::make_ShaderProgram(const string& vertexPath, const string& f
 }
 
 
-GLint ShaderManager::make_fragmentShaders(const string& fragmentfile)
+GLint Shader::make_fragmentShaders(const string& fragmentfile)
 {
 	string buf = filetobuf(fragmentfile);
 	const GLchar* fragmentSource = buf.c_str();
@@ -66,7 +66,7 @@ GLint ShaderManager::make_fragmentShaders(const string& fragmentfile)
 	}
 }
 
-GLint ShaderManager::make_vertexShaders(const string& vertexfile)
+GLint Shader::make_vertexShaders(const string& vertexfile)
 {
 	string buf = filetobuf(vertexfile);
 
@@ -91,7 +91,7 @@ GLint ShaderManager::make_vertexShaders(const string& vertexfile)
 	}
 }
 
-string ShaderManager::filetobuf(const string& filename)
+string Shader::filetobuf(const string& filename)
 {
 	string buf{};
 	ifstream vertexShaderFile(filename);
@@ -112,66 +112,66 @@ string ShaderManager::filetobuf(const string& filename)
 	return buf;
 }
 
-GLint ShaderManager::findLocation(const string& name) const
+GLint Shader::findLocation(const string& name) const
 {
 	return glGetUniformLocation(shaderProgramID, name.c_str());
 }
 
 // -------------------------------------------------------------------------
-void ShaderManager::setBool(const std::string& name, bool value) const
+void Shader::setBool(const std::string& name, bool value) const
 {
 	
 	glUniform1i(findLocation(name), (int)value);
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setInt(const std::string& name, int value) const
+void Shader::setInt(const std::string& name, int value) const
 {
 	glUniform1i(findLocation(name), value);
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setFloat(const std::string& name, float value) const
+void Shader::setFloat(const std::string& name, float value) const
 {
 	glUniform1f(findLocation(name), value);
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setVec2(const std::string& name, const glm::vec2& value) const
+void Shader::setVec2(const std::string& name, const glm::vec2& value) const
 {
 	glUniform2fv(findLocation(name), 1, glm::value_ptr(value));
 }
-void ShaderManager::setVec2(const std::string& name, float x, float y) const
+void Shader::setVec2(const std::string& name, float x, float y) const
 {
 	glUniform2f(findLocation(name), x, y);
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setVec3(const std::string& name, const glm::vec3& value) const
+void Shader::setVec3(const std::string& name, const glm::vec3& value) const
 {
 	glUniform3fv(findLocation(name), 1, glm::value_ptr(value));
 }
-void ShaderManager::setVec3(const std::string& name, float x, float y, float z) const
+void Shader::setVec3(const std::string& name, float x, float y, float z) const
 {
 	glUniform3f(findLocation(name), x, y, z);
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setVec4(const std::string& name, const glm::vec4& value) const
+void Shader::setVec4(const std::string& name, const glm::vec4& value) const
 {
 	glUniform4fv(findLocation(name), 1, glm::value_ptr(value));
 }
-void ShaderManager::setVec4(const std::string& name, float x, float y, float z, float w) const
+void Shader::setVec4(const std::string& name, float x, float y, float z, float w) const
 {
 	glUniform4f(findLocation(name), x, y, z, w);
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setMat2(const std::string& name, const glm::mat2& mat) const
+void Shader::setMat2(const std::string& name, const glm::mat2& mat) const
 {
 	glUniformMatrix2fv(findLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setMat3(const std::string& name, const glm::mat3& mat) const
+void Shader::setMat3(const std::string& name, const glm::mat3& mat) const
 {
 	glUniformMatrix3fv(findLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
 }
 // ------------------------------------------------------------------------
-void ShaderManager::setMat4(const std::string& name, const glm::mat4& mat) const
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 {
 	glUniformMatrix4fv(findLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
 }

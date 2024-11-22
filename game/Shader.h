@@ -1,10 +1,10 @@
 #pragma once
 #include "stdafx.h"
-class ShaderManager
+class Shader
 {
 public:
-	ShaderManager();
-	~ShaderManager();
+	Shader();
+	~Shader();
 	void make_ShaderProgram(const string& vertexPath, const string& fragmentPath);
 	void Use()
 	{

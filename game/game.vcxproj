@@ -21,9 +21,10 @@
   <ItemGroup>
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="New3D.cpp" />
     <ClCompile Include="object.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -38,9 +39,10 @@
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="New3D.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "New3D.h"
-#include "ShaderManager.h"
+#include "Shader.h"
 
 
 
@@ -131,7 +131,7 @@ void New3D::update()
 
 void New3D::draw()
 {
-	//GLuint shaderProgram = ShaderManager::Instance()->GetID();
+	//GLuint shaderProgram = Shader::Instance()->GetID();
 	//월드 행렬 부르기
 
 

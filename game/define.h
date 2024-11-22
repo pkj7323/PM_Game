@@ -498,12 +498,14 @@ private:
 #define MAX_LINE_LENGTH 1024
 struct Vertex
 {
-	float x, y, z;
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 texCoords;
 };
-struct Face
+struct Texture
 {
-	Face(UINT v1, UINT v2, UINT v3) : v1{ v1 }, v2{ v2 }, v3{ v3 } { }
-	unsigned int v1, v2, v3;
+	GLuint id;
+	string type;
 };
 struct Model
 {
