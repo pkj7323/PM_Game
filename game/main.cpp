@@ -107,6 +107,7 @@ Shader lightShader;
 Shader lightCubeShader;
 Shader ModelShader;
 Model ourModel;
+Model ourCube;
 ///------ 함수
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -238,6 +239,7 @@ void init_world()
 	//쉐이더 초기화 및 컴파일
 	{
 		ModelShader.make_ShaderProgram("model_vertex.glsl", "model_fragment.glsl");
+		lightCubeShader.make_ShaderProgram("OldVertex.glsl", "OldFragment.glsl");
 	}
 	
 	
@@ -249,7 +251,8 @@ void init_world()
 		TextureLoadManager::Instance()->Load("container2", "container2.png");
 		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
 
-		ourModel = Model("resources/test1/test.obj");
+		ourModel = Model("resources/Backpack.obj");
+		ourCube = Model("resources/cube.obj");
 	}
 	//카메라 초기화
 	{
@@ -296,13 +299,87 @@ GLvoid drawScene()
 		glm::mat4 view = g_camera1->GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0,0,0));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
 		
 		ModelShader.Use();
 		ModelShader.setMat4("projection", projection);
 		ModelShader.setMat4("view", view);
 		ModelShader.setMat4("model", model);
+		ModelShader.setVec3("viewPos", g_camera1->GetPosition());
+		ModelShader.setFloat("material.shininess", 32.0f);
+		/*
+		여기서는 5/6 종류의 조명에 대한 모든 uniform 변수를 설정합니다.
+		각 uniform 변수를 수동으로 설정하고 배열에서 적절한 PointLight 구조체를 인덱싱하여 설정해야 합니다.
+		이 작업은 조명 유형을 클래스로 정의하고 그 안에서 값을 설정하거나,
+		'Uniform buffer objects'를 사용하여 더 효율적인 uniform 접근 방식을 사용함으로써 더 코드 친화적으로 수행할 수 있습니다.
+		*/
+
+		// directional light
+		// 태양광 설정
+		ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+		// point light 1
+		// 포인트 라이트 1 설정
+		ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+		ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[0].constant", 1.0f);
+		ModelShader.setFloat("pointLights[0].linear", 0.09);
+		ModelShader.setFloat("pointLights[0].quadratic", 0.032);
+		// point light 2
+		ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+		ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[1].constant", 1.0f);
+		ModelShader.setFloat("pointLights[1].linear", 0.09f);
+		ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
+		// point light 3
+		ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+		ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[2].constant", 1.0f);
+		ModelShader.setFloat("pointLights[2].linear", 0.09f);
+		ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
+		// point light 4
+		ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+		ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[3].constant", 1.0f);
+		ModelShader.setFloat("pointLights[3].linear", 0.09f);
+		ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
+		// spotLight
+		ModelShader.setVec3("spotLight.position", g_camera1->GetPosition());
+		ModelShader.setVec3("spotLight.direction", g_camera1->GetFront());
+		ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("spotLight.constant", 1.0f);
+		ModelShader.setFloat("spotLight.linear", 0.09f);
+		ModelShader.setFloat("spotLight.quadratic", 0.032f);
+		ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
 		ourModel.Draw(ModelShader);
+
+		// also draw the lamp object
+		lightCubeShader.Use();
+		lightCubeShader.setMat4("projection", projection);
+		lightCubeShader.setMat4("view", view);
+		for(auto pointLightPosition :pointLightPositions)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPosition);
+			model = glm::scale(model, glm::vec3(0.01f)); // Make it a smaller cube
+			lightCubeShader.setMat4("model", model);
+			ourCube.Draw(lightCubeShader);
+		}
 		
 	}
 
