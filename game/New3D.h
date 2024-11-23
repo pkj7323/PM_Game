@@ -42,8 +42,8 @@ public:
 	void SetWorldTrans(glm::mat4 worldTrans) { this->worldTransform = worldTrans; }
 	glm::mat4 GetWorldTrans() { return worldTransform; }
 
-	void SetModel(Model* model) { this->model = model; }
-	Model* GetModel() { return this->model; }
+	void SetModel(model* model) { this->m_model = model; }
+	model* GetModel() { return this->m_model; }
 
 
 
@@ -72,7 +72,7 @@ private:
 
 
 
-	Model* model;
+	model* m_model;
 
 	unsigned int mode;
 

@@ -6,15 +6,14 @@ class Mesh
 {
 public:
 	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
-	~Mesh();
-	void Draw(Shader shader);
+	void Draw(Shader& shader);
 
-
+	GLuint VAO;
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 private:
 
-	GLuint VAO, VBO, EBO;
+	GLuint VBO, EBO;
 	void setupMesh();
 };

@@ -87,6 +87,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>5_Shape</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>5_Shape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object.h">
@@ -128,6 +131,9 @@
     <ClInclude Include="define.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>5_Shape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="container.jpg">
@@ -157,6 +163,12 @@
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="OldFragment.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="model_vertex.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="model_fragment.glsl">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>

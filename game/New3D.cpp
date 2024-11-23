@@ -5,10 +5,10 @@
 
 
 New3D::New3D() : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
-                 , VBO_texure{ NULL }, EBO{ NULL }, model{ nullptr }
+                 , VBO_texure{ NULL }, EBO{ NULL }, m_model{ nullptr }
                  , mode{ GL_TRIANGLES }
 {
-	model = new Model("NULL");
+	m_model = new model("NULL");
 	worldTransform = glm::mat4(1.0f);
 	parentTransform = glm::mat4(1.0f);
 	scale_factor = glm::vec3(1, 1, 1);
@@ -22,12 +22,12 @@ New3D::New3D() : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
 }
 
 New3D::New3D(const string& path) : VAO{ NULL }, VBO_pos{ NULL }, VBO_color{ NULL }
-, VBO_texure{ NULL }, EBO{ NULL }, model{ nullptr }
+, VBO_texure{ NULL }, EBO{ NULL }, m_model{ nullptr }
 , mode{ GL_TRIANGLES }
 {
 	
 
-	model = new Model(path);
+	m_model = new model(path);
 	worldTransform = glm::mat4(1.0f);
 	parentTransform = glm::mat4(1.0f);
 	scale_factor = glm::vec3(1, 1, 1);
@@ -49,12 +49,12 @@ void New3D::InitBuffer()
 
 	glGenBuffers(1, &VBO_pos);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_pos);
-	glBufferData(GL_ARRAY_BUFFER, model->vertices.size() * sizeof(glm::vec3), model->vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_model->vertices.size() * sizeof(glm::vec3), m_model->vertices.data(), GL_STATIC_DRAW);
 
 
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); //--- GL_ELEMENT_ARRAY_BUFFER 버퍼 유형으로 바인딩 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->faces.size() * sizeof(glm::uvec3), model->faces.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_model->faces.size() * sizeof(glm::uvec3), m_model->faces.data(), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
@@ -71,13 +71,13 @@ void New3D::InitBuffer()
 
 	glGenBuffers(1, &VBO_color);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
-	glBufferData(GL_ARRAY_BUFFER, model->colors.size() * sizeof(glm::vec3), model->colors.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_model->colors.size() * sizeof(glm::vec3), m_model->colors.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 
 	glGenBuffers(1, &VBO_texure);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_texure);
-	glBufferData(GL_ARRAY_BUFFER, model->texture_coords.size() * sizeof(glm::vec3), model->texture_coords.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_model->texture_coords.size() * sizeof(glm::vec3), m_model->texture_coords.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(2);
 }
@@ -85,7 +85,7 @@ void New3D::InitBuffer()
 
 New3D::~New3D()
 {
-	delete model;
+	delete m_model;
 	glDeleteBuffers(1, &VBO_pos);
 	glDeleteBuffers(1, &VBO_color);
 	glDeleteBuffers(1, &VBO_texure);
@@ -99,16 +99,16 @@ void New3D::UpdateBuffer()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_pos);
-	glBufferData(GL_ARRAY_BUFFER, model->vertices.size() * sizeof(glm::vec3), model->vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_model->vertices.size() * sizeof(glm::vec3), m_model->vertices.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); //--- GL_ELEMENT_ARRAY_BUFFER 버퍼 유형으로 바인딩 
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->faces.size() * sizeof(glm::uvec3), model->faces.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_model->faces.size() * sizeof(glm::uvec3), m_model->faces.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
-	glBufferData(GL_ARRAY_BUFFER, model->colors.size() * sizeof(glm::vec3), model->colors.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_model->colors.size() * sizeof(glm::vec3), m_model->colors.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 
@@ -147,7 +147,7 @@ void New3D::draw()
 
 
 	glBindVertexArray(VAO);
-	glDrawElements(mode, 3 * model->faces.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(mode, 3 * static_cast<unsigned int>(m_model->faces.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -190,19 +190,19 @@ void New3D::ScaleSelf(glm::vec3 scale)
 glm::vec3 New3D::CalculateCenter()
 {
 	glm::vec3 center(0, 0, 0);
-	for (auto& vertex : model->vertices)
+	for (auto& vertex : m_model->vertices)
 	{
 		center += vertex;
 	}
-	center /= model->vertices.size();
-	
+	center /= m_model->vertices.size();
+
 	return center;
 }
 
 void New3D::Move(glm::vec3 target, float scalar)
 {
-	
-	
+
+
 	auto dis = glm::distance(target, translate_factor);
 	if (dis == 0) {
 		return;
@@ -223,7 +223,7 @@ void New3D::TopRotate(float degree, glm::vec3 basis)
 	glm::vec3 center = CalculateCenter();
 	if (top_y == INFINITE)
 	{
-		top_y = model->vertices.back().y;
+		top_y = m_model->vertices.back().y;
 	}
 	center.y += top_y - center.y;
 	// 중심을 원점으로 이동합니다.
@@ -239,7 +239,7 @@ void New3D::TopRotate(float degree, glm::vec3 basis)
 	glm::mat4 transform = translateBack * rotateTransform * translateToOrigin;
 
 	// 변환을 적용합니다.
-	for (auto& vertex : model->vertices)
+	for (auto& vertex : m_model->vertices)
 	{
 		vertex = glm::vec3(transform * glm::vec4(vertex, 1.0f));
 	}

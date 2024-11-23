@@ -2,6 +2,7 @@
 
 #include "CameraManager.h"
 #include "CollisionManager.h"
+#include "Model.h"
 #include "TimeManager.h"
 #include "TextureLoadManager.h"
 #include "Shader.h"
@@ -104,7 +105,8 @@ unsigned int lightCubeVAO;
 
 Shader lightShader;
 Shader lightCubeShader;
-
+Shader ModelShader;
+Model ourModel;
 ///------ 함수
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -228,42 +230,21 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 
 void init_world()
 {
-	lightShader.make_ShaderProgram("Vertex.glsl", "Fragment.glsl");
-	lightCubeShader.make_ShaderProgram("OldVertex.glsl", "OldFragment.glsl");
+	//쉐이더 초기화 및 컴파일
+	{
+		ModelShader.make_ShaderProgram("model_vertex.glsl", "model_fragment.glsl");
+	}
+	
+	
 
-
-	glGenVertexArrays(1, &cubeVAO);
-	glGenBuffers(1, &VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindVertexArray(cubeVAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	// second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
-	glGenVertexArrays(1, &lightCubeVAO);
-	glBindVertexArray(lightCubeVAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// note that we update the lamp's position attribute's stride to reflect the updated buffer data
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	lightShader.Use();
-	lightShader.setInt("material.diffuse", 0);
-	lightShader.setInt("material.specular", 1);
 
 	//객체 초기화
 	{
 		TextureLoadManager::Instance()->Load("wall", "wall.jpg");
 		TextureLoadManager::Instance()->Load("container2", "container2.png");
 		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
+
+		ourModel = Model("resources/backpack.obj");
 	}
 	//카메라 초기화
 	{
@@ -310,108 +291,12 @@ GLvoid drawScene()
 		glm::mat4 view = g_camera1->GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		
-
-		lightShader.Use();
-		lightShader.setVec3("viewPos", g_camera1->GetPosition());
-		lightShader.setFloat("material.shininess",32.0f);
-		/*
-		여기서는 5/6 종류의 조명에 대한 모든 uniform 변수를 설정합니다.
-		각 uniform 변수를 수동으로 설정하고 배열에서 적절한 PointLight 구조체를 인덱싱하여 설정해야 합니다.
-		이 작업은 조명 유형을 클래스로 정의하고 그 안에서 값을 설정하거나,
-		'Uniform buffer objects'를 사용하여 더 효율적인 uniform 접근 방식을 사용함으로써 더 코드 친화적으로 수행할 수 있습니다.
-		*/
-
-		// directional light
-		// 태양광 설정
-		lightShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		lightShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		lightShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-		lightShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-
-		// point light 1
-		// 포인트 라이트 1 설정
-		lightShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-		lightShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-		lightShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-		lightShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-		lightShader.setFloat("pointLights[0].constant", 1.0f);
-		lightShader.setFloat("pointLights[0].linear", 0.09);
-		lightShader.setFloat("pointLights[0].quadratic", 0.032);
-		// point light 2
-		lightShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-		lightShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-		lightShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-		lightShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-		lightShader.setFloat("pointLights[1].constant", 1.0f);
-		lightShader.setFloat("pointLights[1].linear", 0.09f);
-		lightShader.setFloat("pointLights[1].quadratic", 0.032f);
-		// point light 3
-		lightShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-		lightShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-		lightShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-		lightShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-		lightShader.setFloat("pointLights[2].constant", 1.0f);
-		lightShader.setFloat("pointLights[2].linear", 0.09f);
-		lightShader.setFloat("pointLights[2].quadratic", 0.032f);
-		// point light 4
-		lightShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-		lightShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-		lightShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-		lightShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-		lightShader.setFloat("pointLights[3].constant", 1.0f);
-		lightShader.setFloat("pointLights[3].linear", 0.09f);
-		lightShader.setFloat("pointLights[3].quadratic", 0.032f);
-		// spotLight
-		lightShader.setVec3("spotLight.position", g_camera1->GetPosition());
-		lightShader.setVec3("spotLight.direction", g_camera1->GetFront());
-		lightShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		lightShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		lightShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		lightShader.setFloat("spotLight.constant", 1.0f);
-		lightShader.setFloat("spotLight.linear", 0.09f);
-		lightShader.setFloat("spotLight.quadratic", 0.032f);
-		lightShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		lightShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
-		lightShader.setMat4("projection", projection);
-		lightShader.setMat4("view", view);
-		lightShader.setMat4("model", model);
-
-		// bind diffuse map
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2"));
-		// bind specular map
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2_specular"));
-
-		// render containers
-		glBindVertexArray(cubeVAO);
-		for (unsigned int i = 0; i < 10; i++)
-		{
-			// calculate the model matrix for each object and pass it to shader before drawing
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
-			float angle = 20.0f * i;
-			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			lightShader.setMat4("model", model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-
-		// also draw the lamp object(s)
-		lightCubeShader.Use();
-		lightCubeShader.setMat4("projection", projection);
-		lightCubeShader.setMat4("view", view);
-
-		// we now draw as many light bulbs as we have point lights.
-		glBindVertexArray(lightCubeVAO);
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-			lightCubeShader.setMat4("model", model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		ModelShader.Use();
+		ModelShader.setMat4("projection", projection);
+		ModelShader.setMat4("view", view);
+		ModelShader.setMat4("model", model);
+		ourModel.Draw(ModelShader);
+		
 	}
 
 	glutSwapBuffers();
