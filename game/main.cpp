@@ -192,7 +192,12 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'd':
 		g_camera1->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
 		break;
-
+	case 'g':
+		ourModel.ChangeMode(GL_LINE_STRIP);
+		break;
+	case 'G':
+		ourModel.ChangeMode(GL_TRIANGLES);
+		break;
 	default:
 		break;
 		//.....
@@ -244,7 +249,7 @@ void init_world()
 		TextureLoadManager::Instance()->Load("container2", "container2.png");
 		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
 
-		ourModel = Model("resources/backpack.obj");
+		ourModel = Model("resources/test1/test.obj");
 	}
 	//카메라 초기화
 	{
@@ -291,7 +296,7 @@ GLvoid drawScene()
 		glm::mat4 view = g_camera1->GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0,0,0));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		
 		ModelShader.Use();
 		ModelShader.setMat4("projection", projection);

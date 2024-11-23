@@ -21,6 +21,14 @@ void Model::Draw(Shader shader)
 	}
 }
 
+void Model::ChangeMode(GLuint mode)
+{
+	for (auto& mesh : this->meshes)
+	{
+		mesh.mode = mode;
+	}
+}
+
 void Model::loadModel(string path)
 {
 	// read file via ASSIMP

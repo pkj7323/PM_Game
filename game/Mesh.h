@@ -12,6 +12,7 @@ public:
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
+	GLuint mode = GL_TRIANGLES;
 private:
 
 	GLuint VBO, EBO;

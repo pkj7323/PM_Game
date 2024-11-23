@@ -8,6 +8,7 @@ public:
 	Model() = default;
 	~Model();
 	void Draw(Shader shader);
+	void ChangeMode(GLuint mode);
 private:
 	vector<Mesh> meshes;
 	vector<Texture> textures_loaded;
