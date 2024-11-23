@@ -1,16 +1,15 @@
-# Blender MTL File: 'None'
-# Material Count: 1
+# 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
+# File Created: 24.11.2024 00:19:55
 
-newmtl Scene_-_Root
-Ns 225.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
-Ke 0.0 0.0 0.0
-Ni 1.450000
-d 1.000000
-illum 2
-map_Kd diffuse.jpg
-map_Bump normal.png
-map_Ks specular.jpg
-
+newmtl wire_204204204
+	Ns 32
+	d 1
+	Tr 0
+	Tf 1 1 1
+	illum 2
+	Ka 0.8000 0.8000 0.8000
+	Kd 0.8000 0.8000 0.8000
+	Ks 0.3500 0.3500 0.3500
+	map_Kd diffuse.jpg
+	map_Bump normal.png
+	map_Ks specular.jpg

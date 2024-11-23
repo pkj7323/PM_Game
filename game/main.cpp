@@ -290,6 +290,8 @@ GLvoid drawScene()
 		glm::mat4 projection = g_camera1->GetPerspectiveMatrix();
 		glm::mat4 view = g_camera1->GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0,0,0));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		
 		ModelShader.Use();
 		ModelShader.setMat4("projection", projection);
