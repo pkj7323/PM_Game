@@ -10,5 +10,5 @@ void main()
 {
     TexCoords = aPos;
     vec4 pos = projection * view * vec4(aPos, 1.0);
-    gl_Position = pos.xyww;
+    gl_Position = pos.xyww;//z=w/w=1로 고정해서 맨뒤에 있는 것처럼
 }  
