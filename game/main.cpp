@@ -409,6 +409,7 @@ GLvoid drawScene()
 	shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
 	shader.setMat4("model", model);
+	shader.setVec3("cameraPos", g_camera1->GetPosition());
 	// cubes
 	glBindVertexArray(cubeVAO);
 	glActiveTexture(GL_TEXTURE0);
