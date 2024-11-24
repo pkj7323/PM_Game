@@ -63,6 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fragment.glsl" />
+    <None Include="framebuffer_fs.glsl" />
+    <None Include="framebuffer_screen_fs.glsl" />
+    <None Include="framebuffer_screen_vs.glsl" />
+    <None Include="framebuffer_vs.glsl" />
     <None Include="model_fragment.glsl" />
     <None Include="model_vertex.glsl" />
     <None Include="OldFragment.glsl" />

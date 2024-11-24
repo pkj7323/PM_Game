@@ -186,5 +186,17 @@
     <None Include="stencil_single_color_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="framebuffer_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="framebuffer_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="framebuffer_screen_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="framebuffer_screen_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
