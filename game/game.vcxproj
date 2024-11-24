@@ -57,6 +57,8 @@
     <Image Include="container.jpg" />
     <Image Include="container2.png" />
     <Image Include="container2_specular.png" />
+    <Image Include="resources\marble.jpg" />
+    <Image Include="resources\metal.png" />
     <Image Include="wall.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +67,9 @@
     <None Include="model_vertex.glsl" />
     <None Include="OldFragment.glsl" />
     <None Include="OldVertex.glsl" />
+    <None Include="stencil_single_color_fs.glsl" />
+    <None Include="stencil_testing_fs.glsl" />
+    <None Include="stencil_testing_vs.glsl" />
     <None Include="Vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

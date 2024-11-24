@@ -33,7 +33,60 @@ CameraManager* g_camera1 = nullptr;
 GLuint texture;
 
 
+float cubeVertices[] = {
+	// positions          // texture Coords
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+float planeVertices[] = {
+	// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
+	 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
+	-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
+	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+
+	 5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
+	-5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+	 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
+};
 
 float vertices[] = {
 	// positions          // normals           // texture coords
@@ -100,14 +153,21 @@ glm::vec3 pointLightPositions[] = {
 	glm::vec3(0.0f,  0.0f, -3.0f)
 };
 // first, configure the cube's VAO (and VBO)
-unsigned int VBO, cubeVAO;
+unsigned int VBO, cubeVAO,cubeVBO;
 unsigned int lightCubeVAO;
 
-Shader lightShader;
+unsigned int planeVAO, planeVBO;
+
+Shader stencilShader;
+Shader stencilSingleColorShader;
 Shader lightCubeShader;
 Shader ModelShader;
+
+
 Model ourModel;
 Model ourCube;
+
+
 ///------ 함수
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -148,6 +208,21 @@ void main(int argc, char** argv)
 	
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
+
+	//스탠실 테스트 활성화
+	glEnable(GL_STENCIL_TEST);
+	// 스텐실 테스트를 설정합니다. GL_NOTEQUAL은 스텐실 값이 1이 "아닌" 경우에만 통과하도록 합니다.
+	// 0xFF는 마스크 값으로, 스텐실 버퍼의 모든 비트를 사용합니다.
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	// 스텐실 테스트가 통과할 때의 동작을 설정합니다. 
+	// GL_KEEP는 스텐실 값이 변경되지 않도록 하고, GL_REPLACE는 스텐실 값을 1로 설정합니다.
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	// fail:GL_KEEP = > 스텐실 테스트가 실패하면 스텐실 버퍼의 값을 유지합니다.
+	// zfail:GL_KEEP = > 깊이 테스트가 실패하면(깊이 테스트는 항상 성공하므로 사용되지 않습니다.)
+	// zpass:GL_REPLACE = > 스텐실 테스트와 깊이 테스트가 모두 성공하면 스텐실 버퍼의 값을 1로 설정합니다.
+	// (glStencilFunc(GL_NOTEQUAL, 1, 0xFF);)의 1값이 Replace값이다.
+	// 기본적으론 3개 전부 GL_KEEP인데 스탠실 값을 이용하려면 3개중하나라도 바꿔야함
+
 	glEnable(GL_MULTISAMPLE);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
@@ -238,8 +313,8 @@ void init_world()
 {
 	//쉐이더 초기화 및 컴파일
 	{
-		ModelShader.make_ShaderProgram("model_vertex.glsl", "model_fragment.glsl");
-		lightCubeShader.make_ShaderProgram("OldVertex.glsl", "OldFragment.glsl");
+		stencilShader = Shader("model_vertex.glsl", "model_fragment.glsl");
+		stencilSingleColorShader = Shader("stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 	}
 	
 	
@@ -247,12 +322,36 @@ void init_world()
 
 	//객체 초기화
 	{
+		glGenVertexArrays(1, &cubeVAO);
+		glGenBuffers(1, &cubeVBO);
+		glBindVertexArray(cubeVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glBindVertexArray(0);
+
+		glGenVertexArrays(1, &planeVAO);
+		glGenBuffers(1, &planeVBO);
+		glBindVertexArray(planeVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glBindVertexArray(0);
+
 		TextureLoadManager::Instance()->Load("wall", "wall.jpg");
 		TextureLoadManager::Instance()->Load("container2", "container2.png");
 		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
+		TextureLoadManager::Instance()->Load("marble", "resources/marble.jpg");
+		TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
 
-		ourModel = Model("resources/Backpack.obj");
-		ourCube = Model("resources/cube.obj");
+		ourModel = Model("resources/statue/statue.obj");
+		//ourCube = Model("resources/cube.obj");
 	}
 	//카메라 초기화
 	{
@@ -264,6 +363,10 @@ void init_world()
 	{
 
 		TimeManager::Instance()->Init();
+	}
+	{
+		stencilShader.Use();
+		stencilShader.setInt("texture1", 0);//처음에 프래그먼트 쉐이더에 있는 텍스쳐를 0으로 지정-> unbind
 	}
 }
 void game_loop()
@@ -292,95 +395,66 @@ GLvoid drawScene()
 	//--- 변경된 배경색 설정
 	//--- 화면 지우기(invaildRect)
 	glClearColor(0.1, 0.1, 0.1, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	/*
+	 1.	오브젝트를 그리기 전에 stencil 함수를 GL_ALWAYS로 설정하고 오브젝트의 fragment가 렌더링될때마다 stencil buffer를 1로 수정합니다.
+	 2.	오브젝트를 렌더링합니다.
+	 3.	stencil 작성과 depth testing을 비활성화합니다.
+	 4.	각 오브젝트들을 약간 확대합니다.
+	 5.	하나의(외곽선) 컬러를 출력하는 별도의 fragment shader를 사용합니다.
+	 6.	오브젝트를 다시 그리지만 stencil 값이 1과 같지 않은 fragment들만 그립니다.
+	 7.	다시 stencil 작성과 depth testing을 활성화합니다.
+	*/
 	{
-		glm::mat4 projection = g_camera1->GetPerspectiveMatrix();
-		glm::mat4 view = g_camera1->GetViewMatrix();
+		
+
+		stencilShader.Use();
+		stencilShader.setMat4("view", g_camera1->GetViewMatrix());
+		stencilShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
+
+		// 바닥은 정상적으로 그린다. 하지만 우리는 바닥을 스텐실 버퍼에 쓰지 않는다. 우리는 컨테이너에만 관심이 있다. 스텐실 버퍼에 쓰지 않도록 마스크를 0x00으로 설정한다.
+		glStencilMask(0x00);
+		// 바닥
+		glBindVertexArray(planeVAO);
+		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("metal"));
+		stencilShader.setMat4("model", glm::mat4(1.0f));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+		// 1st. render pass, draw objects as normal, writing to the stencil buffer
+		// 첫번째 렌더 패스 : 스텐실 버퍼에 쓰기 위해 오브젝트를 일반적으로 그립니다.
+		// --------------------------------------------------------------------
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+		// 큐브들
+		stencilShader.setMat4("model", glm::mat4(1.0f));
+		ourModel.Draw(stencilShader);
+
+
+		// 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+	    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing 
+	    // the objects' size differences, making it look like borders.
+		// 두번째 렌더 패스: 이제 오브젝트의 약간 확대된 버전을 그립니다. 이번에는 스텐실 쓰기를 비활성화합니다.
+		// 왜냐하면 스텐실 버퍼는 이제 여러개의 1로 채워져 있습니다. 1인 버퍼 부분은 그려지지 않으므로, 오브젝트의 크기 차이만 그려집니다.
+		// 오브젝트의 사이즈를 약간 키워서	그립니다. 경계선이 보이도록
+	    // -----------------------------------------------------------------------------------------------------------------------------
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+		stencilSingleColorShader.Use();
+		stencilSingleColorShader.setMat4("view", g_camera1->GetViewMatrix());
+		stencilSingleColorShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
+		float scale = 1.1f;
+		// cubes
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0,0,0));
-		model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
-		
-		ModelShader.Use();
-		ModelShader.setMat4("projection", projection);
-		ModelShader.setMat4("view", view);
-		ModelShader.setMat4("model", model);
-		ModelShader.setVec3("viewPos", g_camera1->GetPosition());
-		ModelShader.setFloat("material.shininess", 32.0f);
-		/*
-		여기서는 5/6 종류의 조명에 대한 모든 uniform 변수를 설정합니다.
-		각 uniform 변수를 수동으로 설정하고 배열에서 적절한 PointLight 구조체를 인덱싱하여 설정해야 합니다.
-		이 작업은 조명 유형을 클래스로 정의하고 그 안에서 값을 설정하거나,
-		'Uniform buffer objects'를 사용하여 더 효율적인 uniform 접근 방식을 사용함으로써 더 코드 친화적으로 수행할 수 있습니다.
-		*/
+		model = glm::scale(model, glm::vec3(scale, scale, scale));
+		stencilSingleColorShader.setMat4("model", model);
+		ourModel.Draw(stencilSingleColorShader);
 
-		// directional light
-		// 태양광 설정
-		ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-		ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-		// point light 1
-		// 포인트 라이트 1 설정
-		ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-		ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-		ModelShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-		ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-		ModelShader.setFloat("pointLights[0].constant", 1.0f);
-		ModelShader.setFloat("pointLights[0].linear", 0.09);
-		ModelShader.setFloat("pointLights[0].quadratic", 0.032);
-		// point light 2
-		ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-		ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-		ModelShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-		ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-		ModelShader.setFloat("pointLights[1].constant", 1.0f);
-		ModelShader.setFloat("pointLights[1].linear", 0.09f);
-		ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
-		// point light 3
-		ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-		ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-		ModelShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-		ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-		ModelShader.setFloat("pointLights[2].constant", 1.0f);
-		ModelShader.setFloat("pointLights[2].linear", 0.09f);
-		ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
-		// point light 4
-		ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-		ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-		ModelShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-		ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-		ModelShader.setFloat("pointLights[3].constant", 1.0f);
-		ModelShader.setFloat("pointLights[3].linear", 0.09f);
-		ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
-		// spotLight
-		ModelShader.setVec3("spotLight.position", g_camera1->GetPosition());
-		ModelShader.setVec3("spotLight.direction", g_camera1->GetFront());
-		ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		ModelShader.setFloat("spotLight.constant", 1.0f);
-		ModelShader.setFloat("spotLight.linear", 0.09f);
-		ModelShader.setFloat("spotLight.quadratic", 0.032f);
-		ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
-		ourModel.Draw(ModelShader);
-
-		// also draw the lamp object
-		lightCubeShader.Use();
-		lightCubeShader.setMat4("projection", projection);
-		lightCubeShader.setMat4("view", view);
-		for(auto pointLightPosition :pointLightPositions)
-		{
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPosition);
-			model = glm::scale(model, glm::vec3(0.01f)); // Make it a smaller cube
-			lightCubeShader.setMat4("model", model);
-			ourCube.Draw(lightCubeShader);
-		}
-		
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 0, 0xFF);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	glutSwapBuffers();

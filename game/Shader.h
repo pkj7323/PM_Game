@@ -5,6 +5,10 @@ class Shader
 public:
 	Shader();
 	~Shader();
+	Shader(const string& vertexPath, const string& fragmentPath)
+	{
+		make_ShaderProgram(vertexPath, fragmentPath);
+	}
 	void make_ShaderProgram(const string& vertexPath, const string& fragmentPath);
 	void Use()
 	{

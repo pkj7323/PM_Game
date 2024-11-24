@@ -43,6 +43,7 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		m_texture[name] = textureID;
 
 		stbi_image_free(data);
 	}
@@ -51,7 +52,7 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 		std::cout << "Texture failed to load at path: " << filename << std::endl;
 		stbi_image_free(data);
 	}
-	m_texture[name] = textureID;
+	
 
 }
 

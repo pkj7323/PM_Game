@@ -151,6 +151,12 @@
     <Image Include="container2_specular.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="resources\marble.jpg">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="resources\metal.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vertex.glsl">
@@ -169,6 +175,15 @@
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="model_fragment.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="stencil_testing_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="stencil_testing_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="stencil_single_color_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
