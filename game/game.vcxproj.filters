@@ -66,9 +66,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>4_PCH</Filter>
     </ClCompile>
-    <ClCompile Include="New3D.cpp">
-      <Filter>5_Shape</Filter>
-    </ClCompile>
     <ClCompile Include="CameraManager.cpp">
       <Filter>1_Manager\Camara</Filter>
     </ClCompile>
@@ -106,9 +103,6 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>4_PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="New3D.h">
-      <Filter>5_Shape</Filter>
     </ClInclude>
     <ClInclude Include="CameraManager.h">
       <Filter>1_Manager\Camara</Filter>
@@ -196,6 +190,18 @@
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="framebuffer_screen_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="skybox_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="skybox_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="cubemap_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="cubemap_vs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>

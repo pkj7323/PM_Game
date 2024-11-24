@@ -23,7 +23,6 @@
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="New3D.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="State.cpp" />
@@ -42,7 +41,6 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="New3D.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="State.h" />
@@ -62,6 +60,8 @@
     <Image Include="wall.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cubemap_fs.glsl" />
+    <None Include="cubemap_vs.glsl" />
     <None Include="Fragment.glsl" />
     <None Include="framebuffer_fs.glsl" />
     <None Include="framebuffer_screen_fs.glsl" />
@@ -71,6 +71,8 @@
     <None Include="model_vertex.glsl" />
     <None Include="OldFragment.glsl" />
     <None Include="OldVertex.glsl" />
+    <None Include="skybox_fs.glsl" />
+    <None Include="skybox_vs.glsl" />
     <None Include="stencil_single_color_fs.glsl" />
     <None Include="stencil_testing_fs.glsl" />
     <None Include="stencil_testing_vs.glsl" />

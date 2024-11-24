@@ -6,7 +6,7 @@
 #include "TimeManager.h"
 #include "TextureLoadManager.h"
 #include "Shader.h"
-#include "New3D.h"
+
 // 요 아래에 헤더 파일 추가
 
 
@@ -26,11 +26,11 @@ glm::vec3 g_lightPos(1.2f, 1.0f, 2.0f);
 
 
 
-New3D* g_flat = nullptr;
+
 
 CameraManager* g_camera1 = nullptr;
 
-GLuint texture;
+GLuint textureID;
 
 
 float cubeVertices[] = {
@@ -117,11 +117,66 @@ glm::vec3 pointLightPositions[] = {
 	glm::vec3(-4.0f,  2.0f, -12.0f),
 	glm::vec3(0.0f,  0.0f, -3.0f)
 };
+
+float skyboxVertices[] = {
+	// positions          
+	-1.0f,  1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	-1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f
+};
+vector<std::string> faces
+{
+	"resources/right.jpg",
+	"resources/left.jpg",
+	"resources/top.jpg",
+	"resources/bottom.jpg",
+	"resources/front.jpg",
+	"resources/back.jpg"
+};
 // first, configure the cube's VAO (and VBO)
 unsigned int VBO, cubeVAO,cubeVBO;
 unsigned int lightCubeVAO;
 unsigned int quadVAO, quadVBO;
 unsigned int planeVAO, planeVBO;
+unsigned int skyboxVAO, skyboxVBO;
 GLuint fbo;
 GLuint rbo;
 GLuint textureColorbuffer;
@@ -133,6 +188,7 @@ Shader lightCubeShader;
 Shader ModelShader;
 Shader shader;
 Shader screenShader;
+Shader skyboxShader;
 
 
 Model ourModel;
@@ -155,6 +211,7 @@ GLvoid mouseWheel(int button, int dir, int x, int y);
 void update_world();
 void game_loop();
 void init_world();
+GLuint loadCubeMap(vector<string> faces);
 ///------ 함수
 void main(int argc, char** argv)
 {
@@ -213,8 +270,9 @@ void init_world()
 	//쉐이더 초기화 및 컴파일
 	{
 		cout << "쉐이더 컴파일" << endl;
-		shader = Shader("framebuffer_vs.glsl", "framebuffer_fs.glsl");
+		shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
 		screenShader = Shader("framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
+		skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
 		//stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		//ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
 		//lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
@@ -233,6 +291,14 @@ void init_world()
 
 	//객체 초기화
 	{
+		glGenVertexArrays(1, &skyboxVAO);
+		glGenBuffers(1, &skyboxVBO);
+		glBindVertexArray(skyboxVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		
 		glGenVertexArrays(1, &planeVAO);
 		glGenBuffers(1, &planeVBO);
 		glBindVertexArray(planeVAO);
@@ -295,6 +361,7 @@ void init_world()
 		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
 		TextureLoadManager::Instance()->Load("marble", "resources/marble.jpg");
 		TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
+		TextureLoadManager::Instance()->loadCubeMap("skybox", faces);
 		cout << "텍스쳐 로드 종료" << endl;
 
 		
@@ -360,23 +427,35 @@ GLvoid drawScene()
 	glm::mat4 projection = g_camera1->GetPerspectiveMatrix();
 	shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
+	shader.setMat4("model", model);
 	// cubes
 	glBindVertexArray(cubeVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2"));
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-	shader.setMat4("model", model);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-	shader.setMat4("model", model);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+
 	// floor
 	glBindVertexArray(planeVAO);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("metal"));
 	shader.setMat4("model", glm::mat4(1.0f));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
+
+	glDepthFunc(GL_LEQUAL);
+	skyboxShader.Use();
+	view = glm::mat4(glm::mat3(g_camera1->GetViewMatrix())); // remove translation from the view matrix
+	skyboxShader.setMat4("view", view);
+	skyboxShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
+	// skybox cube
+	glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, TextureLoadManager::Instance()->Use("skybox"));
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS);
+
+
 
 	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -530,3 +609,4 @@ GLvoid SpecialKeyboard(int key, int x, int y)
 	}
 	glutPostRedisplay();
 }
+
