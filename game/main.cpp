@@ -313,7 +313,9 @@ void init_world()
 {
 	//쉐이더 초기화 및 컴파일
 	{
-		stencilShader = Shader("model_vertex.glsl", "model_fragment.glsl");
+		stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
+		ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
+		lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
 		stencilSingleColorShader = Shader("stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 	}
 	
@@ -322,16 +324,6 @@ void init_world()
 
 	//객체 초기화
 	{
-		glGenVertexArrays(1, &cubeVAO);
-		glGenBuffers(1, &cubeVBO);
-		glBindVertexArray(cubeVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		glBindVertexArray(0);
 
 		glGenVertexArrays(1, &planeVAO);
 		glGenBuffers(1, &planeVBO);
@@ -340,8 +332,8 @@ void init_world()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		glBindVertexArray(0);
 
 		TextureLoadManager::Instance()->Load("wall", "wall.jpg");
@@ -351,7 +343,7 @@ void init_world()
 		TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
 
 		ourModel = Model("resources/statue/statue.obj");
-		//ourCube = Model("resources/cube.obj");
+		ourCube = Model("resources/cube.obj");
 	}
 	//카메라 초기화
 	{
@@ -365,8 +357,8 @@ void init_world()
 		TimeManager::Instance()->Init();
 	}
 	{
-		stencilShader.Use();
-		stencilShader.setInt("texture1", 0);//처음에 프래그먼트 쉐이더에 있는 텍스쳐를 0으로 지정-> unbind
+		ModelShader.Use();
+		ModelShader.setInt("texture1", 0);//처음에 프래그먼트 쉐이더에 있는 텍스쳐를 0으로 지정-> unbind
 	}
 }
 void game_loop()
@@ -383,10 +375,10 @@ void game_loop()
 	}
 
 }
-float timer = 0;
+
 void update_world()
 {
-	timer += DT;
+	
 	CollisionManager::Instance()->Update();
 }
 
@@ -406,18 +398,43 @@ GLvoid drawScene()
 	 7.	다시 stencil 작성과 depth testing을 활성화합니다.
 	*/
 	{
+		glm::mat4 projection = g_camera1->GetPerspectiveMatrix();
+		glm::mat4 view = g_camera1->GetViewMatrix();
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0, 0, 0));
+		model = glm::scale(model, glm::vec3(1.f, 1.f, 1.f));
+
 		
 
-		stencilShader.Use();
-		stencilShader.setMat4("view", g_camera1->GetViewMatrix());
-		stencilShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
 
 		// 바닥은 정상적으로 그린다. 하지만 우리는 바닥을 스텐실 버퍼에 쓰지 않는다. 우리는 컨테이너에만 관심이 있다. 스텐실 버퍼에 쓰지 않도록 마스크를 0x00으로 설정한다.
 		glStencilMask(0x00);
 		// 바닥
+		
+
+		
+
+		// also draw the lamp object
+		lightCubeShader.Use();
+		lightCubeShader.setMat4("projection", projection);
+		lightCubeShader.setMat4("view", view);
+		for (auto pointLightPosition : pointLightPositions)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPosition);
+			model = glm::scale(model, glm::vec3(0.01f)); // Make it a smaller cube
+			lightCubeShader.setMat4("model", model);
+			ourCube.Draw(lightCubeShader);
+		}
+		stencilShader.Use();
+		stencilShader.setMat4("projection", projection);
+		stencilShader.setMat4("view", view);
+		model = glm::mat4(1.0f);
+		stencilShader.setMat4("model", model);
+
 		glBindVertexArray(planeVAO);
 		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("metal"));
-		stencilShader.setMat4("model", glm::mat4(1.0f));
+		ModelShader.setMat4("model", glm::mat4(1.0f));
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 		// 1st. render pass, draw objects as normal, writing to the stencil buffer
@@ -425,9 +442,69 @@ GLvoid drawScene()
 		// --------------------------------------------------------------------
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);
-		// 큐브들
-		stencilShader.setMat4("model", glm::mat4(1.0f));
-		ourModel.Draw(stencilShader);
+		ModelShader.Use();
+		ModelShader.setMat4("projection", projection);
+		ModelShader.setMat4("view", view);
+		ModelShader.setMat4("model", model);
+		ModelShader.setVec3("viewPos", g_camera1->GetPosition());
+		ModelShader.setFloat("material.shininess", 32.0f);
+		
+		ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+		// point light 1
+		// 포인트 라이트 1 설정
+		ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+		ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[0].constant", 1.0f);
+		ModelShader.setFloat("pointLights[0].linear", 0.09);
+		ModelShader.setFloat("pointLights[0].quadratic", 0.032);
+		// point light 2
+		ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+		ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[1].constant", 1.0f);
+		ModelShader.setFloat("pointLights[1].linear", 0.09f);
+		ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
+		// point light 3
+		ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+		ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[2].constant", 1.0f);
+		ModelShader.setFloat("pointLights[2].linear", 0.09f);
+		ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
+		// point light 4
+		ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+		ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+		ModelShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+		ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("pointLights[3].constant", 1.0f);
+		ModelShader.setFloat("pointLights[3].linear", 0.09f);
+		ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
+		// spotLight
+		ModelShader.setVec3("spotLight.position", g_camera1->GetPosition());
+		ModelShader.setVec3("spotLight.direction", g_camera1->GetFront());
+		ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		ModelShader.setFloat("spotLight.constant", 1.0f);
+		ModelShader.setFloat("spotLight.linear", 0.09f);
+		ModelShader.setFloat("spotLight.quadratic", 0.032f);
+		ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+		
+		// 조각상
+		model = glm::mat4(1.0f);
+		ModelShader.Use();
+		ModelShader.setMat4("model", model);
+		ourModel.Draw(ModelShader);
 
 
 		// 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
@@ -443,11 +520,11 @@ GLvoid drawScene()
 		stencilSingleColorShader.Use();
 		stencilSingleColorShader.setMat4("view", g_camera1->GetViewMatrix());
 		stencilSingleColorShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
-		float scale = 1.1f;
+		float scale = 1.00f;
 		// cubes
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(scale, scale, scale));
+		model = glm::mat4(1.0f);
 		stencilSingleColorShader.setMat4("model", model);
+		//stencillSingleColorShader의 vertex쉐이더에서 정점의 노멀 방향으로 약간씩 밖으로 나가게 조정함
 		ourModel.Draw(stencilSingleColorShader);
 
 
@@ -458,6 +535,9 @@ GLvoid drawScene()
 	}
 
 	glutSwapBuffers();
+	{
+		cout << TimeManager::Instance()->GetFPS() << endl;
+	}
 }
 
 GLvoid TimerFunction(int value)
