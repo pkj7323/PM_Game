@@ -23,60 +23,8 @@ bool firstMouse = true;
 float lastX = 400, lastY = 400;
 float g_speed = 30.0f;
 glm::vec3 g_lightPos(1.2f, 1.0f, 2.0f);
+CameraManager* g_camera = nullptr;
 
-
-
-
-
-CameraManager* g_camera1 = nullptr;
-
-GLuint textureID;
-
-
-float cubeVertices[] = {
-	// positions          // normals
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-};
 float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 	// positions   // texCoords
 	-1.0f,  1.0f,  0.0f, 1.0f,
@@ -264,16 +212,16 @@ void init_world()
 		screenShader = Shader("framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
 		skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
 		//stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
-		//ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
-		//lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
+		ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
+		lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
 		//stencilSingleColorShader = Shader("stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 	}
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
-		/*ourModel = Model("resources/statue/statue.obj");
+		/*ourModel = Model("resources/statue/statue.obj");*/
 
-		ourCube = Model("resources/cube.obj");*/
+		ourCube = Model("resources/cube.obj");
 		cout << "모델 로드 종료" << endl;
 	}
 	
@@ -290,16 +238,6 @@ void init_world()
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		
 		
-
-		glGenVertexArrays(1, &cubeVAO);
-		glGenBuffers(1, &cubeVBO);
-		glBindVertexArray(cubeVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
 		glGenVertexArrays(1, &quadVAO);
 		glGenBuffers(1, &quadVBO);
@@ -350,8 +288,8 @@ void init_world()
 	//카메라 초기화
 	{
 		cout << "카메라 초기화" << endl;
-		g_camera1 = new CameraManager;
-		g_camera1->SetCamera(glm::vec3(0, 5, 10),
+		g_camera = new CameraManager;
+		g_camera->SetCamera(glm::vec3(0, 5, 10),
 			glm::vec3(0, 1, 0), YAW, -10.f, 45, SPEED, SENSITIVITY);
 		cout << "카메라 초기화 종료" << endl;
 	}
@@ -364,11 +302,7 @@ void init_world()
 	}
 	cout << "초기화 완료" << endl;
 	{
-		shader.Use();
-		shader.setInt("texture1", 0);
-
-		screenShader.Use();
-		screenShader.setInt("screenTexture", 0);
+		
 	}
 }
 void game_loop()
@@ -402,35 +336,28 @@ GLvoid drawScene()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	shader.Use();
-	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 view = g_camera1->GetViewMatrix();
-	glm::mat4 projection = g_camera1->GetPerspectiveMatrix();
-	shader.setMat4("view", view);
-	shader.setMat4("projection", projection);
-	shader.setMat4("model", model);
-	shader.setVec3("cameraPos", g_camera1->GetPosition());
+	
 	// cubes
-	glBindVertexArray(cubeVAO);
+	/*glBindVertexArray(cubeVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("skybox"));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-
+	glBindVertexArray(0);*/
+	// set uniforms
+	glm::mat4 projection = g_camera->GetPerspectiveMatrix();
+	glm::mat4 view = g_camera->GetViewMatrix();
+	glm::mat4 model = glm::mat4(1.0f);
+	lightCubeShader.Use();
+	lightCubeShader.setMat4("projection", projection);
+	lightCubeShader.setMat4("view", view);
+	// render the cube
+	model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
+	lightCubeShader.setMat4("model", model);
+	ourCube.Draw(lightCubeShader);
 	
 
-	// skybox cube
-	glDepthFunc(GL_LEQUAL);
-	skyboxShader.Use();
-	view = glm::mat4(glm::mat3(g_camera1->GetViewMatrix())); // remove translation from the view matrix
-	skyboxShader.setMat4("view", view);
-	skyboxShader.setMat4("projection", g_camera1->GetPerspectiveMatrix());
-	glBindVertexArray(skyboxVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, TextureLoadManager::Instance()->Use("skybox"));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-	glDepthFunc(GL_LESS);
+
+
 
 
 
@@ -462,11 +389,11 @@ GLvoid mouseWheel(int button, int dir, int x, int y)
 {
 	if (dir > 0)
 	{
-		g_camera1->ProcessMouseScroll(1.0f);
+		g_camera->ProcessMouseScroll(1.0f);
 	}
 	else
 	{
-		g_camera1->ProcessMouseScroll(-1.0f);
+		g_camera->ProcessMouseScroll(-1.0f);
 	}
 	glutPostRedisplay();
 }
@@ -493,7 +420,7 @@ GLvoid MouseMotion(int x, int y) {
 	lastX = xpos;
 	lastY = ypos;
 
-	g_camera1->ProcessMouseMovement(xoffset, yoffset);
+	g_camera->ProcessMouseMovement(xoffset, yoffset);
 
 	// 마우스를 중앙으로 이동
 	int centerX = glutGet(GLUT_WINDOW_WIDTH) / 2;
@@ -523,7 +450,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	lastX = xpos;
 	lastY = ypos;
 
-	g_camera1->ProcessMouseMovement(xoffset, yoffset);
+	g_camera->ProcessMouseMovement(xoffset, yoffset);
 	glutPostRedisplay();
 }
 GLvoid Keyboard(unsigned char key, int x, int y)
@@ -535,16 +462,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		glutDestroyWindow(glutGetWindow());
 		break;
 	case 'w':
-		g_camera1->ProcessKeyboard(FORWARD, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(FORWARD, TimeManager::Instance()->GetDeltaTime());
 		break;
 	case 's':
-		g_camera1->ProcessKeyboard(BACKWARD, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(BACKWARD, TimeManager::Instance()->GetDeltaTime());
 		break;
 	case 'a':
-		g_camera1->ProcessKeyboard(LEFT, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(LEFT, TimeManager::Instance()->GetDeltaTime());
 		break;
 	case 'd':
-		g_camera1->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
 		break;
 	case 'g':
 		ourModel.ChangeMode(GL_LINE_STRIP);
