@@ -131,14 +131,16 @@ Shader skyboxShader;
 
 Model ourModel;
 Model ourCube;
+Model ourPlane;
 
 Model ourPyramid;
 
 Model ourSphere;
 
-
+glm::mat4 space_ship_model(1.0f);
 glm::vec3 pointLightColor(0.8,0.8,0.8);
 bool rotation_light = false;
+bool light_on = true;
 ///------ 함수
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -225,11 +227,11 @@ void init_world()
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
-		/*ourModel = Model("resources/statue/statue.obj");
-		
-		ourPyramid = Model("resources/pyramid.obj");*/
+		ourModel = Model("resources/space_ship.obj");
+		ourPlane = Model("resources/plane.obj");
+		//ourPyramid = Model("resources/pyramid.obj");
 		ourCube = Model("resources/cube.obj");
-		ourSphere = Model("resources/sphere.obj");
+		//ourSphere = Model("resources/sphere.obj");
 		cout << "모델 로드 종료" << endl;
 	}
 	
@@ -289,6 +291,7 @@ void init_world()
 		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
 		TextureLoadManager::Instance()->Load("marble", "resources/marble.jpg");
 		TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
+		TextureLoadManager::Instance()->Load("space_ship", "resources/space_ship_test_color.png");
 		TextureLoadManager::Instance()->loadCubeMap("skybox", faces);
 		cout << "텍스쳐 로드 종료" << endl;
 
@@ -329,10 +332,27 @@ void game_loop()
 	}
 
 }
-
+float timer = 0;
+bool go_right = true;
 void update_world()
 {
-	
+	if (go_right)
+	{
+		space_ship_model = glm::translate(space_ship_model, glm::vec3(0.1f, 0.0f, 0.f));
+	}
+	else
+	{
+		space_ship_model = glm::translate(space_ship_model, glm::vec3(-0.1f, 0.0f, 0.f));
+	}
+
+	timer += DT;
+	if (timer>2.0f)
+	{
+		timer = 0;
+		go_right = !go_right;
+	}
+
+
 	if (rotation_light)
 	{
 		for (int i = 0; i < 4; i++)
@@ -360,22 +380,7 @@ GLvoid drawScene()
 	
 	// set uniforms
 	
-	lightCubeShader.Use();
-	lightCubeShader.setMat4("projection", projection);
-	lightCubeShader.setMat4("view", view);
-	// render the cube
 	
-	
-	for (int i = 0; i < 4; i++)
-	{
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, pointLightPositions[i]);
-		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-		lightCubeShader.setMat4("model", model);
-		
-		ourCube.Draw(lightCubeShader);
-
-	}
 	
 
 	ModelShader.Use();
@@ -455,11 +460,36 @@ GLvoid drawScene()
 	ourSphere.Draw(ModelShader);
 	glBindTexture(GL_TEXTURE_2D,0);
 
+	model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", model);
+	TextureLoadManager::Instance()->Use("metal");
+	ourPlane.Draw(ModelShader);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", space_ship_model);
+	TextureLoadManager::Instance()->Use("space_ship");
+	ourModel.Draw(ModelShader);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 
+	if (light_on)
+	{
+		lightCubeShader.Use();
+		lightCubeShader.setMat4("projection", projection);
+		lightCubeShader.setMat4("view", view);
+		// render the cube
+		for (int i = 0; i < 4; i++)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+			lightCubeShader.setMat4("model", model);
 
+			ourCube.Draw(lightCubeShader);
 
-
+		}
+	}
 
 	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -573,9 +603,24 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'd':
 		g_camera->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
 		break;
-	case 'r':
+	case 'R':
+		g_camera->OrbitAroundOrigin(3.0f);
+		break;
+	case 'y':
 		rotation_light = !rotation_light;
 		break;
+	case 'm':
+		if (light_on)
+		{
+			pointLightColor = glm::vec3(0, 0, 0);
+		}
+		else
+		{
+			pointLightColor = glm::vec3(0.8, 0.8, 0.8);
+		}
+		light_on = !light_on;
+		break;
+		
 	case 'z':
 		for (int i = 0; i < 4; i++)
 		{
