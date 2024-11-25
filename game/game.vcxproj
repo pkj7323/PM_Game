@@ -60,6 +60,7 @@
     <Image Include="wall.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="basic_light_fs.glsl" />
     <None Include="cubemap_fs.glsl" />
     <None Include="cubemap_vs.glsl" />
     <None Include="Fragment.glsl" />

@@ -55,7 +55,7 @@ glm::vec3 pointLightPositions[] = {
 	glm::vec3(-4.0f,  2.0f, -12.0f),
 	glm::vec3(0.0f,  0.0f, -3.0f)
 };
-
+glm::vec3 pointLightStrength(0.8, 0.8, 0.8);
 float skyboxVertices[] = {
 	// positions          
 	-1.0f,  1.0f, -1.0f,
@@ -132,7 +132,13 @@ Shader skyboxShader;
 Model ourModel;
 Model ourCube;
 
+Model ourPyramid;
 
+bool draw_pyramid = true;
+bool onPointLight = true;
+bool rotation_object = false;
+glm::mat4 object_model(1.0f);	
+bool rotation_light = false;
 ///------ 함수
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -208,9 +214,9 @@ void init_world()
 	//쉐이더 초기화 및 컴파일
 	{
 		cout << "쉐이더 컴파일" << endl;
-		shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
+		//shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
 		screenShader = Shader("framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
-		skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
+		//skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
 		//stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
 		lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
@@ -222,6 +228,7 @@ void init_world()
 		/*ourModel = Model("resources/statue/statue.obj");*/
 
 		ourCube = Model("resources/cube.obj");
+		ourPyramid = Model("resources/pyramid.obj");
 		cout << "모델 로드 종료" << endl;
 	}
 	
@@ -236,6 +243,7 @@ void init_world()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glBindVertexArray(0);
 		
 		
 
@@ -248,7 +256,7 @@ void init_world()
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
+		glBindVertexArray(0);
 
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -300,10 +308,11 @@ void init_world()
 		CollisionManager::Instance()->Init();
 		cout << "매니저 초기화 종료" << endl;
 	}
-	cout << "초기화 완료" << endl;
 	{
 		
 	}
+	cout << "초기화 완료" << endl;
+	
 }
 void game_loop()
 {
@@ -322,7 +331,18 @@ void game_loop()
 
 void update_world()
 {
-	
+	if (rotation_object)
+	{
+		object_model = glm::rotate(object_model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	if (rotation_light)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			pointLightPositions[i] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f))
+			* glm::vec4(pointLightPositions[i],1.0);
+		}
+	}
 	CollisionManager::Instance()->Update();
 }
 
@@ -351,10 +371,116 @@ GLvoid drawScene()
 	lightCubeShader.setMat4("projection", projection);
 	lightCubeShader.setMat4("view", view);
 	// render the cube
-	model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
-	lightCubeShader.setMat4("model", model);
-	ourCube.Draw(lightCubeShader);
+	if (onPointLight)
+	{
+		pointLightStrength = glm::vec3(0.8, 0.8, 0.8);
+		for (int i = 0; i < 4; i++)
+		{
+			if (rotation_light)
+			{
+				lightCubeShader.setMat4("model", glm::mat4(1.0f));
+				glBegin(GL_POINTS);
+				glm::vec3 v = pointLightPositions[i];
+				for (int i = 0; i < 360; i++)
+				{
+					glVertex3f(v.x, v.y, v.z);
+					float angle = static_cast<float>(i);
+					v = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 1, 0))
+						* glm::vec4(v, 1.0);
+					
+				}
+				glEnd();
+			}
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+			lightCubeShader.setMat4("model", model);
+			
+			ourCube.Draw(lightCubeShader);
+
+		}
+	}
+	else
+	{
+		pointLightStrength = glm::vec3(0.0, 0.0, 0.0);
+	}
+
+	ModelShader.Use();
+	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
+	ModelShader.setMat4("view", g_camera->GetViewMatrix());
+	ModelShader.setMat4("model", object_model);
+	ModelShader.setVec3("viewPos", g_camera->GetPosition());
+	ModelShader.setFloat("material.shininess", 32.0f);
+	// directional light
+	// 태양광 설정
+	ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+	// point light 1
+	// 포인트 라이트 1 설정
+	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[0].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[0].constant", 1.0f);
+	ModelShader.setFloat("pointLights[0].linear", 0.09);
+	ModelShader.setFloat("pointLights[0].quadratic", 0.032);
+	// point light 2
+	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[1].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[1].constant", 1.0f);
+	ModelShader.setFloat("pointLights[1].linear", 0.09f);
+	ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
+	// point light 3
+	ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+	ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[2].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[2].constant", 1.0f);
+	ModelShader.setFloat("pointLights[2].linear", 0.09f);
+	ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
+	// point light 4
+	ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+	ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[3].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[3].constant", 1.0f);
+	ModelShader.setFloat("pointLights[3].linear", 0.09f);
+	ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
+	// spotLight
+	ModelShader.setVec3("spotLight.position", g_camera->GetPosition());
+	ModelShader.setVec3("spotLight.direction", g_camera->GetFront());
+	ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+	ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+	ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("spotLight.constant", 1.0f);
+	ModelShader.setFloat("spotLight.linear", 0.09f);
+	ModelShader.setFloat("spotLight.quadratic", 0.032f);
+	ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+	ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+	if (draw_pyramid)
+	{
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2"));
+		ourPyramid.Draw(ModelShader);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	else
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2"));
+		ourCube.Draw(ModelShader);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
+	}
 	
+
+
 
 
 
@@ -473,11 +599,29 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'd':
 		g_camera->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
 		break;
-	case 'g':
-		ourModel.ChangeMode(GL_LINE_STRIP);
+	case 'n':
+		draw_pyramid = !draw_pyramid;
 		break;
-	case 'G':
-		ourModel.ChangeMode(GL_TRIANGLES);
+	case 'm':
+		onPointLight = !onPointLight;
+		break;
+	case 'y':
+		rotation_object = !rotation_object;
+		break;
+	case 'r':
+		rotation_light = !rotation_light;
+		break;
+	case 'z':
+		for (int i = 0; i < 4; i++)
+		{
+			pointLightPositions[i].z += 0.1;
+		}
+		break;
+	case 'Z':
+		for (int i = 0; i < 4; i++)
+		{
+			pointLightPositions[i].z -= 0.1;
+		}
 		break;
 	default:
 		break;
