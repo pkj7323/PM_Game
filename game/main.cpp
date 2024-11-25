@@ -15,7 +15,7 @@
 std::random_device rd;
 std::default_random_engine dre(rd());
 std::uniform_real_distribution<float> size{ 0.1f, 0.5f };
-std::uniform_real_distribution<float> dis{ -1.f, 1.f };
+std::uniform_real_distribution<float> cr{ 0.f, 1.f };
 
 //------전역변수
 
@@ -55,7 +55,7 @@ glm::vec3 pointLightPositions[] = {
 	glm::vec3(-4.0f,  2.0f, -12.0f),
 	glm::vec3(0.0f,  0.0f, -3.0f)
 };
-glm::vec3 pointLightStrength(0.8, 0.8, 0.8);
+
 float skyboxVertices[] = {
 	// positions          
 	-1.0f,  1.0f, -1.0f,
@@ -134,10 +134,10 @@ Model ourCube;
 
 Model ourPyramid;
 
-bool draw_pyramid = true;
-bool onPointLight = true;
-bool rotation_object = false;
-glm::mat4 object_model(1.0f);	
+Model ourSphere;
+
+
+glm::vec3 pointLightColor(0.8,0.8,0.8);
 bool rotation_light = false;
 ///------ 함수
 GLvoid drawScene(GLvoid);
@@ -214,9 +214,9 @@ void init_world()
 	//쉐이더 초기화 및 컴파일
 	{
 		cout << "쉐이더 컴파일" << endl;
-		//shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
+		shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
 		screenShader = Shader("framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
-		//skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
+		skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
 		//stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
 		lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
@@ -225,10 +225,11 @@ void init_world()
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
-		/*ourModel = Model("resources/statue/statue.obj");*/
-
+		/*ourModel = Model("resources/statue/statue.obj");
+		
+		ourPyramid = Model("resources/pyramid.obj");*/
 		ourCube = Model("resources/cube.obj");
-		ourPyramid = Model("resources/pyramid.obj");
+		ourSphere = Model("resources/sphere.obj");
 		cout << "모델 로드 종료" << endl;
 	}
 	
@@ -331,10 +332,7 @@ void game_loop()
 
 void update_world()
 {
-	if (rotation_object)
-	{
-		object_model = glm::rotate(object_model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	}
+	
 	if (rotation_light)
 	{
 		for (int i = 0; i < 4; i++)
@@ -355,60 +353,35 @@ GLvoid drawScene()
 	// make sure we clear the framebuffer's content
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	
-	// cubes
-	/*glBindVertexArray(cubeVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("skybox"));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);*/
-	// set uniforms
 	glm::mat4 projection = g_camera->GetPerspectiveMatrix();
 	glm::mat4 view = g_camera->GetViewMatrix();
 	glm::mat4 model = glm::mat4(1.0f);
+	
+	
+	// set uniforms
+	
 	lightCubeShader.Use();
 	lightCubeShader.setMat4("projection", projection);
 	lightCubeShader.setMat4("view", view);
 	// render the cube
-	if (onPointLight)
+	
+	
+	for (int i = 0; i < 4; i++)
 	{
-		pointLightStrength = glm::vec3(0.8, 0.8, 0.8);
-		for (int i = 0; i < 4; i++)
-		{
-			if (rotation_light)
-			{
-				lightCubeShader.setMat4("model", glm::mat4(1.0f));
-				glBegin(GL_POINTS);
-				glm::vec3 v = pointLightPositions[i];
-				for (int i = 0; i < 360; i++)
-				{
-					glVertex3f(v.x, v.y, v.z);
-					float angle = static_cast<float>(i);
-					v = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 1, 0))
-						* glm::vec4(v, 1.0);
-					
-				}
-				glEnd();
-			}
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-			lightCubeShader.setMat4("model", model);
-			
-			ourCube.Draw(lightCubeShader);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, pointLightPositions[i]);
+		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+		lightCubeShader.setMat4("model", model);
+		
+		ourCube.Draw(lightCubeShader);
 
-		}
 	}
-	else
-	{
-		pointLightStrength = glm::vec3(0.0, 0.0, 0.0);
-	}
+	
 
 	ModelShader.Use();
 	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
 	ModelShader.setMat4("view", g_camera->GetViewMatrix());
-	ModelShader.setMat4("model", object_model);
+
 	ModelShader.setVec3("viewPos", g_camera->GetPosition());
 	ModelShader.setFloat("material.shininess", 32.0f);
 	// directional light
@@ -422,7 +395,7 @@ GLvoid drawScene()
 	// 포인트 라이트 1 설정
 	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
 	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[0].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
 	ModelShader.setFloat("pointLights[0].constant", 1.0f);
 	ModelShader.setFloat("pointLights[0].linear", 0.09);
@@ -430,7 +403,7 @@ GLvoid drawScene()
 	// point light 2
 	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
 	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[1].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[1].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
 	ModelShader.setFloat("pointLights[1].constant", 1.0f);
 	ModelShader.setFloat("pointLights[1].linear", 0.09f);
@@ -438,7 +411,7 @@ GLvoid drawScene()
 	// point light 3
 	ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
 	ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[2].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[2].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
 	ModelShader.setFloat("pointLights[2].constant", 1.0f);
 	ModelShader.setFloat("pointLights[2].linear", 0.09f);
@@ -446,7 +419,7 @@ GLvoid drawScene()
 	// point light 4
 	ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
 	ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[3].diffuse", pointLightStrength);
+	ModelShader.setVec3("pointLights[3].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
 	ModelShader.setFloat("pointLights[3].constant", 1.0f);
 	ModelShader.setFloat("pointLights[3].linear", 0.09f);
@@ -462,24 +435,25 @@ GLvoid drawScene()
 	ModelShader.setFloat("spotLight.quadratic", 0.032f);
 	ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
 	ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-	if (draw_pyramid)
-	{
-		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2"));
-		ourPyramid.Draw(ModelShader);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	else
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->Use("container2"));
-		ourCube.Draw(ModelShader);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		
-	}
-	
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("marble"));
+	model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", model);
+	ourSphere.Draw(ModelShader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.8, 0.8, 0.8));
+	model = glm::translate(model, glm::vec3(-5.0f, 0.0f, 0.0f));
+	ModelShader.setMat4("model", model);
+	ourSphere.Draw(ModelShader);
+
+	model = glm::mat4(1.0f);
+	model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
+	model = glm::translate(model, glm::vec3(-15.0f, 0.0f, 0.0f));
+	ModelShader.setMat4("model", model);
+	ourSphere.Draw(ModelShader);
+	glBindTexture(GL_TEXTURE_2D,0);
 
 
 
@@ -599,15 +573,6 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'd':
 		g_camera->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
 		break;
-	case 'n':
-		draw_pyramid = !draw_pyramid;
-		break;
-	case 'm':
-		onPointLight = !onPointLight;
-		break;
-	case 'y':
-		rotation_object = !rotation_object;
-		break;
 	case 'r':
 		rotation_light = !rotation_light;
 		break;
@@ -622,6 +587,9 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		{
 			pointLightPositions[i].z -= 0.1;
 		}
+		break;
+	case 'c':
+		pointLightColor = glm::vec3(cr(dre), cr(dre), cr(dre));
 		break;
 	default:
 		break;

@@ -8,7 +8,8 @@ public:
 	void Load(const string& name,const string& filename);
 
 	//return texture id = GLuint
-	GLuint Use(const string& name);
+	GLuint GetTexture(const string& name);
+	void Use(const string& name, GLuint index = 0);
 
 	void loadCubeMap(const string& name, vector<string> faces);
 	

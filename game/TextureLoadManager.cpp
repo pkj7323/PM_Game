@@ -56,13 +56,26 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 
 }
 
-GLuint TextureLoadManager::Use(const string& name)
+GLuint TextureLoadManager::GetTexture(const string& name)
 {
 	if (m_texture.find(name) != m_texture.end())
 	{
 		auto texture = m_texture[name];
 		return texture;
 		
+	}
+	else
+	{
+		std::cout << "Failed to find texture" << std::endl;
+	}
+}
+
+void TextureLoadManager::Use(const string& name, GLuint index)
+{
+	if (m_texture.find(name) != m_texture.end())
+	{
+		glActiveTexture(GL_TEXTURE0 + index);
+		glBindTexture(GL_TEXTURE_2D, m_texture[name]);
 	}
 	else
 	{
