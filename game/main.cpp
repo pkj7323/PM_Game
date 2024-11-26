@@ -102,12 +102,12 @@ float skyboxVertices[] = {
 };
 vector<std::string> faces
 {
-	"resources/right.jpg",
-	"resources/left.jpg",
-	"resources/top.jpg",
-	"resources/bottom.jpg",
-	"resources/front.jpg",
-	"resources/back.jpg"
+	"resources/skybox/right.png",
+	"resources/skybox/left.png",
+	"resources/skybox/top.png",
+	"resources/skybox/bottom.png",
+	"resources/skybox/front.png",
+	"resources/skybox/back.png"
 };
 // first, configure the cube's VAO (and VBO)
 unsigned int VBO, cubeVAO,cubeVBO;
@@ -127,7 +127,7 @@ Shader ModelShader;
 Shader shader;
 Shader screenShader;
 Shader skyboxShader;
-
+Shader cubeMapShader;
 
 Model ourModel;
 Model ourCube;
@@ -221,6 +221,7 @@ void init_world()
 		//stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
 		lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
+		cubeMapShader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
 		//stencilSingleColorShader = Shader("stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 	}
 	//¸ðµ¨ ÃÊ±âÈ­
@@ -444,11 +445,7 @@ GLvoid drawScene()
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("marble"));
 	
 
-	model = glm::mat4(1.0f);
-	ModelShader.setMat4("model", model);
-	TextureLoadManager::Instance()->Use("metal");
-	ourPlane.Draw(ModelShader);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	
 
 	model = glm::mat4(1.0f);
 	ModelShader.setMat4("model", space_ship_model);
@@ -456,6 +453,11 @@ GLvoid drawScene()
 	ourModel.Draw(ModelShader);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	/*model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", model);
+	TextureLoadManager::Instance()->Use("metal");
+	ourPlane.Draw(ModelShader);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 	if (light_on)
 	{
@@ -474,8 +476,27 @@ GLvoid drawScene()
 
 		}
 	}
+	
+	cubeMapShader.Use();
+	model = glm::mat4(1.0f);
+	cubeMapShader.setMat4("view", view);
+	cubeMapShader.setMat4("projection", projection);
+	cubeMapShader.setMat4("model", model);
+	cubeMapShader.setVec3("cameraPos", g_camera->GetPosition());
+	glActiveTexture(GL_TEXTURE0);
+	TextureLoadManager::Instance()->Use("metal");
+	ourPlane.Draw(cubeMapShader);
+	glBindTexture(GL_TEXTURE_2D,0);
+	
+	
+	
+
+
+
+
 	glDepthFunc(GL_LEQUAL);
 	skyboxShader.Use();
+	view = glm::mat4(glm::mat3(g_camera->GetViewMatrix())); // remove translation from the view matrix
 	skyboxShader.setMat4("view", view);
 	skyboxShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
 	// skybox cube
@@ -484,6 +505,7 @@ GLvoid drawScene()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, TextureLoadManager::Instance()->GetTexture("skybox"));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDepthFunc(GL_LESS);
 
 	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
