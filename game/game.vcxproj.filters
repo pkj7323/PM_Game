@@ -49,6 +49,9 @@
     <Filter Include="1_Manager\Time">
       <UniqueIdentifier>{3069edd2-068b-4c87-875e-1d94a8c44195}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1_Manager\key">
+      <UniqueIdentifier>{4f9d6cba-b7e8-4812-8ce0-69f5f8f75cfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>5_Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>1_Manager\key</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>5_Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>1_Manager\key</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -178,12 +187,6 @@
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="stencil_single_color_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="framebuffer_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="framebuffer_vs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="framebuffer_screen_fs.glsl">

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CameraManager.h"
 
+#include "TimeManager.h"
+
 
 CameraManager::CameraManager()
 {
@@ -79,39 +81,14 @@ glm::mat4 CameraManager::GetViewMatrix()
 
 void CameraManager::ProcessKeyboard(Camera_Movement direction)
 {
+    float velocity = MovementSpeed * DT;
     if (direction == FORWARD)
-        front = true;
-    if (direction == BACKWARD)
-        back = true;
-    if (direction == LEFT)
-        left = true;
-    if (direction == RIGHT)
-        right = true;
-}
-
-
-void CameraManager::ProcessKeyboardUp(Camera_Movement direction)
-{
-    if (direction == FORWARD)
-        front = false;
-    if (direction == BACKWARD)
-        back = false;
-    if (direction == LEFT)
-        left = false;
-    if (direction == RIGHT)
-        right = false;
-}
-
-void CameraManager::MovePosition(float deltaTime)
-{
-    float velocity = MovementSpeed * deltaTime;
-    if (front == true)
         Position += Front * velocity;
-    if (back == true)
+    if (direction == BACKWARD)
         Position -= Front * velocity;
-    if (left == true)
+    if (direction == LEFT)
         Position -= Right * velocity;
-    if (right == true)
+    if (direction == RIGHT)
         Position += Right * velocity;
 }
 

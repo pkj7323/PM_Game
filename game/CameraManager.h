@@ -12,7 +12,7 @@ enum Camera_Movement {
 // Default camera values
 constexpr float YAW = -90.0f;
 constexpr float PITCH = 0.0f;
-constexpr float SPEED = 100.f;
+constexpr float SPEED = 30.f;
 constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM = 45.0f;
 
@@ -38,8 +38,6 @@ public:
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction);
-    void ProcessKeyboardUp(Camera_Movement direction);
-    void MovePosition(float deltaTime);
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 

@@ -10,6 +10,11 @@
 			type();\
 			~type();
 
+#define KEY_CHECK(key, state) KeyManager::Instance()->GetKeyState(key) == state
+#define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
+#define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
+#define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)
+#define KEY_NONE(key) KEY_CHECK(key, KEY_STATE::NONE)
 
 #define DT TimeManager::Instance()->GetDeltaTime()
 struct FunctionWrapper {

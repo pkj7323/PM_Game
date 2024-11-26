@@ -2,6 +2,7 @@
 
 #include "CameraManager.h"
 #include "CollisionManager.h"
+#include "KeyManager.h"
 #include "Model.h"
 #include "TimeManager.h"
 #include "TextureLoadManager.h"
@@ -144,15 +145,14 @@ bool light_on = true;
 ///------ 함수
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
-GLvoid Keyboard(unsigned char key, int x, int y);
-GLvoid KeyboardUp(unsigned char key, int x, int y);
+
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid MouseMotion(int x, int y);
 //	button (버튼 파라미터): GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, GLUT_RIGHT_BUTTON
 //	state(상태 파라미터) : GLUT_UP, GLUT_DOWN
 //	x, y : 윈도우에서 마우스의위치
 GLvoid TimerFunction(int value);
-GLvoid SpecialKeyboard(int key, int x, int y);
+
 GLvoid mouseWheel(int button, int dir, int x, int y);
 
 void update_world();
@@ -193,9 +193,7 @@ void main(int argc, char** argv)
 	//--- 윈도우 출력하고 콜백함수 설정
 	glutDisplayFunc(drawScene);//--- 출력 콜백함수의 지정
 	glutReshapeFunc(Reshape);//--- 다시 그리기 콜백함수 지정
-	glutKeyboardFunc(Keyboard);//--- 키보드 입력 콜백함수 지정(스페셜 키못받음)
-	glutKeyboardUpFunc(KeyboardUp);//--- 키업 콜백함수 지정
-	glutSpecialFunc(SpecialKeyboard);//--- 특수키 입력 콜백함수 지정
+	
 	glutMouseFunc(Mouse);
 	glutMotionFunc(MouseMotion);
 	glutPassiveMotionFunc(MouseMotion);
@@ -313,6 +311,7 @@ void init_world()
 		cout << "매니저 초기화" << endl;
 		TimeManager::Instance()->Init();
 		CollisionManager::Instance()->Init();
+		KeyManager::Instance()->Init();
 		cout << "매니저 초기화 종료" << endl;
 	}
 	{
@@ -354,8 +353,28 @@ void update_world()
 		timer = 0;
 		go_right = !go_right;
 	}*/
-
-	g_camera->MovePosition(TimeManager::Instance()->GetDeltaTime());
+	KeyManager::Instance()->Update();
+	CollisionManager::Instance()->Update();
+	if (KEY_TAP(KEY::ESC))
+	{
+		glutDestroyWindow(glutGetWindow());
+	}
+	if (KEY_HOLD(KEY::W))
+	{
+		g_camera->ProcessKeyboard(FORWARD);
+	}
+	if (KEY_HOLD(KEY::S))
+	{
+		g_camera->ProcessKeyboard(BACKWARD);
+	}
+	if (KEY_HOLD(KEY::A))
+	{
+		g_camera->ProcessKeyboard(LEFT);
+	}
+	if (KEY_HOLD(KEY::D))
+	{
+		g_camera->ProcessKeyboard(RIGHT);
+	}
 	if (rotation_light)
 	{
 		for (int i = 0; i < 4; i++)
@@ -364,7 +383,7 @@ void update_world()
 			* glm::vec4(pointLightPositions[i],1.0);
 		}
 	}
-	CollisionManager::Instance()->Update();
+	
 }
 
 GLvoid drawScene()
@@ -601,112 +620,5 @@ GLvoid Mouse(int button, int state, int x, int y) {
 	g_camera->ProcessMouseMovement(xoffset, yoffset);
 	glutPostRedisplay();
 }
-GLvoid Keyboard(unsigned char key, int x, int y)
-{
 
-	switch (key)
-	{
-	case 'q':
-		glutDestroyWindow(glutGetWindow());
-		break;
-	case 'w':
-		g_camera->ProcessKeyboard(FORWARD);
-		break;
-	case 's':
-		g_camera->ProcessKeyboard(BACKWARD);
-		break;
-	case 'a':
-		g_camera->ProcessKeyboard(LEFT);
-		break;
-	case 'd':
-		g_camera->ProcessKeyboard(RIGHT);
-		break;
-	case 'R':
-		g_camera->OrbitAroundOrigin(3.0f);
-		break;
-	case 'y':
-		rotation_light = !rotation_light;
-		break;
-	case 'm':
-		if (light_on)
-		{
-			pointLightColor = glm::vec3(0, 0, 0);
-		}
-		else
-		{
-			pointLightColor = glm::vec3(0.8, 0.8, 0.8);
-		}
-		light_on = !light_on;
-		break;
-		
-	case 'z':
-		for (int i = 0; i < 4; i++)
-		{
-			pointLightPositions[i].z += 0.1;
-		}
-		break;
-	case 'Z':
-		for (int i = 0; i < 4; i++)
-		{
-			pointLightPositions[i].z -= 0.1;
-		}
-		break;
-	case 'c':
-		pointLightColor = glm::vec3(cr(dre), cr(dre), cr(dre));
-		break;
-	default:
-		break;
-		//.....
-	}
-	glutPostRedisplay();
-}
-
-GLvoid KeyboardUp(unsigned char key, int x, int y)
-{
-
-	switch (key)
-	{
-	case 'w':
-		g_camera->ProcessKeyboardUp(FORWARD);
-		break;
-	case 's':
-		g_camera->ProcessKeyboardUp(BACKWARD);
-		break;
-	case 'a':
-		g_camera->ProcessKeyboardUp(LEFT);
-		break;
-	case 'd':
-		g_camera->ProcessKeyboardUp(RIGHT);
-		break;
-	}
-	glutPostRedisplay();
-}
-
-GLvoid SpecialKeyboard(int key, int x, int y)
-{
-	switch (key)
-	{
-	case GLUT_KEY_UP:
-		g_lightPos.y += 0.1f;
-		break;
-	case GLUT_KEY_DOWN:
-		g_lightPos.y -= 0.1f;
-		break;
-	case GLUT_KEY_LEFT:
-		g_lightPos.x -= 0.1f;
-		break;
-	case GLUT_KEY_RIGHT:
-		g_lightPos.x += 0.1f;
-		break;
-	case GLUT_KEY_F1:
-		g_lightPos.z += 0.1f;
-		break;
-	case GLUT_KEY_F2:
-		g_lightPos.z -= 0.1f;
-		break;
-	default:
-		break;
-	}
-	glutPostRedisplay();
-}
 
