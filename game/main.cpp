@@ -145,6 +145,7 @@ bool light_on = true;
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid KeyboardUp(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid MouseMotion(int x, int y);
 //	button (버튼 파라미터): GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, GLUT_RIGHT_BUTTON
@@ -193,6 +194,7 @@ void main(int argc, char** argv)
 	glutDisplayFunc(drawScene);//--- 출력 콜백함수의 지정
 	glutReshapeFunc(Reshape);//--- 다시 그리기 콜백함수 지정
 	glutKeyboardFunc(Keyboard);//--- 키보드 입력 콜백함수 지정(스페셜 키못받음)
+	glutKeyboardUpFunc(KeyboardUp);//--- 키업 콜백함수 지정
 	glutSpecialFunc(SpecialKeyboard);//--- 특수키 입력 콜백함수 지정
 	glutMouseFunc(Mouse);
 	glutMotionFunc(MouseMotion);
@@ -337,7 +339,7 @@ float timer = 0;
 bool go_right = true;
 void update_world()
 {
-	if (go_right)
+	/*if (go_right)
 	{
 		space_ship_model = glm::translate(space_ship_model, glm::vec3(0.1f, 0.0f, 0.f));
 	}
@@ -351,9 +353,9 @@ void update_world()
 	{
 		timer = 0;
 		go_right = !go_right;
-	}
+	}*/
 
-
+	g_camera->MovePosition(TimeManager::Instance()->GetDeltaTime());
 	if (rotation_light)
 	{
 		for (int i = 0; i < 4; i++)
@@ -529,7 +531,6 @@ GLvoid TimerFunction(int value)
 	//타이머마다 1번만 타이머 함수 불러서 다시 불러줘야됨
 
 	glutPostRedisplay();
-
 	glutTimerFunc(60, TimerFunction, 1);
 }
 GLvoid mouseWheel(int button, int dir, int x, int y)
@@ -609,16 +610,16 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 		glutDestroyWindow(glutGetWindow());
 		break;
 	case 'w':
-		g_camera->ProcessKeyboard(FORWARD, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(FORWARD);
 		break;
 	case 's':
-		g_camera->ProcessKeyboard(BACKWARD, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(BACKWARD);
 		break;
 	case 'a':
-		g_camera->ProcessKeyboard(LEFT, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(LEFT);
 		break;
 	case 'd':
-		g_camera->ProcessKeyboard(RIGHT, TimeManager::Instance()->GetDeltaTime());
+		g_camera->ProcessKeyboard(RIGHT);
 		break;
 	case 'R':
 		g_camera->OrbitAroundOrigin(3.0f);
@@ -656,6 +657,27 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	default:
 		break;
 		//.....
+	}
+	glutPostRedisplay();
+}
+
+GLvoid KeyboardUp(unsigned char key, int x, int y)
+{
+
+	switch (key)
+	{
+	case 'w':
+		g_camera->ProcessKeyboardUp(FORWARD);
+		break;
+	case 's':
+		g_camera->ProcessKeyboardUp(BACKWARD);
+		break;
+	case 'a':
+		g_camera->ProcessKeyboardUp(LEFT);
+		break;
+	case 'd':
+		g_camera->ProcessKeyboardUp(RIGHT);
+		break;
 	}
 	glutPostRedisplay();
 }

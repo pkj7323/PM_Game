@@ -77,16 +77,41 @@ glm::mat4 CameraManager::GetViewMatrix()
     return glm::lookAt(Position, Position + Front, Up);
 }
 
-void CameraManager::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+void CameraManager::ProcessKeyboard(Camera_Movement direction)
+{
+    if (direction == FORWARD)
+        front = true;
+    if (direction == BACKWARD)
+        back = true;
+    if (direction == LEFT)
+        left = true;
+    if (direction == RIGHT)
+        right = true;
+}
+
+
+void CameraManager::ProcessKeyboardUp(Camera_Movement direction)
+{
+    if (direction == FORWARD)
+        front = false;
+    if (direction == BACKWARD)
+        back = false;
+    if (direction == LEFT)
+        left = false;
+    if (direction == RIGHT)
+        right = false;
+}
+
+void CameraManager::MovePosition(float deltaTime)
 {
     float velocity = MovementSpeed * deltaTime;
-    if (direction == FORWARD)
+    if (front == true)
         Position += Front * velocity;
-    if (direction == BACKWARD)
+    if (back == true)
         Position -= Front * velocity;
-    if (direction == LEFT)
+    if (left == true)
         Position -= Right * velocity;
-    if (direction == RIGHT)
+    if (right == true)
         Position += Right * velocity;
 }
 

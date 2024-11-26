@@ -37,9 +37,9 @@ public:
         , float speed = SPEED, float sensitivity = SENSITIVITY);
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(Camera_Movement direction, float deltaTime);
-
-
+    void ProcessKeyboard(Camera_Movement direction);
+    void ProcessKeyboardUp(Camera_Movement direction);
+    void MovePosition(float deltaTime);
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 
@@ -73,7 +73,11 @@ private:
 
     glm::mat4 PerspectiveMatrix;
 
-
+    //움직임 처리
+    bool left{};
+    bool right{};
+    bool front{};
+    bool back{};
 
 
     // euler Angles
