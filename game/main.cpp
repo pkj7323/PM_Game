@@ -376,12 +376,43 @@ GLvoid drawScene()
 	glm::mat4 projection = g_camera->GetPerspectiveMatrix();
 	glm::mat4 view = g_camera->GetViewMatrix();
 	glm::mat4 model = glm::mat4(1.0f);
-	
-	
-	// set uniforms
-	
-	
-	
+	lightCubeShader.Use();
+	lightCubeShader.setMat4("projection", projection);
+	lightCubeShader.setMat4("view", view);
+	// render the cube
+	if (onPointLight)
+	{
+		pointLightStrength = glm::vec3(0.8, 0.8, 0.8);
+		for (int i = 0; i < 4; i++)
+		{
+			if (rotation_light)
+			{
+				lightCubeShader.setMat4("model", glm::mat4(1.0f));
+				glBegin(GL_LINE_STRIP);
+				glm::vec3 v = pointLightPositions[i];
+				for (int i = 0; i < 360; i++)
+				{
+					glVertex3f(v.x, v.y, v.z);
+					float angle = static_cast<float>(i);
+					v = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 1, 0))
+						* glm::vec4(v, 1.0);
+					
+				}
+				glEnd();
+			}
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+			lightCubeShader.setMat4("model", model);
+			
+			ourCube.Draw(lightCubeShader);
+
+		}
+	}
+	else
+	{
+		pointLightStrength = glm::vec3(0.0, 0.0, 0.0);
+	}
 
 	ModelShader.Use();
 	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
