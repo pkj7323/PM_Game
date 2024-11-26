@@ -181,8 +181,7 @@ void main(int argc, char** argv)
 
 	
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
@@ -380,39 +379,7 @@ GLvoid drawScene()
 	lightCubeShader.setMat4("projection", projection);
 	lightCubeShader.setMat4("view", view);
 	// render the cube
-	if (onPointLight)
-	{
-		pointLightStrength = glm::vec3(0.8, 0.8, 0.8);
-		for (int i = 0; i < 4; i++)
-		{
-			if (rotation_light)
-			{
-				lightCubeShader.setMat4("model", glm::mat4(1.0f));
-				glBegin(GL_LINE_STRIP);
-				glm::vec3 v = pointLightPositions[i];
-				for (int i = 0; i < 360; i++)
-				{
-					glVertex3f(v.x, v.y, v.z);
-					float angle = static_cast<float>(i);
-					v = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 1, 0))
-						* glm::vec4(v, 1.0);
-					
-				}
-				glEnd();
-			}
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-			lightCubeShader.setMat4("model", model);
-			
-			ourCube.Draw(lightCubeShader);
-
-		}
-	}
-	else
-	{
-		pointLightStrength = glm::vec3(0.0, 0.0, 0.0);
-	}
+	
 
 	ModelShader.Use();
 	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
@@ -521,7 +488,17 @@ GLvoid drawScene()
 
 		}
 	}
-
+	glDepthFunc(GL_LEQUAL);
+	skyboxShader.Use();
+	skyboxShader.setMat4("view", view);
+	skyboxShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
+	// skybox cube
+	glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, TextureLoadManager::Instance()->GetTexture("skybox"));
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS);
 	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
