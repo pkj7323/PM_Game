@@ -181,7 +181,7 @@ void main(int argc, char** argv)
 
 	
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
@@ -245,7 +245,8 @@ void init_world()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glBindVertexArray(0);
+
+		
 		
 		
 
@@ -441,22 +442,7 @@ GLvoid drawScene()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("marble"));
-	model = glm::mat4(1.0f);
-	ModelShader.setMat4("model", model);
-	ourSphere.Draw(ModelShader);
-
-	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.8, 0.8, 0.8));
-	model = glm::translate(model, glm::vec3(-5.0f, 0.0f, 0.0f));
-	ModelShader.setMat4("model", model);
-	ourSphere.Draw(ModelShader);
-
-	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
-	model = glm::translate(model, glm::vec3(-15.0f, 0.0f, 0.0f));
-	ModelShader.setMat4("model", model);
-	ourSphere.Draw(ModelShader);
-	glBindTexture(GL_TEXTURE_2D,0);
+	
 
 	model = glm::mat4(1.0f);
 	ModelShader.setMat4("model", model);
@@ -499,6 +485,7 @@ GLvoid drawScene()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS);
+
 	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
