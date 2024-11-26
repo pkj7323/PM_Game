@@ -8,6 +8,7 @@
 #include "TimeManager.h"
 #include "TextureLoadManager.h"
 #include "Shader.h"
+#include "ShaderManager.h"
 
 //------전역변수
 std::random_device rd;
@@ -118,14 +119,14 @@ GLuint rbo;
 GLuint screenTextureColorBuffer;
 
 
-Shader stencilShader;
-Shader stencilSingleColorShader;
-Shader lightCubeShader;
-Shader ModelShader;
-Shader shader;
-Shader screenShader;
-Shader skyboxShader;
-Shader cubeMapShader;
+//Shader stencilShader;
+//Shader stencilSingleColorShader;
+//Shader lightCubeShader;
+//Shader ModelShader;
+//Shader shader;
+//Shader screenShader;
+//Shader skyboxShader;
+//Shader cubeMapShader;
 
 Model ourModel;
 Model ourCube;
@@ -212,13 +213,21 @@ void init_world()
 	//쉐이더 초기화 및 컴파일
 	{
 		cout << "쉐이더 컴파일" << endl;
-		shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
-		screenShader = Shader("framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
-		skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
+		ShaderManager::Instance()->MakeShader("shader", "cubemap_vs.glsl", "cubemap_fs.glsl");
+		ShaderManager::Instance()->MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
+		ShaderManager::Instance()->MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
+		ShaderManager::Instance()->MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
+		ShaderManager::Instance()->MakeShader("lightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
+		ShaderManager::Instance()->MakeShader("cubeMapShader", "cubemap_vs.glsl", "cubemap_fs.glsl");
+		ShaderManager::Instance()->MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
+		ShaderManager::Instance()->MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
+		//shader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
+		//screenShader = Shader("framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
+		//skyboxShader = Shader("skybox_vs.glsl", "skybox_fs.glsl");
 		//stencilShader = Shader("stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
-		ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
-		lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
-		cubeMapShader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
+		//ModelShader = Shader("model_vertex.glsl", "model_fragment.glsl");
+		//lightCubeShader = Shader("OldVertex.glsl", "OldFragment.glsl");
+		//cubeMapShader = Shader("cubemap_vs.glsl", "cubemap_fs.glsl");
 		//stencilSingleColorShader = Shader("stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 	}
 	//모델 초기화
@@ -388,75 +397,76 @@ GLvoid drawScene()
 	
 	// render the cube
 	
-	//모델 쉐이더의 유니폼 값을 넣어준다. 
-	ModelShader.Use();//이거아래의 그리기 동작들은 모델 쉐이더에 영향을 미친다. 1pass
-	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
-	ModelShader.setMat4("view", g_camera->GetViewMatrix());
-	ModelShader.setVec3("viewPos", g_camera->GetPosition());
-	ModelShader.setFloat("material.shininess", 32.0f);
+	//모델 쉐이더의 유니폼 값을 넣어준다.
+	Shader* ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
+	ModelShader->Use();//이거아래의 그리기 동작들은 모델 쉐이더에 영향을 미친다. 1pass
+	ModelShader->setMat4("projection", g_camera->GetPerspectiveMatrix());
+	ModelShader->setMat4("view", g_camera->GetViewMatrix());
+	ModelShader->setVec3("viewPos", g_camera->GetPosition());
+	ModelShader->setFloat("material.shininess", 32.0f);
 	// directional light
 	// 태양광 설정
-	ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+	ModelShader->setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	ModelShader->setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader->setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+	ModelShader->setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
 	// point light 1
 	// 포인트 라이트 1 설정
-	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);//포인트 라이트의 위치
-	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
-	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
-	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
-	ModelShader.setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
-	ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
-	ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
+	ModelShader->setVec3("pointLights[0].position", pointLightPositions[0]);//포인트 라이트의 위치
+	ModelShader->setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
+	ModelShader->setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
+	ModelShader->setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
+	ModelShader->setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
+	ModelShader->setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
+	ModelShader->setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
 	//아래 세개의 항들은 포인트 라이트를 사실적으로 감쇠하기위한 항이다.
 	//총4개 설정가능
 	// 쉐이더에 조명들이 몇개 들어갈지 미리선언했다.
 	// point light 2
-	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[1].diffuse", pointLightColor);
-	ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-	ModelShader.setFloat("pointLights[1].constant", 1.0f);
-	ModelShader.setFloat("pointLights[1].linear", 0.09f);
-	ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
+	ModelShader->setVec3("pointLights[1].position", pointLightPositions[1]);
+	ModelShader->setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader->setVec3("pointLights[1].diffuse", pointLightColor);
+	ModelShader->setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader->setFloat("pointLights[1].constant", 1.0f);
+	ModelShader->setFloat("pointLights[1].linear", 0.09f);
+	ModelShader->setFloat("pointLights[1].quadratic", 0.032f);
 	// point light 3
-	ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-	ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[2].diffuse", pointLightColor);
-	ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-	ModelShader.setFloat("pointLights[2].constant", 1.0f);
-	ModelShader.setFloat("pointLights[2].linear", 0.09f);
-	ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
+	ModelShader->setVec3("pointLights[2].position", pointLightPositions[2]);
+	ModelShader->setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader->setVec3("pointLights[2].diffuse", pointLightColor);
+	ModelShader->setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader->setFloat("pointLights[2].constant", 1.0f);
+	ModelShader->setFloat("pointLights[2].linear", 0.09f);
+	ModelShader->setFloat("pointLights[2].quadratic", 0.032f);
 	// point light 4
-	ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-	ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[3].diffuse", pointLightColor);
-	ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-	ModelShader.setFloat("pointLights[3].constant", 1.0f);
-	ModelShader.setFloat("pointLights[3].linear", 0.09f);
-	ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
+	ModelShader->setVec3("pointLights[3].position", pointLightPositions[3]);
+	ModelShader->setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader->setVec3("pointLights[3].diffuse", pointLightColor);
+	ModelShader->setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader->setFloat("pointLights[3].constant", 1.0f);
+	ModelShader->setFloat("pointLights[3].linear", 0.09f);
+	ModelShader->setFloat("pointLights[3].quadratic", 0.032f);
 	// spotLight
-	ModelShader.setVec3("spotLight.position", g_camera->GetPosition());
-	ModelShader.setVec3("spotLight.direction", g_camera->GetFront());
-	ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-	ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-	ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-	ModelShader.setFloat("spotLight.constant", 1.0f);
-	ModelShader.setFloat("spotLight.linear", 0.09f);
-	ModelShader.setFloat("spotLight.quadratic", 0.032f);
-	ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+	ModelShader->setVec3("spotLight.position", g_camera->GetPosition());
+	ModelShader->setVec3("spotLight.direction", g_camera->GetFront());
+	ModelShader->setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+	ModelShader->setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+	ModelShader->setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+	ModelShader->setFloat("spotLight.constant", 1.0f);
+	ModelShader->setFloat("spotLight.linear", 0.09f);
+	ModelShader->setFloat("spotLight.quadratic", 0.032f);
+	ModelShader->setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
 	//손전등의 안쪽조명을 받을 각도
-	ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+	ModelShader->setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 	//손전등의 바깥쪽 조명을 받을 각도 <-- 이 각도 사이에 있는 조명을 받는데 줄어들면서 받는다(실감나는 효과).
 
 	
 
 	model = glm::mat4(1.0f);
-	ModelShader.setMat4("model", space_ship_model);//모델 쉐이더에 객체의 뭘드행렬을 넣어준다.
+	ModelShader->setMat4("model", space_ship_model);//모델 쉐이더에 객체의 뭘드행렬을 넣어준다.
 	TextureLoadManager::Instance()->Use("space_ship");//텍스쳐를 사용한다.
-	ourModel.Draw(ModelShader);//모델을 그린다.
+	ourModel.Draw(*ModelShader);//모델을 그린다.
 	glBindTexture(GL_TEXTURE_2D, 0);//텍스쳐를 언바인드한다.
 
 	/*model = glm::mat4(1.0f);
@@ -467,9 +477,10 @@ GLvoid drawScene()
 
 	if (light_on)
 	{
-		lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
-		lightCubeShader.setMat4("projection", projection);
-		lightCubeShader.setMat4("view", view);
+		Shader* lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
+		lightCubeShader->Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
+		lightCubeShader->setMat4("projection", projection);
+		lightCubeShader->setMat4("view", view);
 		// render the cube
 		for (int i = 0; i < 4; i++)
 		{
@@ -477,21 +488,22 @@ GLvoid drawScene()
 			model = glm::translate(model, pointLightPositions[i]);
 			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
 			//스케일이 먼저 적용
-			lightCubeShader.setMat4("model", model);
+			lightCubeShader->setMat4("model", model);
 
-			ourCube.Draw(lightCubeShader);
+			ourCube.Draw(*lightCubeShader);
 
 		}
 	}
-	
-	cubeMapShader.Use();// 환경 매핑을 위한 쉐이더
+
+	Shader* cubeMapShader = ShaderManager::Instance()->GetShader("cubeMapShader");
+	cubeMapShader->Use();// 환경 매핑을 위한 쉐이더
 	//동적 환경 매핑은 아니지만 skybox의 텍스쳐를 사용해서 굴절,반사를 표현한다.
 	model = glm::mat4(1.0f);
-	cubeMapShader.setMat4("view", view);
-	cubeMapShader.setMat4("projection", projection);
-	cubeMapShader.setMat4("model", model);
-	cubeMapShader.setVec3("cameraPos", g_camera->GetPosition());
-	ourPlane.Draw(cubeMapShader);
+	cubeMapShader->setMat4("view", view);
+	cubeMapShader->setMat4("projection", projection);
+	cubeMapShader->setMat4("model", model);
+	cubeMapShader->setVec3("cameraPos", g_camera->GetPosition());
+	ourPlane.Draw(*cubeMapShader);
 	glBindTexture(GL_TEXTURE_2D,0);
 	
 	
@@ -502,10 +514,11 @@ GLvoid drawScene()
 
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	// 깊이 함수 변경: 깊이 테스트가 깊이 버퍼의 내용과 값이 같을 때 통과
-	skyboxShader.Use();
+	Shader* skyboxShader = ShaderManager::Instance()->GetShader("skyboxShader");
+	skyboxShader->Use();
 	view = glm::mat4(glm::mat3(g_camera->GetViewMatrix())); // remove translation from the view matrix
-	skyboxShader.setMat4("view", view);
-	skyboxShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
+	skyboxShader->setMat4("view", view);
+	skyboxShader->setMat4("projection", g_camera->GetPerspectiveMatrix());
 	// skybox cube
 	glBindVertexArray(skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
@@ -524,7 +537,8 @@ GLvoid drawScene()
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);// 흰색으로 설정(실제로는 필요하지 않지만, 사실 사각형 뒤로 볼 수 없기 때문에)
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	screenShader.Use();//스크린 쉐이더를 사용한다. 프레임버퍼 내용을 전부 그린다.
+	Shader* screenShader = ShaderManager::Instance()->GetShader("screenShader");
+	screenShader->Use();//스크린 쉐이더를 사용한다. 프레임버퍼 내용을 전부 그린다.
 	glBindVertexArray(quadVAO);
 	glBindTexture(GL_TEXTURE_2D, screenTextureColorBuffer);	//컬러 결합자를 사용해서 quad의 내용을 텍스쳐로 화면을 그린다.
 	glDrawArrays(GL_TRIANGLES, 0, 6);

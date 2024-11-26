@@ -12,7 +12,7 @@ public:
 
 	Scene* GetCurrScene() { return m_CurrScene; }
 private:
-	Scene* arrScene[static_cast<UINT>(SCENE_TYPE::END)];
+	vector<Scene*> arrScene;
 	Scene* m_CurrScene = nullptr;
 	
 };
