@@ -32,17 +32,16 @@ struct FunctionHash {
 		return std::hash<std::string>{}(wrapper.func.target_type().name());
 	}
 };
-
-
-struct RGBA
+enum class SCENE_TYPE
 {
-	RGBA() : r{}, g{}, b{}, a{} { }
-	RGBA(float r, float g, float b, float a) : r{ r }, g{ g }, b{ b }, a{ a } { }
-	GLfloat r;
-	GLfloat g;
-	GLfloat b;
-	GLfloat a;
+	INTRO,
+	START,
+	STAGE1,
+	STAGE2,
+	END
 };
+
+
 namespace math {
 	static const float PI = 3.14159265358979323846f;
 	static void convertToWorldForVec2(float& x, float& y)

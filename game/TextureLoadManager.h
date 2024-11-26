@@ -5,6 +5,7 @@ class TextureLoadManager
 private:
 	unordered_map<string, GLuint> m_texture;
 public:
+	void Init();
 	void Load(const string& name,const string& filename);
 
 	//return texture id = GLuint

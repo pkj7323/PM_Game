@@ -14,6 +14,11 @@ TextureLoadManager::~TextureLoadManager()
 	
 }
 
+void TextureLoadManager::Init()
+{
+	m_texture.clear();
+}
+
 void TextureLoadManager::Load(const string& name,const string& filename)
 {
 	if (m_texture.find(name) != m_texture.end())

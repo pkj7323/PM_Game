@@ -44,9 +44,7 @@ public:
 	virtual void Draw() = 0;
 
 	virtual glm::mat4 GetWorldMatrix() = 0;
-	//각 New3D마다 다른 월드 변환이 있는데 하나의 월드변환으로 하는 건 무리가 있어 보이긴한다.
-	//New3D를 object와 합치는 방법이 있을까?
-	//TODO: 이걸 해결해야 다음단계로 넘어갈듯 <- 정원 확인점
+
 
 	virtual AABB GetBB() = 0;
 	virtual void OnCollision(const string& group,object* other) = 0;

@@ -1,16 +1,13 @@
 #include "stdafx.h"
+// 요 아래에 헤더 파일 추가
 
+#include "KeyManager.h"
 #include "CameraManager.h"
 #include "CollisionManager.h"
-#include "KeyManager.h"
 #include "Model.h"
 #include "TimeManager.h"
 #include "TextureLoadManager.h"
 #include "Shader.h"
-
-// 요 아래에 헤더 파일 추가
-
-
 
 //------전역변수
 std::random_device rd;

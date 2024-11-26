@@ -21,11 +21,16 @@
   <ItemGroup>
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -39,12 +44,17 @@
   <ItemGroup>
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="IntroScene.h" />
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />
