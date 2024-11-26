@@ -227,7 +227,7 @@ void init_world()
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
-		ourModel = Model("resources/space_ship.obj");
+		ourModel = Model("resources/rock/rock.obj");
 		ourPlane = Model("resources/plane.obj");
 		//ourPyramid = Model("resources/pyramid.obj");
 		ourCube = Model("resources/cube.obj");
