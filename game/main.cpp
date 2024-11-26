@@ -118,7 +118,7 @@ unsigned int planeVAO, planeVBO;
 unsigned int skyboxVAO, skyboxVBO;
 GLuint fbo;
 GLuint rbo;
-GLuint textureColorbuffer;
+GLuint screenTextureColorBuffer;
 
 
 Shader stencilShader;
@@ -151,7 +151,7 @@ GLvoid MouseMotion(int x, int y);
 //	button (버튼 파라미터): GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, GLUT_RIGHT_BUTTON
 //	state(상태 파라미터) : GLUT_UP, GLUT_DOWN
 //	x, y : 윈도우에서 마우스의위치
-GLvoid TimerFunction(int value);
+
 
 GLvoid mouseWheel(int button, int dir, int x, int y);
 
@@ -197,13 +197,13 @@ void main(int argc, char** argv)
 	glutMouseFunc(Mouse);
 	glutMotionFunc(MouseMotion);
 	glutPassiveMotionFunc(MouseMotion);
-	glutIdleFunc(game_loop); // --- 게임 루프 돌리는 기본 메세지 루프
+	glutIdleFunc(game_loop);	// --- 게임 루프 돌리는 기본 메세지 루프
 	glutMouseWheelFunc(mouseWheel);
-	//glutTimerFunc(60, TimerFunction, 1); //---타이머 설정 콜백함수
+	
 
 
 
-	init_world();
+	init_world();//전체 초기화
 	glutMainLoop();//--- 이벤트 처리 시작
 }
 
@@ -239,6 +239,7 @@ void init_world()
 
 	//객체 초기화
 	{
+		//사실 객체의 init함수를 불러야하는 부분인데 현재는 임시로 모델안쓰고 만든거라 생략
 		glGenVertexArrays(1, &skyboxVAO);
 		glGenBuffers(1, &skyboxVBO);
 		glBindVertexArray(skyboxVAO);
@@ -247,10 +248,8 @@ void init_world()
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-		
-		
-		
-
+		//quad는 전체 윈도우가 그려질 일종의 가상 사각형
+		// 프레임버퍼에 다 그린후 이 사각형에 프레임버퍼를 색상으로 이용해서 그린다.
 		glGenVertexArrays(1, &quadVAO);
 		glGenBuffers(1, &quadVBO);
 		glBindVertexArray(quadVAO);
@@ -261,23 +260,27 @@ void init_world()
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 		glBindVertexArray(0);
-
+		//프레임버퍼 객체생성
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-		glGenTextures(1, &textureColorbuffer);
-		glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+		//프레임버퍼는 텍스쳐로 색상을 저장하고 넘겨준다.
+		glGenTextures(1, &screenTextureColorBuffer);
+		glBindTexture(GL_TEXTURE_2D, screenTextureColorBuffer);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 
 			glutGet(GLUT_WINDOW_WIDTH),
 			glutGet(GLUT_WINDOW_HEIGHT), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTextureColorBuffer, 0);
+		//렌더버퍼는 깊이와 스텐실을 저장한다.
+		//프레임버퍼는 한개이상의 렌더버퍼,깊이버퍼,스텐실버퍼가 존재해야함
 		glGenRenderbuffers(1, &rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		//렌더버퍼를 전체 화면크기로 설정한다.
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+		//프레임버퍼가 완성되었는지 확인
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -293,7 +296,8 @@ void init_world()
 		TextureLoadManager::Instance()->Load("marble", "resources/marble.jpg");
 		TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
 		TextureLoadManager::Instance()->Load("space_ship", "resources/space_ship_test_color.png");
-		TextureLoadManager::Instance()->loadCubeMap("skybox", faces);
+		TextureLoadManager::Instance()->loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
+		//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
 		cout << "텍스쳐 로드 종료" << endl;
 
 		
@@ -314,9 +318,6 @@ void init_world()
 		KeyManager::Instance()->Init();
 		cout << "매니저 초기화 종료" << endl;
 	}
-	{
-		
-	}
 	cout << "초기화 완료" << endl;
 	
 }
@@ -326,7 +327,7 @@ void game_loop()
 
 	{
 		update_world(); // 월드 업데이트
-		drawScene();// 드로우 씬 호출
+		drawScene();	// 드로우 씬 호출
 	}
 	{
 		//타이머 매니저 업데이트 DT업데이트
@@ -336,25 +337,12 @@ void game_loop()
 }
 float timer = 0;
 bool go_right = true;
-void update_world()
+void update_world()//모든 업데이트를 부르는 업데이트 함수
 {
-	/*if (go_right)
-	{
-		space_ship_model = glm::translate(space_ship_model, glm::vec3(0.1f, 0.0f, 0.f));
-	}
-	else
-	{
-		space_ship_model = glm::translate(space_ship_model, glm::vec3(-0.1f, 0.0f, 0.f));
-	}
-
-	timer += DT;
-	if (timer>2.0f)
-	{
-		timer = 0;
-		go_right = !go_right;
-	}*/
 	KeyManager::Instance()->Update();
 	CollisionManager::Instance()->Update();
+	//원래는 씬의 업데이트를 불러서 각씬이 달라지면
+	// 업데이트도 달라질수 있게끔 가능하게 해야함
 	if (KEY_TAP(KEY::ESC))
 	{
 		glutDestroyWindow(glutGetWindow());
@@ -388,26 +376,25 @@ void update_world()
 
 GLvoid drawScene()
 {
-	// bind to framebuffer and draw scene as we normally would to color texture 
+	// bind to framebuffer and draw scene as we normally would to color texture
+	// 프레임 버퍼를 바인드하고 씬을 그린다. 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
+	glEnable(GL_DEPTH_TEST); // 지금은 깊이 테스트를 킨다. (나중에 quad그리기전에 꺼야한다.)
 
-	// make sure we clear the framebuffer's content
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// 프레임 버퍼에 그릴 것들을 적는다.
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);//배경을 0.1,0.1,0.1로 설정
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// 색상버퍼와 깊이버퍼를 클리어한다. 무조건
 	glm::mat4 projection = g_camera->GetPerspectiveMatrix();
 	glm::mat4 view = g_camera->GetViewMatrix();
 	glm::mat4 model = glm::mat4(1.0f);
-	lightCubeShader.Use();
-	lightCubeShader.setMat4("projection", projection);
-	lightCubeShader.setMat4("view", view);
+	// draw scene as normal
+	
 	// render the cube
 	
-
-	ModelShader.Use();
+	//모델 쉐이더의 유니폼 값을 넣어준다. 
+	ModelShader.Use();//이거아래의 그리기 동작들은 모델 쉐이더에 영향을 미친다. 1pass
 	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
 	ModelShader.setMat4("view", g_camera->GetViewMatrix());
-
 	ModelShader.setVec3("viewPos", g_camera->GetPosition());
 	ModelShader.setFloat("material.shininess", 32.0f);
 	// directional light
@@ -419,13 +406,16 @@ GLvoid drawScene()
 
 	// point light 1
 	// 포인트 라이트 1 설정
-	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);
-	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-	ModelShader.setFloat("pointLights[0].constant", 1.0f);
-	ModelShader.setFloat("pointLights[0].linear", 0.09);
-	ModelShader.setFloat("pointLights[0].quadratic", 0.032);
+	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);//포인트 라이트의 위치
+	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
+	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
+	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
+	ModelShader.setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
+	ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
+	ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
+	//아래 세개의 항들은 포인트 라이트를 사실적으로 감쇠하기위한 항이다.
+	//총4개 설정가능
+	// 쉐이더에 조명들이 몇개 들어갈지 미리선언했다.
 	// point light 2
 	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
 	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
@@ -460,19 +450,17 @@ GLvoid drawScene()
 	ModelShader.setFloat("spotLight.linear", 0.09f);
 	ModelShader.setFloat("spotLight.quadratic", 0.032f);
 	ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+	//손전등의 안쪽조명을 받을 각도
 	ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("marble"));
-	
+	//손전등의 바깥쪽 조명을 받을 각도 <-- 이 각도 사이에 있는 조명을 받는데 줄어들면서 받는다(실감나는 효과).
 
 	
 
 	model = glm::mat4(1.0f);
-	ModelShader.setMat4("model", space_ship_model);
-	TextureLoadManager::Instance()->Use("space_ship");
-	ourModel.Draw(ModelShader);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	ModelShader.setMat4("model", space_ship_model);//모델 쉐이더에 객체의 뭘드행렬을 넣어준다.
+	TextureLoadManager::Instance()->Use("space_ship");//텍스쳐를 사용한다.
+	ourModel.Draw(ModelShader);//모델을 그린다.
+	glBindTexture(GL_TEXTURE_2D, 0);//텍스쳐를 언바인드한다.
 
 	/*model = glm::mat4(1.0f);
 	ModelShader.setMat4("model", model);
@@ -482,7 +470,7 @@ GLvoid drawScene()
 
 	if (light_on)
 	{
-		lightCubeShader.Use();
+		lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
 		lightCubeShader.setMat4("projection", projection);
 		lightCubeShader.setMat4("view", view);
 		// render the cube
@@ -491,6 +479,7 @@ GLvoid drawScene()
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, pointLightPositions[i]);
 			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+			//스케일이 먼저 적용
 			lightCubeShader.setMat4("model", model);
 
 			ourCube.Draw(lightCubeShader);
@@ -498,14 +487,13 @@ GLvoid drawScene()
 		}
 	}
 	
-	cubeMapShader.Use();
+	cubeMapShader.Use();// 환경 매핑을 위한 쉐이더
+	//동적 환경 매핑은 아니지만 skybox의 텍스쳐를 사용해서 굴절,반사를 표현한다.
 	model = glm::mat4(1.0f);
 	cubeMapShader.setMat4("view", view);
 	cubeMapShader.setMat4("projection", projection);
 	cubeMapShader.setMat4("model", model);
 	cubeMapShader.setVec3("cameraPos", g_camera->GetPosition());
-	glActiveTexture(GL_TEXTURE0);
-	TextureLoadManager::Instance()->Use("metal");
 	ourPlane.Draw(cubeMapShader);
 	glBindTexture(GL_TEXTURE_2D,0);
 	
@@ -515,7 +503,8 @@ GLvoid drawScene()
 
 
 
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	// 깊이 함수 변경: 깊이 테스트가 깊이 버퍼의 내용과 값이 같을 때 통과
 	skyboxShader.Use();
 	view = glm::mat4(glm::mat3(g_camera->GetViewMatrix())); // remove translation from the view matrix
 	skyboxShader.setMat4("view", view);
@@ -527,40 +516,35 @@ GLvoid drawScene()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LESS); // 다시 원래설정으로 돌린다.
 
-	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+	
+	// 이제 기본 프레임 버퍼로 돌아가서 색상 텍스쳐가 붙은 프레임 버퍼로 사각형을 그린다.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-	// clear all relevant buffers
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+	glDisable(GL_DEPTH_TEST);
+	// 깊이 테스트를 비활성화하여 화면 공간 사각형이 깊이 테스트로 인해 버려지지 않도록합니다.
+	// 모든 버퍼를 클리어한다.
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);// 흰색으로 설정(실제로는 필요하지 않지만, 사실 사각형 뒤로 볼 수 없기 때문에)
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	screenShader.Use();
+	screenShader.Use();//스크린 쉐이더를 사용한다. 프레임버퍼 내용을 전부 그린다.
 	glBindVertexArray(quadVAO);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+	glBindTexture(GL_TEXTURE_2D, screenTextureColorBuffer);	//컬러 결합자를 사용해서 quad의 내용을 텍스쳐로 화면을 그린다.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
 	glutSwapBuffers();
 }
 
-GLvoid TimerFunction(int value)
-{
-	//타이머마다 1번만 타이머 함수 불러서 다시 불러줘야됨
-
-	glutPostRedisplay();
-	glutTimerFunc(60, TimerFunction, 1);
-}
 GLvoid mouseWheel(int button, int dir, int x, int y)
 {
 	if (dir > 0)
 	{
-		g_camera->ProcessMouseScroll(1.0f);
+		g_camera->ProcessMouseScroll(1.0f);//fovy값변경
 	}
 	else
 	{
-		g_camera->ProcessMouseScroll(-1.0f);
+		g_camera->ProcessMouseScroll(-1.0f);//fovy값변경
 	}
 	glutPostRedisplay();
 }

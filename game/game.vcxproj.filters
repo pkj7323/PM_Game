@@ -104,9 +104,6 @@
     <ClInclude Include="StateMachine.h">
       <Filter>3_State</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>4_PCH</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>4_PCH</Filter>
     </ClInclude>
@@ -136,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="KeyManager.h">
       <Filter>1_Manager\key</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
