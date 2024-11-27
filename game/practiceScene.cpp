@@ -4,6 +4,7 @@
 #include "KeyManager.h"
 #include "ShaderManager.h"
 #include "CameraManager.h"
+#include "TimeManager.h"
 float points[]={
 	-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
 	 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
@@ -24,7 +25,7 @@ void practiceScene::Enter()
 {
 	m_camera = new CameraManager;
 	ShaderManager::Instance()->MakeShader("geoShader",
-		"basic_vertex.glsl", "OldFragment.glsl","Geometry.glsl");
+		"Vertex.glsl", "Fragment.glsl","Geometry.glsl");
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -35,6 +36,8 @@ void practiceScene::Enter()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
 	glBindVertexArray(0);
+
+	m_model = new Model("resources/backpack.obj");
 }
 
 void practiceScene::Exit()
@@ -47,6 +50,7 @@ void practiceScene::Update()
 	{
 		exit(0);
 	}
+	m_camera->Move();
 }
 
 void practiceScene::Render()
@@ -57,8 +61,16 @@ void practiceScene::Render()
 
 	Shader shader = ShaderManager::Instance()->GetShader("geoShader");
 	shader.Use();
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_POINTS, 0, 4);
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 view = m_camera->GetViewMatrix();
+	glm::mat4 projection = m_camera->GetPerspectiveMatrix();
+	shader.setMat4("model", model);
+	shader.setMat4("view", view);
+	shader.setMat4("projection", projection);
+	timer += DT;
+	shader.setFloat("time", static_cast<float>(timer));
+
+	m_model->Draw(shader);
 
 	glutSwapBuffers();
 }

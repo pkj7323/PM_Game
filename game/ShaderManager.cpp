@@ -14,14 +14,14 @@ void ShaderManager::Init()
 {
 	{
 		cout << "쉐이더 컴파일" << endl;
-		ShaderManager::Instance()->MakeShader("shader", "cubemap_vs.glsl", "cubemap_fs.glsl");
-		ShaderManager::Instance()->MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
-		ShaderManager::Instance()->MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
-		ShaderManager::Instance()->MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
-		ShaderManager::Instance()->MakeShader("lightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
-		ShaderManager::Instance()->MakeShader("cubeMapShader", "cubemap_vs.glsl", "cubemap_fs.glsl");
-		ShaderManager::Instance()->MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
-		ShaderManager::Instance()->MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
+		//ShaderManager::Instance()->MakeShader("shader", "cubemap_vs.glsl", "cubemap_fs.glsl");
+		//ShaderManager::Instance()->MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
+		//ShaderManager::Instance()->MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
+		//ShaderManager::Instance()->MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
+		//ShaderManager::Instance()->MakeShader("lightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
+		//ShaderManager::Instance()->MakeShader("cubeMapShader", "cubemap_vs.glsl", "cubemap_fs.glsl");
+		//ShaderManager::Instance()->MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
+		//ShaderManager::Instance()->MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 		cout << "쉐이더 컴파일 종료" << endl;
 	}
 }

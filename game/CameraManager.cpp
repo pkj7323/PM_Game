@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CameraManager.h"
 
+#include "KeyManager.h"
 #include "TimeManager.h"
 
 
@@ -111,6 +112,18 @@ void CameraManager::ProcessMouseMovement(float xoffset, float yoffset, GLboolean
 
     // update Front, Right and Up Vectors using the updated Euler angles
     updateCameraVectors();
+}
+
+void CameraManager::Move()
+{
+	if (KEY_HOLD(KEY::W))
+		ProcessKeyboard(FORWARD);
+	if (KEY_HOLD(KEY::S))
+		ProcessKeyboard(BACKWARD);
+	if (KEY_HOLD(KEY::A))
+		ProcessKeyboard(LEFT);
+	if (KEY_HOLD(KEY::D))
+		ProcessKeyboard(RIGHT);
 }
 
 void CameraManager::ProcessMouseScroll(float yoffset)

@@ -4,7 +4,8 @@ in VS_OUT {
     vec2 texCoords;
 } gs_in[];
 layout (triangle_strip, max_vertices = 3) out;
-out vec2 texCoords;
+
+out vec2 TexCoords;
 
 uniform float time;
 vec4 explode(vec4 pos,vec3 normal)
@@ -24,7 +25,13 @@ void main()
 	vec3 normal = getNormal();
 
 	gl_Position = explode(gl_in[0].gl_Position, normal);
-	texCoords = gs_in[0].texCoords;
+	TexCoords = gs_in[0].texCoords;
 	EmitVertex();
 	gl_Position = explode(gl_in[1].gl_Position, normal);
+	TexCoords = gs_in[1].texCoords;
+	EmitVertex();
+	gl_Position = explode(gl_in[2].gl_Position, normal);
+	TexCoords = gs_in[2].texCoords;
+	EmitVertex();
+	EndPrimitive();
 }

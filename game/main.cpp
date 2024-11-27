@@ -85,22 +85,9 @@ GLvoid drawScene()
 {
 	Core::Instance()->Render();
 }
-
-
-
-
-
 GLvoid mouseWheel(int button, int dir, int x, int y)
 {
 	Core::Instance()->mouse_wheel(button, dir, x, y);
-	if (dir > 0)
-	{
-		//g_camera->ProcessMouseScroll(1.0f);//fovy값변경
-	}
-	else
-	{
-		//g_camera->ProcessMouseScroll(-1.0f);//fovy값변경
-	}
 	glutPostRedisplay();
 }
 GLvoid Reshape(int w, int h)
@@ -110,9 +97,11 @@ GLvoid Reshape(int w, int h)
 }
 GLvoid MouseMotion(int x, int y) {
 	Core::Instance()->mouse_motion(x, y);
+	glutPostRedisplay();
 }
 GLvoid Mouse(int button, int state, int x, int y) {
 	Core::Instance()->Mouse(button, state, x, y);
+	glutPostRedisplay();
 }
 
 

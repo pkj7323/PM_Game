@@ -25,4 +25,5 @@ private:
 	const int centerY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
 
 	Model* m_model;
+	float timer = 0;
 };
