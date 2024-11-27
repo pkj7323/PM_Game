@@ -52,6 +52,15 @@
     <Filter Include="1_Manager\key">
       <UniqueIdentifier>{4f9d6cba-b7e8-4812-8ce0-69f5f8f75cfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{3d38aa43-6207-4a93-90e6-80e90fb3370d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Scene">
+      <UniqueIdentifier>{57e7a9d1-37de-46fb-9dfc-a0b947d360cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Scene\Scenes">
+      <UniqueIdentifier>{2e9d848f-7305-4eb6-bef0-5b1b9f2104d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +101,21 @@
     </ClCompile>
     <ClCompile Include="KeyManager.cpp">
       <Filter>1_Manager\key</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>1_Manager\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>1_Manager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroScene.cpp">
+      <Filter>1_Manager\Scene\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>1_Manager\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +160,21 @@
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>1_Manager\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>1_Manager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroScene.h">
+      <Filter>1_Manager\Scene\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>1_Manager\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
