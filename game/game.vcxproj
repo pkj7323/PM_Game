@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="IntroScene.cpp">
@@ -29,6 +29,7 @@
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="practiceScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -49,7 +50,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="define.h" />
@@ -60,6 +61,7 @@
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelManager.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="practiceScene.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -98,6 +100,8 @@
     <None Include="model_vertex.glsl" />
     <None Include="OldFragment.glsl" />
     <None Include="OldVertex.glsl" />
+    <None Include="Planet_fs.glsl" />
+    <None Include="Planet_vs.glsl" />
     <None Include="skybox_fs.glsl" />
     <None Include="skybox_vs.glsl" />
     <None Include="stencil_single_color_fs.glsl" />

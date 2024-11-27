@@ -4,15 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-TextureLoadManager::TextureLoadManager()
-{
-	
-}
 
-TextureLoadManager::~TextureLoadManager()
-{
-	
-}
 
 void TextureLoadManager::Init()
 {
@@ -79,6 +71,15 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 
 }
 
+void TextureLoadManager::Release()
+{
+	for (auto& iter : m_texture)
+	{
+		glDeleteTextures(1, &iter.second);
+	}
+	m_texture.clear();
+}
+
 GLuint TextureLoadManager::GetTexture(const string& name)
 {
 	if (m_texture.find(name) != m_texture.end())
@@ -90,6 +91,7 @@ GLuint TextureLoadManager::GetTexture(const string& name)
 	else
 	{
 		std::cout << "Failed to find texture" << std::endl;
+		return -1;
 	}
 }
 

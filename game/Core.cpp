@@ -3,22 +3,17 @@
 
 #include "CollisionManager.h"
 #include "KeyManager.h"
+#include "ModelManager.h"
 #include "SceneManager.h"
 #include "ShaderManager.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
 
-Core::Core()
-{
-}
-
-Core::~Core()
-{
-}
 
 
 void Core::Init()
 {
+	ModelManager::Instance()->Init();
 	ShaderManager::Instance()->Init();
 	TextureLoadManager::Instance()->Init();
 	CollisionManager::Instance()->Init();
@@ -48,6 +43,10 @@ void Core::Render()
 
 void Core::Release()
 {
+	SceneManager::Instance()->Release();
+	TextureLoadManager::Instance()->Release();
+	ShaderManager::Instance()->Release();
+	ModelManager::Instance()->Release();
 }
 
 void Core::mouse_motion(int x, int y)

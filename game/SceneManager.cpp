@@ -3,18 +3,13 @@
 #include "IntroScene.h"
 #include "practiceScene.h"
 
-SceneManager::SceneManager()
-{
-	m_CurrScene = nullptr;
-	arrScene.resize(static_cast<int>(SCENE_TYPE::END));
-}
-SceneManager::~SceneManager()
-{
-}
 
 
 void SceneManager::Init()
 {
+	m_CurrScene = nullptr;
+	arrScene.resize(static_cast<int>(SCENE_TYPE::END));
+
 	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)] = new practiceScene;
 	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)]->SetName("StartScene");
 
@@ -30,6 +25,13 @@ void SceneManager::Update()
 void SceneManager::Render()
 {
 	m_CurrScene->Render();
+}
+
+void SceneManager::Release()
+{
+	delete m_CurrScene;
+	m_CurrScene = nullptr;
+	arrScene.clear();
 }
 
 void SceneManager::mouse_motion(int x, int y)

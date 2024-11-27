@@ -1,12 +1,12 @@
 ﻿#include "stdafx.h"
 #include "IntroScene.h"
-#include "CameraManager.h"
+#include "Camera.h"
 #include "KeyManager.h"
 #include "Model.h"
 #include "ShaderManager.h"
 #include "TextureLoadManager.h"
 
-CameraManager* g_camera = nullptr;
+Camera* g_camera = nullptr;
 bool firstMouse = true;
 float lastX = 400, lastY = 400;
 
@@ -123,11 +123,7 @@ void IntroScene::Enter()
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
-		ourModel = Model("resources/rock/rock.obj");
-		ourPlane = Model("resources/plane.obj");
-		//ourPyramid = Model("resources/pyramid.obj");
-		ourCube = Model("resources/cube.obj");
-		//ourSphere = Model("resources/sphere.obj");
+		
 		cout << "모델 로드 종료" << endl;
 	}
 
@@ -192,7 +188,7 @@ void IntroScene::Enter()
 	//카메라 초기화
 	{
 		cout << "카메라 초기화" << endl;
-		g_camera = new CameraManager;
+		g_camera = new Camera;
 		g_camera->SetCamera(glm::vec3(0, 5, 10),
 			glm::vec3(0, 1, 0), YAW, -10.f, 45, SPEED, SENSITIVITY);
 		cout << "카메라 초기화 종료" << endl;

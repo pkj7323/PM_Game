@@ -60,6 +60,7 @@ class KeyManager
 public:
 	void Init();
 	void Update();
+	void Release();
 	
 	KEY_STATE GetKeyState(KEY key) { return vecKey[(int)key].state; }
 private:

@@ -18,17 +18,17 @@ constexpr float ZOOM = 45.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
-class CameraManager
+class Camera
 {
 
-	// calculates the front vector from the CameraManager's (updated) Euler Angles
+	// calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors();
     
 public:
-	CameraManager();
+	Camera();
 	// Constructor with vectors
 
-	~CameraManager();
+	~Camera();
     //Yaw is rotated by degree
     void CameraYaw(float degree);
     void SetPosition(glm::vec3 position);

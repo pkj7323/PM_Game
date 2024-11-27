@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "CameraManager.h"
+#include "Camera.h"
 
 #include "KeyManager.h"
 #include "TimeManager.h"
 
 
-CameraManager::CameraManager()
+Camera::Camera()
 {
     Position = glm::vec3(0,5,10);
     WorldUp = glm::vec3(0,1,0);
@@ -17,7 +17,7 @@ CameraManager::CameraManager()
     SetPerspective(Zoom, glutGet(GLUT_WINDOW_WIDTH)/glutGet(GLUT_WINDOW_HEIGHT), 0.1, 100);
     updateCameraVectors();
 }
-//CameraManager::CameraManager(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,
+//Camera::Camera(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,
 //    float speed, float sensitivity)
 //{
 //    this->Position = Position;
@@ -29,22 +29,22 @@ CameraManager::CameraManager()
 //    this->MouseSensitivity = sensitivity;
 //    updateCameraVectors();
 //}
-CameraManager::~CameraManager()
+Camera::~Camera()
 = default;
 
-void CameraManager::CameraYaw(float degreee)
+void Camera::CameraYaw(float degreee)
 {
     Yaw += degreee;
     updateCameraVectors();
 }
 
-void CameraManager::SetPosition(glm::vec3 position)
+void Camera::SetPosition(glm::vec3 position)
 {
 	Position = position;
 	updateCameraVectors();
 }
 
-void CameraManager::SetCamera(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,
+void Camera::SetCamera(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,
                               float speed, float sensitivity)
 {
     this->Position = Position;
@@ -59,7 +59,7 @@ void CameraManager::SetCamera(glm::vec3 Position, glm::vec3 WorldUp, float Yawde
 
 
 
-void CameraManager::updateCameraVectors()
+void Camera::updateCameraVectors()
 {
     // calculate the new Front vector
     glm::vec3 front;
@@ -75,12 +75,12 @@ void CameraManager::updateCameraVectors()
 
 
 
-glm::mat4 CameraManager::GetViewMatrix()
+glm::mat4 Camera::GetViewMatrix()
 {
     return glm::lookAt(Position, Position + Front, Up);
 }
 
-void CameraManager::ProcessKeyboard(Camera_Movement direction)
+void Camera::ProcessKeyboard(Camera_Movement direction)
 {
     float velocity = MovementSpeed * DT;
     if (direction == FORWARD)
@@ -93,7 +93,7 @@ void CameraManager::ProcessKeyboard(Camera_Movement direction)
         Position += Right * velocity;
 }
 
-void CameraManager::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
 {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
@@ -114,7 +114,7 @@ void CameraManager::ProcessMouseMovement(float xoffset, float yoffset, GLboolean
     updateCameraVectors();
 }
 
-void CameraManager::Move()
+void Camera::Move()
 {
 	if (KEY_HOLD(KEY::W))
 		ProcessKeyboard(FORWARD);
@@ -126,7 +126,7 @@ void CameraManager::Move()
 		ProcessKeyboard(RIGHT);
 }
 
-void CameraManager::ProcessMouseScroll(float yoffset)
+void Camera::ProcessMouseScroll(float yoffset)
 {
     Zoom -= (float)yoffset;
     if (Zoom < 1.0f)
@@ -137,7 +137,7 @@ void CameraManager::ProcessMouseScroll(float yoffset)
 
 
 
-void CameraManager::SetPerspective(float zoom, float _aspect, float _near, float _far)
+void Camera::SetPerspective(float zoom, float _aspect, float _near, float _far)
 {
 	Zoom = zoom;
 	m_aspect = _aspect;
@@ -145,16 +145,16 @@ void CameraManager::SetPerspective(float zoom, float _aspect, float _near, float
 	m_Far = _far;
 }
 
-glm::mat4 CameraManager::GetOrtho()
+glm::mat4 Camera::GetOrtho()
 {
 	return glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
 }
 
-glm::mat4 CameraManager::GetPerspectiveMatrix()
+glm::mat4 Camera::GetPerspectiveMatrix()
 {
 	return glm::perspective(glm::radians(Zoom), m_aspect, m_Near, m_Far);
 }
-void CameraManager::OrbitAroundOrigin(float angle)
+void Camera::OrbitAroundOrigin(float angle)
 {
 
     Position.x = Position.x * glm::cos(glm::radians(angle)) + Position.z * glm::sin(glm::radians(angle));

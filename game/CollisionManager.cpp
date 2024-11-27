@@ -3,11 +3,6 @@
 
 #include "object.h"
 
-CollisionManager::CollisionManager()
-= default;
-
-CollisionManager::~CollisionManager()
-= default;
 
 void CollisionManager::Init()
 {
@@ -86,4 +81,10 @@ bool CollisionManager::CollisionCheck(const string& group, object* left, object*
 	if (leftBB.max_z < rightBB.min_z || leftBB.min_z > rightBB.max_z) return false;
 
 	return true;
+}
+
+void CollisionManager::Release()
+{
+	CollisionMap.clear();
+	previousCollisions.clear();
 }

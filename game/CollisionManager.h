@@ -9,6 +9,7 @@ public:
 	void AddObject(const string& group, object* a, object* b);
 	void RemoveObject(object* obj);
 	bool CollisionCheck(const string& group, object* left, object* right);
+	void Release();
 
 private:
 	std::unordered_map<object*, std::unordered_map<object*, bool>> previousCollisions;

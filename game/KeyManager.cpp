@@ -40,11 +40,7 @@ int arrVK[(int)KEY::LAST]{
 	'M',
 	//LAST
 };
-KeyManager::KeyManager()
-= default;
 
-KeyManager::~KeyManager()
-= default;
 
 void KeyManager::Init()
 {
@@ -118,4 +114,8 @@ void KeyManager::Update()
 
 
 
+}
+
+void KeyManager::Release()
+{
 }

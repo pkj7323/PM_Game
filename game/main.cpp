@@ -28,6 +28,7 @@ GLvoid mouseWheel(int button, int dir, int x, int y);
 void update_world();
 void game_loop();
 void init_world();
+void Release();
 GLuint loadCubeMap(vector<string> faces);
 ///------ 함수
 void main(int argc, char** argv)
@@ -69,14 +70,17 @@ void main(int argc, char** argv)
 	glutPassiveMotionFunc(MouseMotion);
 	glutIdleFunc(game_loop);	// --- 게임 루프 돌리는 기본 메세지 루프
 	glutMouseWheelFunc(mouseWheel);
-	
+	atexit(Release);
 
 
 
 	Core::Instance()->Init();//전체 초기화
 	glutMainLoop();//--- 이벤트 처리 시작
 }
-
+void Release()
+{
+	Core::Instance()->Release();
+}
 void game_loop()
 {
 	Core::Instance()->Progress();
