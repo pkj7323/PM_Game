@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SceneManager.h"
 #include "IntroScene.h"
+#include "practiceScene.h"
+
 SceneManager::SceneManager()
 {
 	m_CurrScene = nullptr;
@@ -13,7 +15,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::Init()
 {
-	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)] = new IntroScene;
+	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)] = new practiceScene;
 	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)]->SetName("StartScene");
 
 	m_CurrScene = arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)];
@@ -38,4 +40,9 @@ void SceneManager::mouse_motion(int x, int y)
 void SceneManager::Mouse(int button, int state, int x, int y)
 {
 	m_CurrScene->Mouse(button, state, x, y);
+}
+
+void SceneManager::mouse_wheel(int button, int dir, int x, int y)
+{
+	m_CurrScene->mouse_wheel(button, dir, x, y);
 }

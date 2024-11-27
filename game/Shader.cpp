@@ -40,6 +40,65 @@ void Shader::make_ShaderProgram(const string& vertexPath, const string& fragment
 	}
 }
 
+void Shader::make_ShaderProgram(const string& vertexPath, const string& fragmentPath, const string& geometryPath)
+{
+	
+	GLint vertexShader = make_vertexShaders(vertexPath);
+	GLint fragmentShader = make_fragmentShaders(fragmentPath);
+	GLint geometryShader = make_geometryShaders(geometryPath);
+	shaderProgramID = glCreateProgram();				//--- 세이더프로그램만들기
+
+	glAttachShader(shaderProgramID, vertexShader);		//--- 세이더프로그램에버텍스세이더붙이기
+	glAttachShader(shaderProgramID, fragmentShader);	//--- 세이더프로그램에프래그먼트세이더붙이기
+	glAttachShader(shaderProgramID, geometryShader);	//--- 세이더프로그램에지오메트리세이더붙이기
+
+	glLinkProgram(shaderProgramID);				//--- 세이더프로그램링크하기
+
+	glDeleteShader(vertexShader);				//--- 세이더객체를세이더프로그램에링크했음으로,세이더객체자체는삭제가능
+	glDeleteShader(fragmentShader);				// ---세이더가 잘연결되었는지체크하기
+	glDeleteShader(geometryShader);
+
+	GLint result = 0;
+	GLchar errorLog[512];
+
+	glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &result);
+
+	if (!result) {
+		glGetProgramInfoLog(shaderProgramID, 512, NULL, errorLog);
+		std::cerr << "ERROR: shader program 연결 실패\n" << errorLog << std::endl;
+		return;
+	}
+	else
+	{
+		std::cout << "shader program 연결 성공\n";
+		glUseProgram(shaderProgramID);
+		//initBuffer();
+	}
+}
+
+GLint Shader::make_geometryShaders(const string& geometryfile)
+{
+	string buf = filetobuf(geometryfile);
+	const GLchar* geometrySource = buf.c_str();
+
+	GLuint geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geometryShader, 1, &geometrySource, NULL);
+	glCompileShader(geometryShader);
+
+	GLint result = GL_FALSE;
+	GLchar errorLog[512];
+	glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &result);
+	if (!result)
+	{
+		glGetShaderInfoLog(geometryShader, 512, NULL, errorLog);
+		std::cerr << "Error: Geometry shader compilation failed\n" << errorLog << std::endl;
+		return GL_FALSE;
+	}
+	else
+	{
+		return geometryShader;
+	}
+}
 
 GLint Shader::make_fragmentShaders(const string& fragmentfile)
 {

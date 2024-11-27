@@ -4,6 +4,7 @@
 #include "CollisionManager.h"
 #include "KeyManager.h"
 #include "SceneManager.h"
+#include "ShaderManager.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
 
@@ -18,7 +19,7 @@ Core::~Core()
 
 void Core::Init()
 {
-	
+	ShaderManager::Instance()->Init();
 	TextureLoadManager::Instance()->Init();
 	CollisionManager::Instance()->Init();
 	KeyManager::Instance()->Init();
@@ -57,4 +58,9 @@ void Core::mouse_motion(int x, int y)
 void Core::Mouse(int button, int state, int x, int y)
 {
 	SceneManager::Instance()->Mouse(button, state, x, y);
+}
+
+void Core::mouse_wheel(int button, int dir, int x, int y)
+{
+	SceneManager::Instance()->mouse_wheel(button, dir, x, y);
 }

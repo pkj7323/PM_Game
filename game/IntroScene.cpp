@@ -1,15 +1,15 @@
 ﻿#include "stdafx.h"
 #include "IntroScene.h"
 #include "CameraManager.h"
-#include "CollisionManager.h"
 #include "KeyManager.h"
 #include "Model.h"
 #include "ShaderManager.h"
 #include "TextureLoadManager.h"
-#include "TimeManager.h"
+
 CameraManager* g_camera = nullptr;
 bool firstMouse = true;
 float lastX = 400, lastY = 400;
+
 float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 	// positions   // texCoords
 	-1.0f,  1.0f,  0.0f, 1.0f,
@@ -85,15 +85,7 @@ float skyboxVertices[] = {
 	-1.0f, -1.0f,  1.0f,
 	 1.0f, -1.0f,  1.0f
 };
-vector<std::string> faces
-{
-	"resources/right.jpg",
-	"resources/left.jpg",
-	"resources/top.jpg",
-	"resources/bottom.jpg",
-	"resources/front.jpg",
-	"resources/back.jpg"
-};
+
 // first, configure the cube's VAO (and VBO)
 unsigned int VBO, cubeVAO, cubeVBO;
 unsigned int lightCubeVAO;
@@ -127,17 +119,7 @@ void IntroScene::Enter()
 {
 	cout << "초기화 시작" << endl;
 	//쉐이더 초기화 및 컴파일
-	{
-		cout << "쉐이더 컴파일" << endl;
-		ShaderManager::Instance()->MakeShader("shader", "cubemap_vs.glsl", "cubemap_fs.glsl");
-		ShaderManager::Instance()->MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
-		ShaderManager::Instance()->MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
-		ShaderManager::Instance()->MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
-		ShaderManager::Instance()->MakeShader("lightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
-		ShaderManager::Instance()->MakeShader("cubeMapShader", "cubemap_vs.glsl", "cubemap_fs.glsl");
-		ShaderManager::Instance()->MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
-		ShaderManager::Instance()->MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
-	}
+	
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
@@ -203,16 +185,7 @@ void IntroScene::Enter()
 
 
 
-		cout << "텍스쳐 로드" << endl;
-		TextureLoadManager::Instance()->Load("wall", "wall.jpg");
-		TextureLoadManager::Instance()->Load("container2", "container2.png");
-		TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
-		TextureLoadManager::Instance()->Load("marble", "resources/marble.jpg");
-		TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
-		TextureLoadManager::Instance()->Load("space_ship", "resources/space_ship_test_color.png");
-		TextureLoadManager::Instance()->loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
-		//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
-		cout << "텍스쳐 로드 종료" << endl;
+		
 
 
 	}
@@ -456,7 +429,6 @@ void IntroScene::mouse_motion(int x, int y)
 	lastX = static_cast<float>(centerX);
 	lastY = static_cast<float>(centerY);
 
-	glutPostRedisplay();
 }
 
 void IntroScene::Mouse(int button, int state, int x, int y)
@@ -478,4 +450,17 @@ void IntroScene::Mouse(int button, int state, int x, int y)
 	lastY = ypos;
 
 	g_camera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+void IntroScene::mouse_wheel(int button, int dir, int x, int y)
+{
+	if (dir > 0)
+	{
+		g_camera->ProcessMouseScroll(1.0f);//fovy값변경
+	}
+	else
+	{
+		g_camera->ProcessMouseScroll(-1.0f);//fovy값변경
+	}
+	
 }

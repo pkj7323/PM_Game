@@ -9,7 +9,15 @@ public:
 	{
 		make_ShaderProgram(vertexPath, fragmentPath);
 	}
+	Shader(const string& vertexPath, const string& fragmentPath, const string& geometryPath)
+	{
+		make_ShaderProgram(vertexPath, fragmentPath);
+		
+	}
 	void make_ShaderProgram(const string& vertexPath, const string& fragmentPath);
+	void make_ShaderProgram(const string& vertexPath, const string& fragmentPath,const string& geometryPath);
+	
+
 	void Use()
 	{
 		glUseProgram(shaderProgramID);
@@ -45,6 +53,7 @@ public:
 private:
 	GLint	make_fragmentShaders(const string& fragmentfile);
 	GLint	make_vertexShaders(const string& vertexfile);
+	GLint	make_geometryShaders(const string& geometryfile);
 	string	filetobuf(const string& filename);
 private:
 	GLuint	shaderProgramID; //--- 세이더 프로그램이름

@@ -20,6 +20,7 @@ public:
 	const string& GetName() { return m_strName; }
 	virtual void mouse_motion(int i, int y) = 0;
 	virtual void Mouse(int button, int state, int i, int y) = 0;
+	virtual void mouse_wheel(int button, int dir, int x, int y) = 0;
 
 protected:
 	template<typename T>
