@@ -14,7 +14,7 @@ Camera::Camera()
 	Zoom = ZOOM;
 	MovementSpeed = SPEED;
 	MouseSensitivity = SENSITIVITY;
-    SetPerspective(Zoom, glutGet(GLUT_WINDOW_WIDTH)/glutGet(GLUT_WINDOW_HEIGHT), 0.1, 100);
+    SetPerspective(Zoom, glutGet(GLUT_WINDOW_WIDTH)/glutGet(GLUT_WINDOW_HEIGHT), 0.1, 400);
     updateCameraVectors();
 }
 //Camera::Camera(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,

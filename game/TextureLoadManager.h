@@ -3,7 +3,7 @@ class TextureLoadManager
 {
 	SINGLE(TextureLoadManager)
 private:
-	unordered_map<string, GLuint> m_texture;
+	map<string, GLuint> m_texture;
 	
 public:
 	void Init();

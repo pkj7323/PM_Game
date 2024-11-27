@@ -9,12 +9,12 @@
 void TextureLoadManager::Init()
 {
 	cout << "텍스쳐 로드" << endl;
-	TextureLoadManager::Instance()->Load("wall", "wall.jpg");
-	TextureLoadManager::Instance()->Load("container2", "container2.png");
-	TextureLoadManager::Instance()->Load("container2_specular", "container2_specular.png");
-	TextureLoadManager::Instance()->Load("marble", "resources/marble.jpg");
-	TextureLoadManager::Instance()->Load("metal", "resources/metal.png");
-	TextureLoadManager::Instance()->Load("space_ship", "resources/space_ship_test_color.png");
+	Load("wall", "wall.jpg");
+	Load("container2", "container2.png");
+	Load("container2_specular", "container2_specular.png");
+	Load("marble", "resources/marble.jpg");
+	Load("metal", "resources/metal.png");
+	Load("space_ship", "resources/space_ship_test_color.png");
 	vector<std::string> faces
 	{
 		"resources/right.jpg",
@@ -24,7 +24,7 @@ void TextureLoadManager::Init()
 		"resources/front.jpg",
 		"resources/back.jpg"
 	};
-	TextureLoadManager::Instance()->loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
+	loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
 	//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
 	cout << "텍스쳐 로드 종료" << endl;
 }
@@ -73,11 +73,7 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 
 void TextureLoadManager::Release()
 {
-	for (auto& iter : m_texture)
-	{
-		glDeleteTextures(1, &iter.second);
-	}
-	m_texture.clear();
+
 }
 
 GLuint TextureLoadManager::GetTexture(const string& name)

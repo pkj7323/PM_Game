@@ -8,6 +8,7 @@ void ShaderManager::Init()
 {
 	{
 		cout << "쉐이더 컴파일" << endl;
+		MakeShader("asteroidShader", "asteroids_vs.glsl", "asteroids_fs.glsl");
 		MakeShader("shader", "cubemap_vs.glsl", "cubemap_fs.glsl");
 		MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
 		MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
@@ -17,6 +18,7 @@ void ShaderManager::Init()
 		MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 		MakeShader("PlanetShader", "Planet_vs.glsl", "Planet_fs.glsl");
+		MakeShader("geoShader","Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
 		cout << "쉐이더 컴파일 종료" << endl;
 	}
 }
@@ -27,11 +29,7 @@ void ShaderManager::Update()
 
 void ShaderManager::Release()
 {
-	for (auto& iter : m_mapShader)
-	{
-		glDeleteProgram(iter.second.GetID());
-	}
-	m_mapShader.clear();
+	
 }
 
 void ShaderManager::MakeShader(const string& name, const string& VSPath, const string& FSPath)

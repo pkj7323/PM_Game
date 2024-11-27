@@ -18,6 +18,8 @@ void Core::Init()
 	TextureLoadManager::Instance()->Init();
 	CollisionManager::Instance()->Init();
 	KeyManager::Instance()->Init();
+
+
 	SceneManager::Instance()->Init();
 }
 
@@ -31,14 +33,15 @@ void Core::Update()
 {
 	TimeManager::Instance()->Update();
 	KeyManager::Instance()->Update();
-	SceneManager::Instance()->Update();
 	CollisionManager::Instance()->Update();
+	SceneManager::Instance()->Update();
 }
 
 void Core::Render()
 {
+	TimeManager::Instance()->Render();
 	SceneManager::Instance()->Render();
-
+	
 }
 
 void Core::Release()

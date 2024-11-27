@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include "Camera.h"
 #include "Scene.h"
-class Model;
+#include "Model.h"
+
 class practiceScene : public Scene
 {
 public:
 	practiceScene();
-	~practiceScene();
+	~practiceScene() override;
 
 	void Enter() override;
 	void Exit() override;
@@ -24,9 +25,11 @@ private:
 	const int centerX = glutGet(GLUT_WINDOW_WIDTH) / 2;
 	const int centerY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
 
-	Model* m_model;
-	Model* m_planet;
+	Model m_model;
+	Model m_planet;
 	float timer = 0;
 	vector<glm::vec3> pointLightPositions;
 	glm::vec3 pointLightColor;
+	unsigned int amount = 1000;
+	glm::mat4* modelMatrices;
 };

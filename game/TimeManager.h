@@ -12,5 +12,6 @@ public:
 	void Update();
 	float GetDeltaTime();
 	float GetFPS() const { return FPS; }
+	void Render();
 };
 

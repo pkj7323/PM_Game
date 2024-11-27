@@ -38,16 +38,18 @@ class Model;
 class object
 {
 	glm::vec3 sizeBB;
-	Model* m_Model;
+	glm::mat4 modelMatrix;
 public:
 	object() = default;
+	object(const string& name);
 	virtual ~object() = default;
 
 	virtual void Init() = 0;
 	virtual void Update() = 0;
 	virtual void Draw(Shader& shader) = 0;
 
-	virtual glm::mat4 GetWorldMatrix() = 0;
+	void SetMatrix(const glm::mat4& mat) { modelMatrix = mat; }
+	glm::mat4 GetMatrix() const { return modelMatrix; }
 
 
 	virtual AABB GetBB() = 0;

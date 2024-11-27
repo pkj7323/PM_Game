@@ -4,14 +4,11 @@
 #include "KeyManager.h"
 #include "ShaderManager.h"
 #include "Camera.h"
+#include "ModelManager.h"
+#include "TextureLoadManager.h"
 #include "TimeManager.h"
-float points[]={
-	-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
-	 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
-	 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
-	-0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
-};
-GLuint VAO, VBO;
+
+
 
 practiceScene::practiceScene()
 {
@@ -29,30 +26,75 @@ practiceScene::~practiceScene()
 void practiceScene::Enter()
 {
 	m_camera = new Camera;
-	ShaderManager::Instance()->MakeShader("geoShader",
-		"Vertex.glsl", "Fragment.glsl","Geometry.glsl");
+	//TextureLoadManager::Instance()->Load("rock", "resources/rock/rock.png");
 	
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
-	glBindVertexArray(0);
+	
 
-	m_model = new Model("resources/backpack.obj");
-	m_planet = new Model("resources/planet.obj");
+	m_model = ModelManager::Instance()->GetModel("rock");
+	m_planet = ModelManager::Instance()->GetModel("planet");
+	
+	modelMatrices = new glm::mat4[amount];
+	srand(static_cast<unsigned int>(glutGet(GLUT_ELAPSED_TIME)/1000)); // initialize random seed
+	float radius = 150.0;
+	float offset = 25.5f;
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+		float angle = (float)i / (float)amount * 360.0f;
+		float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float x = sin(angle) * radius + displacement;
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float y = displacement * 0.4f; // keep height of asteroid field smaller compared to width of x and z
+		displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+		float z = cos(angle) * radius + displacement;
+		model = glm::translate(model, glm::vec3(x, y, z));
+
+		// 2. scale: Scale between 0.05 and 0.25f
+		float scale = static_cast<float>((rand() % 20) / 100.0 + 0.05);
+		model = glm::scale(model, glm::vec3(scale));
+
+		// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+		float rotAngle = static_cast<float>((rand() % 360));
+		model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+		// 4. now add to list of matrices
+		modelMatrices[i] = model;
+	}
+	unsigned int buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+	for (unsigned int i = 0; i < m_model.meshes.size(); i++)
+	{
+		unsigned int VAO = m_model.meshes[i].VAO;
+		glBindVertexArray(VAO);
+		// vertex attributes
+		std::size_t vec4Size = sizeof(glm::vec4);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+
+		glBindVertexArray(0);
+	}
 }
 
 void practiceScene::Exit()
 {
 	delete m_camera;
-	delete m_model;
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
+
+	
 
 }
 
@@ -77,10 +119,35 @@ void practiceScene::Render()
 	glm::mat4 projection = m_camera->GetPerspectiveMatrix();
 
 	shader.Use();
-	shader.setMat4("model", model);
 	shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
+	
+	
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 
+	shader.setMat4("model", model);
+	m_planet.Draw(shader);
+
+	shader = ShaderManager::Instance()->GetShader("asteroidShader");
+	shader.Use();
+	shader.setMat4("view", view);
+	shader.setMat4("projection", projection);
+	shader.setInt("texture_diffuse1", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_model.textures_loaded[0].id);
+	for (unsigned int i = 0; i < m_model.meshes.size(); i++)
+	{
+		glBindVertexArray(m_model.meshes[i].VAO);
+		glDrawElementsInstanced(
+			GL_TRIANGLES, m_model.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount
+		);
+	}
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	
 
 	glutSwapBuffers();
 }

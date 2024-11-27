@@ -39,7 +39,7 @@ void main(int argc, char** argv)
 	glutSetOption(GLUT_MULTISAMPLE, 8);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);//--- 디스플레이 모드 설정
 	glutInitWindowSize(1600, 800);//--- 윈도우의 크기 지정
-	glutCreateWindow("Example21");//--- 윈도우 생성 (윈도우 이름)
+	glutCreateWindow("PM_Game");//--- 윈도우 생성 (윈도우 이름)
 	//--- GLEW 초기화하기
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) //--- glew 초기화
@@ -53,7 +53,7 @@ void main(int argc, char** argv)
 
 	
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
@@ -87,7 +87,9 @@ void game_loop()
 }
 GLvoid drawScene()
 {
+	
 	Core::Instance()->Render();
+	
 }
 GLvoid mouseWheel(int button, int dir, int x, int y)
 {

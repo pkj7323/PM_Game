@@ -13,7 +13,7 @@ Model::~Model()
 {
 }
 
-void Model::Draw(Shader shader)
+void Model::Draw(Shader& shader)
 {
 	for (auto& mesh : this->meshes)
 	{
