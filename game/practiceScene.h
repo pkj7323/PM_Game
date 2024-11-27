@@ -26,4 +26,6 @@ private:
 
 	Model* m_model;
 	float timer = 0;
+	vector<glm::vec3> pointLightPositions;
+	glm::vec3 pointLightColor;
 };

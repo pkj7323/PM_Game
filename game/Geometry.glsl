@@ -1,37 +1,28 @@
 #version 460 core
 layout (triangles) in;
+layout (line_strip, max_vertices = 6) out;
+
 in VS_OUT {
-    vec2 texCoords;
+    vec3 normal;
 } gs_in[];
-layout (triangle_strip, max_vertices = 3) out;
 
-out vec2 TexCoords;
+const float MAGNITUDE = 0.4;
+  
+uniform mat4 projection;
 
-uniform float time;
-vec4 explode(vec4 pos,vec3 normal)
+void GenerateLine(int index)
 {
-	float magnitude = 2.0;
-	vec3 direction = normal * sin(time) * magnitude;
-	return pos + vec4(direction, 0.0);
+    gl_Position = projection * gl_in[index].gl_Position;
+    EmitVertex();
+    gl_Position = projection * (gl_in[index].gl_Position + 
+                                vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
+    EmitVertex();
+    EndPrimitive();
 }
-vec3 getNormal()
-{
-	vec3 v1 = gl_in[0].gl_Position.xyz - gl_in[1].gl_Position.xyz;
-	vec3 v2 = gl_in[2].gl_Position.xyz - gl_in[1].gl_Position.xyz;
-	return normalize(cross(v1, v2));
-}
+
 void main()
 {
-	vec3 normal = getNormal();
-
-	gl_Position = explode(gl_in[0].gl_Position, normal);
-	TexCoords = gs_in[0].texCoords;
-	EmitVertex();
-	gl_Position = explode(gl_in[1].gl_Position, normal);
-	TexCoords = gs_in[1].texCoords;
-	EmitVertex();
-	gl_Position = explode(gl_in[2].gl_Position, normal);
-	TexCoords = gs_in[2].texCoords;
-	EmitVertex();
-	EndPrimitive();
+    GenerateLine(0); // first vertex normal
+    GenerateLine(1); // second vertex normal
+    GenerateLine(2); // third vertex normal
 }
