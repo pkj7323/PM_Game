@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Camera.h"
+#include "FrameBuffer.h"
 #include "Scene.h"
 #include "Model.h"
 
@@ -27,7 +28,7 @@ private:
 
 	Model m_model;
 	Model m_planet;
-	float timer = 0;
+	FrameBuffer m_frameBuffer;
 	vector<glm::vec3> pointLightPositions;
 	glm::vec3 pointLightColor;
 	unsigned int amount = 1000;

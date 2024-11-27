@@ -10,7 +10,7 @@ Camera* g_camera = nullptr;
 bool firstMouse = true;
 float lastX = 400, lastY = 400;
 
-float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+float quadVertices[24] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 	// positions   // texCoords
 	-1.0f,  1.0f,  0.0f, 1.0f,
 	-1.0f, -1.0f,  0.0f, 0.0f,

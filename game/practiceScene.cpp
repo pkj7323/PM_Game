@@ -108,8 +108,8 @@ void practiceScene::Update()
 }
 
 void practiceScene::Render()
-
 {
+	m_frameBuffer.Bind();
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);//배경을 0.1,0.1,0.1로 설정
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -128,7 +128,9 @@ void practiceScene::Render()
 	model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 
 	shader.setMat4("model", model);
+
 	m_planet.Draw(shader);
+
 
 	shader = ShaderManager::Instance()->GetShader("asteroidShader");
 	shader.Use();
@@ -147,8 +149,9 @@ void practiceScene::Render()
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	
 
+	
+	m_frameBuffer.Render();
 	glutSwapBuffers();
 }
 

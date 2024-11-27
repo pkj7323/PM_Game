@@ -54,7 +54,9 @@ void main(int argc, char** argv)
 	
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_MULTISAMPLE);
+	
+	//glEnable(GL_MULTISAMPLE);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
 	

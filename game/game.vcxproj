@@ -22,6 +22,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="IntroScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -46,7 +47,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextureLoadManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -56,6 +56,7 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="IntroScene.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -78,7 +79,6 @@
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Text.h" />
     <ClInclude Include="TextureLoadManager.h" />
     <ClInclude Include="TimeManager.h" />
   </ItemGroup>
