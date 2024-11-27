@@ -1,4 +1,6 @@
 #pragma once
+
+
 struct AABB
 {
 	float min_x;
@@ -32,16 +34,18 @@ struct AABB
 };
 
 class Shader;
+class Model;
 class object
 {
 	glm::vec3 sizeBB;
+	Model* m_Model;
 public:
 	object() = default;
 	virtual ~object() = default;
 
 	virtual void Init() = 0;
 	virtual void Update() = 0;
-	virtual void Draw() = 0;
+	virtual void Draw(Shader& shader) = 0;
 
 	virtual glm::mat4 GetWorldMatrix() = 0;
 

@@ -1,8 +1,9 @@
 ﻿#include "stdafx.h"
 #include "practiceScene.h"
-
+#include "Model.h"
 #include "KeyManager.h"
 #include "ShaderManager.h"
+#include "CameraManager.h"
 float points[]={
 	-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
 	 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
@@ -24,14 +25,16 @@ void practiceScene::Enter()
 	m_camera = new CameraManager;
 	ShaderManager::Instance()->MakeShader("geoShader",
 		"basic_vertex.glsl", "OldFragment.glsl","Geometry.glsl");
+	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+	glBindVertexArray(0);
 }
 
 void practiceScene::Exit()

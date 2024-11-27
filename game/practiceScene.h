@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CameraManager.h"
 #include "Scene.h"
-
+class Model;
 class practiceScene : public Scene
 {
 public:
@@ -23,4 +23,6 @@ private:
 
 	const int centerX = glutGet(GLUT_WINDOW_WIDTH) / 2;
 	const int centerY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
+
+	Model* m_model;
 };

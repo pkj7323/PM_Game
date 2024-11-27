@@ -1,7 +1,8 @@
 #version 330 core
 out vec4 FragColor;
 
+in vec3 fColor;
 void main()
 {
-    FragColor = vec4(0,1,0,1.0); // set all 4 vector values to 1.0 Èò»ö
+    FragColor = vec4(fColor,1.0); // set all 4 vector values to 1.0 Èò»ö
 }
