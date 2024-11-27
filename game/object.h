@@ -31,7 +31,7 @@ struct AABB
 	}
 };
 
-
+class Shader;
 class object
 {
 	glm::vec3 sizeBB;

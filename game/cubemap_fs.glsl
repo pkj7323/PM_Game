@@ -12,5 +12,6 @@ void main()
     float ratio = 1.00 / 1.33; // 유리 반사 계수 1.52 물 1.33 얼음 1.309 다이아몬드 2.42
     vec3 I = normalize(Position - cameraPos);
     vec3 R = refract(I, normalize(Normal), ratio);// reflect아님 refract임 주의
+    mix(texture(skybox, R).rgb, vec3(0.8,0.8,0.8), 0.1);
     FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }

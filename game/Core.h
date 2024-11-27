@@ -12,5 +12,7 @@ public:
 	void Release();
 	void SetCamara(CameraManager* pCameraManager) { m_pCameraManager = pCameraManager; }
 	CameraManager* GetCameraManager() { return m_pCameraManager; }
+	void mouse_motion(int x, int y);
+	void Mouse(int button, int state, int x, int y);
 };
 

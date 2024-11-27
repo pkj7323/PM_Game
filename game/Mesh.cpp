@@ -43,7 +43,7 @@ void Mesh::Draw(Shader& shader)
 	glDrawElements(mode, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
-	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Mesh::setupMesh()

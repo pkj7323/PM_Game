@@ -12,19 +12,5 @@ Scene::~Scene()
 	m_vecObj.clear();
 }
 
-void Scene::Update()
-{
-	for (auto& obj:m_vecObj)
-	{
-		obj->Update();
-	}
 
-}
 
-void Scene::Render()
-{
-	for (auto& obj : m_vecObj)
-	{
-		obj->Draw();
-	}
-}

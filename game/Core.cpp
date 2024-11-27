@@ -18,10 +18,11 @@ Core::~Core()
 
 void Core::Init()
 {
-	SceneManager::Instance()->Init();
+	
 	TextureLoadManager::Instance()->Init();
 	CollisionManager::Instance()->Init();
 	KeyManager::Instance()->Init();
+	SceneManager::Instance()->Init();
 }
 
 void Core::Progress()
@@ -46,4 +47,14 @@ void Core::Render()
 
 void Core::Release()
 {
+}
+
+void Core::mouse_motion(int x, int y)
+{
+	SceneManager::Instance()->mouse_motion(x, y);
+}
+
+void Core::Mouse(int button, int state, int x, int y)
+{
+	SceneManager::Instance()->Mouse(button, state, x, y);
 }
