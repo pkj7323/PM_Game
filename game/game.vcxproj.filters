@@ -256,11 +256,23 @@
     <None Include="basic_light_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="asteroids_fs.glsl" />
-    <None Include="asteroids_vs.glsl" />
-    <None Include="basic_vertex.glsl" />
-    <None Include="Geometry.glsl" />
-    <None Include="Planet_fs.glsl" />
-    <None Include="Planet_vs.glsl" />
+    <None Include="asteroids_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="basic_vertex.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="asteroids_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Geometry.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Planet_fs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Planet_vs.glsl">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
