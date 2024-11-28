@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="0_Object">
-      <UniqueIdentifier>{1fa90f19-7c43-479d-a141-5290f70bb82a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="1_Manager">
       <UniqueIdentifier>{0f67ca74-1fe5-4685-92e4-e5c0e5097072}</UniqueIdentifier>
     </Filter>
@@ -31,9 +28,6 @@
     <Filter Include="5_Shape">
       <UniqueIdentifier>{124fc649-0bee-4ca7-8417-933a4a0e18a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1_Manager\Camara">
-      <UniqueIdentifier>{9d457a11-211d-44ab-b75a-6af60dc5cbf8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="1_Manager\Collision">
       <UniqueIdentifier>{4c3c19ee-44dc-4a35-a3e4-919ee0c7759d}</UniqueIdentifier>
     </Filter>
@@ -43,17 +37,11 @@
     <Filter Include="1_Manager\Texture">
       <UniqueIdentifier>{0d0c15db-b2fe-4864-afe3-2bc808e21979}</UniqueIdentifier>
     </Filter>
-    <Filter Include="0_Object\Objects">
-      <UniqueIdentifier>{1b4e1c69-9cb4-4dd7-a220-9d62597dbcd9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="1_Manager\Time">
       <UniqueIdentifier>{3069edd2-068b-4c87-875e-1d94a8c44195}</UniqueIdentifier>
     </Filter>
     <Filter Include="1_Manager\key">
       <UniqueIdentifier>{4f9d6cba-b7e8-4812-8ce0-69f5f8f75cfc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core">
-      <UniqueIdentifier>{3d38aa43-6207-4a93-90e6-80e90fb3370d}</UniqueIdentifier>
     </Filter>
     <Filter Include="1_Manager\Scene">
       <UniqueIdentifier>{57e7a9d1-37de-46fb-9dfc-a0b947d360cb}</UniqueIdentifier>
@@ -61,13 +49,31 @@
     <Filter Include="1_Manager\Scene\Scenes">
       <UniqueIdentifier>{2e9d848f-7305-4eb6-bef0-5b1b9f2104d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="6_Object">
+      <UniqueIdentifier>{1fa90f19-7c43-479d-a141-5290f70bb82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="6_Object\Objects">
+      <UniqueIdentifier>{1b4e1c69-9cb4-4dd7-a220-9d62597dbcd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0_Core">
+      <UniqueIdentifier>{3d38aa43-6207-4a93-90e6-80e90fb3370d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Common\Camera">
+      <UniqueIdentifier>{2901f4df-5900-4745-9fda-4da76a7d6abb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Common\FrameBuffer">
+      <UniqueIdentifier>{4f12e7e6-1be4-4089-bbbc-19e0417d120b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1_Manager\Model">
+      <UniqueIdentifier>{5987b765-f00d-4d6e-b847-a68860190060}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>0_Object</Filter>
+      <Filter>6_Object</Filter>
     </ClCompile>
     <ClCompile Include="State.cpp">
       <Filter>3_State</Filter>
@@ -77,9 +83,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>4_PCH</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraManager.cpp">
-      <Filter>1_Manager\Camara</Filter>
     </ClCompile>
     <ClCompile Include="CollisionManager.cpp">
       <Filter>1_Manager\Collision</Filter>
@@ -105,9 +108,6 @@
     <ClCompile Include="ShaderManager.cpp">
       <Filter>1_Manager\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Core.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>1_Manager\Scene</Filter>
     </ClCompile>
@@ -117,10 +117,28 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>1_Manager\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>2_Common\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>0_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>2_Common\FrameBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>1_Manager\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Rock.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="practiceScene.cpp">
+      <Filter>1_Manager\Scene\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object.h">
-      <Filter>0_Object</Filter>
+      <Filter>6_Object</Filter>
     </ClInclude>
     <ClInclude Include="State.h">
       <Filter>3_State</Filter>
@@ -130,9 +148,6 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>4_PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraManager.h">
-      <Filter>1_Manager\Camara</Filter>
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
       <Filter>1_Manager\Collision</Filter>
@@ -165,7 +180,7 @@
       <Filter>1_Manager\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Core.h">
-      <Filter>Core</Filter>
+      <Filter>0_Core</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>1_Manager\Scene</Filter>
@@ -176,29 +191,21 @@
     <ClInclude Include="SceneManager.h">
       <Filter>1_Manager\Scene</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="container.jpg">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="wall.jpg">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="awesomeface.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="container2.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="container2_specular.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="resources\marble.jpg">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="resources\metal.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
+    <ClInclude Include="Camera.h">
+      <Filter>2_Common\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>2_Common\FrameBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Rock.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>1_Manager\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="practiceScene.h">
+      <Filter>1_Manager\Scene\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vertex.glsl">
@@ -249,5 +256,11 @@
     <None Include="basic_light_fs.glsl">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="asteroids_fs.glsl" />
+    <None Include="asteroids_vs.glsl" />
+    <None Include="basic_vertex.glsl" />
+    <None Include="Geometry.glsl" />
+    <None Include="Planet_fs.glsl" />
+    <None Include="Planet_vs.glsl" />
   </ItemGroup>
 </Project>
