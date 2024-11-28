@@ -59,6 +59,7 @@ void Core::mouse_motion(int x, int y)
 
 void Core::Mouse(int button, int state, int x, int y)
 {
+	
 	SceneManager::Instance()->Mouse(button, state, x, y);
 }
 

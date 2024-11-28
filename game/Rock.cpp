@@ -11,7 +11,7 @@ Rock::~Rock()
 
 void Rock::Init()
 {
-	SetSizeBB(glm::vec3(5, 5, 5));
+	
 }
 
 void Rock::Update()

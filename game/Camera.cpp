@@ -75,7 +75,7 @@ void Camera::updateCameraVectors()
 
 
 
-glm::mat4 Camera::GetViewMatrix()
+glm::mat4 Camera::GetViewMatrix() const
 {
     return glm::lookAt(Position, Position + Front, Up);
 }
@@ -150,7 +150,7 @@ glm::mat4 Camera::GetOrtho()
 	return glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
 }
 
-glm::mat4 Camera::GetPerspectiveMatrix()
+glm::mat4 Camera::GetPerspectiveMatrix() const
 {
 	return glm::perspective(glm::radians(Zoom), m_aspect, m_Near, m_Far);
 }

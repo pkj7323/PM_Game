@@ -34,6 +34,6 @@ void main()
 	vec3 col = vec3(0.0);
 	for(int i = 0; i < 9; i++)
 		col += sampleTex[i] * kernel[i];
-	
+	//FragColor = vec4(col, 1.0);
 	FragColor = vec4(vec3(texture(screenTexture, TexCoords)), 1.0);
 } 

@@ -67,6 +67,27 @@
     <Filter Include="1_Manager\Model">
       <UniqueIdentifier>{5987b765-f00d-4d6e-b847-a68860190060}</UniqueIdentifier>
     </Filter>
+    <Filter Include="리소스 파일\basic">
+      <UniqueIdentifier>{2d06db2a-9f95-46b7-ba1f-be3425947d61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\cubemap">
+      <UniqueIdentifier>{66565b5a-ff0f-4f5c-8eea-f8da60aa5dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\framebuffer">
+      <UniqueIdentifier>{68b6fdbc-f580-4787-8ef6-7327d208d703}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\model">
+      <UniqueIdentifier>{bbdb89ff-2d23-4987-b72b-907983a18d13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\planet">
+      <UniqueIdentifier>{a9d95c05-833e-46c7-8f04-dd30ae32f93d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\asteroids">
+      <UniqueIdentifier>{9d5ec53c-0318-402f-a3a6-ba738fcaa3c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\stencil">
+      <UniqueIdentifier>{578b3528-720d-485a-b838-58d345c83991}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -214,65 +235,65 @@
     <None Include="Fragment.glsl">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="OldVertex.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="OldFragment.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="model_vertex.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="model_fragment.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="stencil_testing_vs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="stencil_testing_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="stencil_single_color_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="framebuffer_screen_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="framebuffer_screen_vs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="skybox_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="skybox_vs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="cubemap_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="cubemap_vs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="basic_light_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="asteroids_fs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="basic_vertex.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="asteroids_vs.glsl">
-      <Filter>리소스 파일</Filter>
-    </None>
     <None Include="Geometry.glsl">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="cubemap_fs.glsl">
+      <Filter>리소스 파일\cubemap</Filter>
+    </None>
+    <None Include="cubemap_vs.glsl">
+      <Filter>리소스 파일\cubemap</Filter>
+    </None>
+    <None Include="skybox_fs.glsl">
+      <Filter>리소스 파일\cubemap</Filter>
+    </None>
+    <None Include="skybox_vs.glsl">
+      <Filter>리소스 파일\cubemap</Filter>
+    </None>
+    <None Include="basic_light_fs.glsl">
+      <Filter>리소스 파일\basic</Filter>
+    </None>
+    <None Include="basic_vertex.glsl">
+      <Filter>리소스 파일\basic</Filter>
+    </None>
+    <None Include="OldFragment.glsl">
+      <Filter>리소스 파일\basic</Filter>
+    </None>
+    <None Include="OldVertex.glsl">
+      <Filter>리소스 파일\basic</Filter>
+    </None>
+    <None Include="framebuffer_screen_fs.glsl">
+      <Filter>리소스 파일\framebuffer</Filter>
+    </None>
+    <None Include="framebuffer_screen_vs.glsl">
+      <Filter>리소스 파일\framebuffer</Filter>
+    </None>
+    <None Include="model_fragment.glsl">
+      <Filter>리소스 파일\model</Filter>
+    </None>
+    <None Include="model_vertex.glsl">
+      <Filter>리소스 파일\model</Filter>
+    </None>
     <None Include="Planet_fs.glsl">
-      <Filter>리소스 파일</Filter>
+      <Filter>리소스 파일\planet</Filter>
     </None>
     <None Include="Planet_vs.glsl">
-      <Filter>리소스 파일</Filter>
+      <Filter>리소스 파일\planet</Filter>
+    </None>
+    <None Include="asteroids_fs.glsl">
+      <Filter>리소스 파일\asteroids</Filter>
+    </None>
+    <None Include="asteroids_vs.glsl">
+      <Filter>리소스 파일\asteroids</Filter>
+    </None>
+    <None Include="stencil_single_color_fs.glsl">
+      <Filter>리소스 파일\stencil</Filter>
+    </None>
+    <None Include="stencil_testing_fs.glsl">
+      <Filter>리소스 파일\stencil</Filter>
+    </None>
+    <None Include="stencil_testing_vs.glsl">
+      <Filter>리소스 파일\stencil</Filter>
     </None>
   </ItemGroup>
 </Project>

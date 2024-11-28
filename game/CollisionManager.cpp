@@ -1,12 +1,31 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
 
-#include "object.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
 
 
 void CollisionManager::Init()
 {
 	CollisionMap.clear();
+}
+void CollisionManager::Release()
+{
+	CollisionMap.clear();
+	previousCollisions.clear();
 }
 
 void CollisionManager::Update()
@@ -70,21 +89,164 @@ void CollisionManager::RemoveObject(object* obj)
 bool CollisionManager::CollisionCheck(const string& group, object* left, object* right)
 {
 	
-	AABB leftBB = left->GetBB();
-	AABB rightBB = right->GetBB();
+	BoundingSphere leftBB = left->GetBS();
+	BoundingSphere rightBB = right->GetBS();
 	if (group == "Robot:Block")
 	{
 		
 	}
-	if (leftBB.max_x < rightBB.min_x || leftBB.min_x > rightBB.max_x) return false;
-	if (leftBB.max_y < rightBB.min_y || leftBB.min_y > rightBB.max_y) return false;
-	if (leftBB.max_z < rightBB.min_z || leftBB.min_z > rightBB.max_z) return false;
+	
+	float distance = glm::distance(leftBB.center, rightBB.center);
+	float sumRadius = leftBB.radius + rightBB.radius;
+	if (distance < sumRadius)
+	{
+		return true;
+	}
+
+
+	return false;
+}
+
+void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& camera)
+{
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f);
+		//마우스 클릭 위치를 NDC로 변환
+		float x_ndc = (2.0f * static_cast<float>(x)) / glutGet(GLUT_WINDOW_WIDTH) - 1.0f;
+		float y_ndc = 1.0f - (2.0f * static_cast<float>(y)) / glutGet(GLUT_WINDOW_HEIGHT);
+		float z_ndc = 1.0f;
+		glm::vec3 ray_position = camera.GetPosition();
+		glm::vec3 ray_direction = RayCalculate({ x_ndc,y_ndc,z_ndc }, camera);
+		for (auto& [fst, snd] : CollisionMap)
+		{
+			auto& pairs = snd;
+			auto& left = pairs[0];
+			auto& right = pairs[1];
+			for (auto& a : left)
+			{
+				//아마 안불릴듯
+				if (RayIntersectsBS(ray_position, ray_direction, a->GetBS(), TODO))
+				{
+					a->OnCollision(fst, nullptr);
+				}
+			}
+			for (auto& b : right)
+			{
+				if (RayIntersectsBS(ray_position, ray_direction, b->GetBS(), TODO))
+				{
+					b->OnCollision(fst, nullptr);
+				}
+			}
+
+		}
+	}
+}
+
+glm::vec3 CollisionManager::RayCalculate(const glm::vec3& ndc_pos, const Camera& camera)
+{
+	// NDC를 클립 좌표로 변환
+	glm::vec4 rayClip = glm::vec4(ndc_pos.x, ndc_pos.y, -1.0f, 1.0f);
+
+	// 클립 좌표를 뷰 좌표로 변환
+	glm::vec4 rayEye = glm::inverse(camera.GetPerspectiveMatrix()) * rayClip;
+	rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
+
+	// 뷰 좌표를 월드 좌표로 변환
+	glm::vec3 rayWorld = glm::vec3(glm::inverse(camera.GetViewMatrix()) * rayEye);
+	rayWorld = glm::normalize(rayWorld);
+
+	// 광선의 방향
+	glm::vec3 rayDirection = rayWorld;
+
+	return rayDirection;
+}
+bool CollisionManager::IsInViewFrustum(const glm::vec3& pos, Camera& camera)
+{
+	// 카메라의 뷰 프러스텀 내에 있는지 확인
+	glm::vec4 clipPos = camera.GetPerspectiveMatrix() * camera.GetViewMatrix() * glm::vec4(pos, 1.0f);
+	clipPos /= clipPos.w;
+	if (clipPos.x < -1.0f || clipPos.x > 1.0f || clipPos.y < -1.0f || clipPos.y > 1.0f || clipPos.z < -1.0f || clipPos.z > 1.0f)
+	{
+		return false;
+	}
+
+	return true;
+}
+bool CollisionManager::RayIntersectsBS(const glm::vec3& ray_origin, const glm::vec3& ray_dir, const BoundingSphere& bs, Camera& camera)
+{
+	// 카메라의 뷰 프러스텀 내에 있는지 확인
+	if (!IsInViewFrustum(bs.center, camera)) {
+		return false; // 뷰 프러스텀 밖에 있는 경우
+	}
+	glm::vec3 L = bs.center - ray_origin;
+	double s = glm::dot(L, ray_dir);
+	double l2 = glm::dot(L, L);
+	double r2 = bs.radius * bs.radius;
+
+	if (s < 0 && l2 > r2)
+	{
+		return false; // 광선의 시작점이 구의 뒤쪽에 있고 구와 광선이 만나지 않는 경우
+	}
+
+	double m2 = l2 - s * s;
+
+	if (m2 > r2)
+	{
+		return false; // 광선과 구가 만나지 않는 경우
+	}
+
+	double q = sqrt(r2 - m2);
+	double t0 = s - q;
+	double t1 = s + q;
+
+	if (t0 < 0 && t1 < 0)
+	{
+		return false; // 광선이 구를 통과하지 않는 경우
+	}
+	//double q = sqrt(r2 - m2);
+	// 전방 평면과 후방 평면을 넘어가는 경우 체크
+	/*if (l2 > r2)
+	{
+		auto distance = s - q;
+	}
+	else
+	{
+		auto distance = s + q;
+	}*/
+
+	return true;
+	
+}
+// 레이와 AABB 충돌 검사 함수
+bool CollisionManager::RayIntersectsAABB(const glm::vec3& ray, const AABB& aabb) {
+	float tmin = (aabb.min_x - ray.x) / ray.x;
+	float tmax = (aabb.max_x - ray.x) / ray.x;
+
+	if (tmin > tmax) std::swap(tmin, tmax);
+
+	float tymin = (aabb.min_y - ray.y) / ray.y;
+	float tymax = (aabb.max_y - ray.y) / ray.y;
+
+	if (tymin > tymax) std::swap(tymin, tymax);
+
+	if ((tmin > tymax) || (tymin > tmax))
+		return false;
+
+	if (tymin > tmin)
+		tmin = tymin;
+
+	if (tymax < tmax)
+		tmax = tymax;
+
+	float tzmin = (aabb.min_z - ray.z) / ray.z;
+	float tzmax = (aabb.max_z - ray.z) / ray.z;
+
+	if (tzmin > tzmax) std::swap(tzmin, tzmax);
+
+	if ((tmin > tzmax) || (tzmin > tmax))
+		return false;
 
 	return true;
 }
 
-void CollisionManager::Release()
-{
-	CollisionMap.clear();
-	previousCollisions.clear();
-}
+

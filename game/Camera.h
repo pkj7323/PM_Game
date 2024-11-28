@@ -55,12 +55,14 @@ public:
 
 
 	// return PerspectiveMatrix
-    glm::mat4 GetPerspectiveMatrix();
+    glm::mat4 GetPerspectiveMatrix() const;
 	void OrbitAroundOrigin(float angle);
 
+	float GetNear() const { return m_Near; }
+	float GetFar() const { return m_Far; }
 
 	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix();
+    glm::mat4 GetViewMatrix() const;
 private:
     // camera Attributes
     glm::vec3 Position;

@@ -4,6 +4,7 @@
 #include "KeyManager.h"
 #include "ShaderManager.h"
 #include "Camera.h"
+#include "CollisionManager.h"
 #include "ModelManager.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
@@ -189,7 +190,7 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 {
 	float xpos = static_cast<float>(x);
 	float ypos = static_cast<float>(y);
-
+	CollisionManager::Instance()->Mouse(button, state, x, y, *m_camera);
 	if (firstMouse)
 	{
 		lastX = xpos;
