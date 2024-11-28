@@ -32,7 +32,3 @@ void Rock::OnCollisionEnd(const string& group, object* other)
 {
 }
 
-AABB Rock::GetBB()
-{
-	return AABB();
-}
