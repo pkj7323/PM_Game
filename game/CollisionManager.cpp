@@ -16,6 +16,10 @@
 #include "Camera.h"
 #include "Camera.h"
 #include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
 
 
 void CollisionManager::Init()
@@ -125,14 +129,22 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 			for (auto& a : left)
 			{
 				//아마 안불릴듯
-				if (RayIntersectsBS(ray_position, ray_direction, a->GetBS(), TODO))
+				if (!IsInViewFrustum(a->GetBS().center, camera))
+				{
+					return;
+				}
+				if (RayIntersectsSphere(ray_position, ray_direction, a->GetBS(), camera))
 				{
 					a->OnCollision(fst, nullptr);
 				}
 			}
 			for (auto& b : right)
 			{
-				if (RayIntersectsBS(ray_position, ray_direction, b->GetBS(), TODO))
+				if (!IsInViewFrustum(b->GetBS().center, camera))
+				{
+					return;
+				}
+				if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera))
 				{
 					b->OnCollision(fst, nullptr);
 				}
@@ -160,7 +172,7 @@ glm::vec3 CollisionManager::RayCalculate(const glm::vec3& ndc_pos, const Camera&
 
 	return rayDirection;
 }
-bool CollisionManager::IsInViewFrustum(const glm::vec3& pos, Camera& camera)
+bool CollisionManager::IsInViewFrustum(const glm::vec3& pos, const Camera& camera)
 {
 	// 카메라의 뷰 프러스텀 내에 있는지 확인
 	glm::vec4 clipPos = camera.GetPerspectiveMatrix() * camera.GetViewMatrix() * glm::vec4(pos, 1.0f);
@@ -172,7 +184,7 @@ bool CollisionManager::IsInViewFrustum(const glm::vec3& pos, Camera& camera)
 
 	return true;
 }
-bool CollisionManager::RayIntersectsBS(const glm::vec3& ray_origin, const glm::vec3& ray_dir, const BoundingSphere& bs, Camera& camera)
+bool CollisionManager::RayIntersectsBS(const glm::vec3& ray_origin, const glm::vec3& ray_dir, const BoundingSphere& bs, const Camera& camera)
 {
 	// 카메라의 뷰 프러스텀 내에 있는지 확인
 	if (!IsInViewFrustum(bs.center, camera)) {
@@ -217,6 +229,36 @@ bool CollisionManager::RayIntersectsBS(const glm::vec3& ray_origin, const glm::v
 	return true;
 	
 }
+
+bool CollisionManager::RayIntersectsSphere(const glm::vec3& s, const glm::vec3& d,
+	const BoundingSphere& bs , const Camera& camera)
+{
+	glm::vec3 c = bs.center;
+
+	float A = s.x * s.x + s.y * s.y + s.z * s.z;
+	float B = 2 * (d.x * (s.x - c.x) + d.x * (s.x - c.x) + d.x * (s.x - c.x));
+	float C = -2 * (s.x * c.x + s.y * c.y + s.z * c.z) + s.x * s.x + s.y * s.y + s.z * s.z - bs.radius * bs.radius;
+
+	float judge = B * B - 4 * A * C;
+	if (judge >= 0 )
+	{
+		//만난점의 위치 = t
+		/*float t1 = (-B + sqrt(judge)) / (2 * A);
+		float t2 = (-B - sqrt(judge)) / (2 * A);
+		float t;
+		if (t1 >= t2)
+			t = t2;
+		else
+			t = t1;*/
+		return true;
+	}
+
+
+
+
+	return false;
+}
+
 // 레이와 AABB 충돌 검사 함수
 bool CollisionManager::RayIntersectsAABB(const glm::vec3& ray, const AABB& aabb) {
 	float tmin = (aabb.min_x - ray.x) / ray.x;
