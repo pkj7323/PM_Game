@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "KeyManager.h"
 #include "Model.h"
+#include "ModelManager.h"
 #include "ShaderManager.h"
 #include "TextureLoadManager.h"
 
@@ -96,11 +97,7 @@ GLuint fbo;
 GLuint rbo;
 GLuint screenTextureColorBuffer;
 
-Model ourModel;
-Model ourCube;
-Model ourPlane;
-Model ourPyramid;
-Model ourSphere;
+
 
 glm::mat4 space_ship_model(1.0f);
 glm::vec3 pointLightColor(0.8, 0.8, 0.8);
@@ -123,7 +120,9 @@ void IntroScene::Enter()
 	//모델 초기화
 	{
 		cout << "모델 로드" << endl;
-		
+		ourModel = ModelManager::Instance()->GetModel("space_ship");
+		ourCube = ModelManager::Instance()->GetModel("cube");
+		ourPlane = ModelManager::Instance()->GetModel("plane");
 		cout << "모델 로드 종료" << endl;
 	}
 
@@ -210,21 +209,10 @@ void IntroScene::Update()
 	{
 		glutDestroyWindow(glutGetWindow());
 	}
-	if (KEY_HOLD(KEY::W))
+	g_camera->Move();
+	if (KEY_TAP(KEY::F))
 	{
-		g_camera->ProcessKeyboard(FORWARD);
-	}
-	if (KEY_HOLD(KEY::S))
-	{
-		g_camera->ProcessKeyboard(BACKWARD);
-	}
-	if (KEY_HOLD(KEY::A))
-	{
-		g_camera->ProcessKeyboard(LEFT);
-	}
-	if (KEY_HOLD(KEY::D))
-	{
-		g_camera->ProcessKeyboard(RIGHT);
+		blinn = !blinn;
 	}
 	if (rotation_light)
 	{
@@ -255,6 +243,7 @@ void IntroScene::Render()
 	//모델 쉐이더의 유니폼 값을 넣어준다.
 	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
 	ModelShader.Use();//이거아래의 그리기 동작들은 모델 쉐이더에 영향을 미친다. 1pass
+	ModelShader.setBool("blinn", blinn);
 	ModelShader.setMat4("projection", g_camera->GetPerspectiveMatrix());
 	ModelShader.setMat4("view", g_camera->GetViewMatrix());
 	ModelShader.setVec3("viewPos", g_camera->GetPosition());
@@ -324,6 +313,13 @@ void IntroScene::Render()
 	ourModel.Draw(ModelShader);//모델을 그린다.
 	glBindTexture(GL_TEXTURE_2D, 0);//텍스쳐를 언바인드한다.
 
+	// 환경 매핑을 위한 쉐이더
+	//동적 환경 매핑은 아니지만 skybox의 텍스쳐를 사용해서 굴절,반사를 표현한다.
+	model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", model);
+	TextureLoadManager::Instance()->Use("metal");
+	ourPlane.Draw(ModelShader);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (light_on)
 	{
@@ -345,16 +341,8 @@ void IntroScene::Render()
 		}
 	}
 
-	Shader cubeMapShader = ShaderManager::Instance()->GetShader("cubeMapShader");
-	cubeMapShader.Use();// 환경 매핑을 위한 쉐이더
-	//동적 환경 매핑은 아니지만 skybox의 텍스쳐를 사용해서 굴절,반사를 표현한다.
-	model = glm::mat4(1.0f);
-	cubeMapShader.setMat4("view", view);
-	cubeMapShader.setMat4("projection", projection);
-	cubeMapShader.setMat4("model", model);
-	cubeMapShader.setVec3("cameraPos", g_camera->GetPosition());
-	ourPlane.Draw(cubeMapShader);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
 
 
 

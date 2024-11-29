@@ -33,4 +33,6 @@ private:
 	glm::vec3 pointLightColor;
 	unsigned int amount = 1000;
 	glm::mat4* modelMatrices;
+
+	vector<object*> m_objects;
 };

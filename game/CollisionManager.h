@@ -16,7 +16,7 @@ public:
 
 	bool RayIntersectsAABB(const glm::vec3& ray, const AABB& aabb);
 	bool RayIntersectsBS(const glm::vec3& ray_origin, const glm::vec3& ray_dir, const BoundingSphere& bs, const Camera& camera);
-	bool RayIntersectsSphere(const glm::vec3& s, const glm::vec3& d, const BoundingSphere& bs, const Camera& camera);
+	bool RayIntersectsSphere(const glm::vec3& ray_pos, const glm::vec3& ray_dir, const BoundingSphere& bs, const Camera& camera);
 	void Release();
 
 private:

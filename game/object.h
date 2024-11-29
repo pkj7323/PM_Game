@@ -43,20 +43,24 @@ struct BoundingSphere
 		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i < 360; i++)
 		{
-			float x = center.x + radius * cos(glm::radians(1.0f));
-			float y = center.y + radius * sin(glm::radians(1.0f));
+			float x = center.x + radius * cos(glm::radians(static_cast<float>(i)));
+			float y = center.y + radius * sin(glm::radians(static_cast<float>(i)));
 			glVertex3f(x, y, center.z);
 		}
+		glEnd();
+		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i < 360; i++)
 		{
-			float x = center.x + radius * cos(glm::radians(1.0f));
-			float z = center.z + radius * sin(glm::radians(1.0f));
+			float x = center.x + radius * cos(glm::radians(static_cast<float>(i)));
+			float z = center.z + radius * sin(glm::radians(static_cast<float>(i)));
 			glVertex3f(x, center.y, z);
 		}
+		glEnd();
+		glBegin(GL_LINE_STRIP);
 		for (int i=0;i<360; i++)
 		{
-			float y = center.y + radius * cos(glm::radians(1.0f));
-			float z = center.z + radius * sin(glm::radians(1.0f));
+			float y = center.y + radius * cos(glm::radians(static_cast<float>(i)));
+			float z = center.z + radius * sin(glm::radians(static_cast<float>(i)));
 			glVertex3f(center.x, y, z);
 		}
 		glEnd();
@@ -85,7 +89,7 @@ public:
 	virtual void Update();
 	virtual void Draw(Shader& shader);
 
-	void SetMatrix(const glm::mat4& mat) { Matrix = mat; }
+	//void SetMatrix(const glm::mat4& mat) { Matrix = mat; }
 	glm::mat4 GetMatrix() const { return Matrix; }
 
 

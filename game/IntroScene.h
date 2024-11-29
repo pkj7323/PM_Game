@@ -1,8 +1,16 @@
 ﻿#pragma once
+#include "Model.h"
 #include "Scene.h"
 
 class  IntroScene : public Scene
 {
+	Model ourModel;
+	Model ourCube;
+	Model ourPlane;
+	Model ourPyramid;
+	Model ourSphere;
+
+	bool blinn = false;
 public:
 	IntroScene();
 	~IntroScene();

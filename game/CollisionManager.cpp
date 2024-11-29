@@ -1,25 +1,6 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
 
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
-#include "Camera.h"
 
 
 void CollisionManager::Init()
@@ -126,13 +107,13 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 			auto& pairs = snd;
 			auto& left = pairs[0];
 			auto& right = pairs[1];
-			for (auto& a : left)
+			for (auto& a : left)//아마 안불릴듯 마우스 객체는 없기 때문에
 			{
-				//아마 안불릴듯
-				if (!IsInViewFrustum(a->GetBS().center, camera))
+				
+				/*if (!IsInViewFrustum(a->GetBS().center, camera))
 				{
 					return;
-				}
+				}*/
 				if (RayIntersectsSphere(ray_position, ray_direction, a->GetBS(), camera))
 				{
 					a->OnCollision(fst, nullptr);
@@ -140,10 +121,10 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 			}
 			for (auto& b : right)
 			{
-				if (!IsInViewFrustum(b->GetBS().center, camera))
+				/*if (!IsInViewFrustum(b->GetBS().center, camera))
 				{
 					return;
-				}
+				}*/
 				if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera))
 				{
 					b->OnCollision(fst, nullptr);
@@ -153,7 +134,41 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 		}
 	}
 }
+bool CollisionManager::RayIntersectsSphere(const glm::vec3& ray_pos, const glm::vec3& ray_dir,
+	const BoundingSphere& bs, const Camera& camera)
+{
+	glm::vec3 d = ray_dir;
+	glm::vec3 s = ray_pos;
+	glm::vec3 c = bs.center;
+	double A = d.x * d.x + d.y * d.y + d.z * d.z;
+	double B = 2 * (d.x * (s.x - c.x) + d.y * (s.y - c.y) + d.z * (s.z - c.z));
+	double C = (s.x - c.x) * (s.x - c.x) + (s.y - c.y) * (s.y - c.y) + (s.z - c.z) * (s.z - c.z) - bs.radius * bs.radius;
 
+	double judge = B * B - 4 * A * C;
+	
+	if (judge >= 0)
+	{
+		//만난점의 위치 = t
+		float t1 = (-B + sqrt(judge)) / (2 * A);
+		float t2 = (-B - sqrt(judge)) / (2 * A);
+		float t = 0;
+		if (t1 >= t2)
+			t = t2;
+		else
+			t = t1;
+		if (t < camera.GetNear())//전방평면 앞에 있으면
+		{
+			return false;
+		}
+		if (t > camera.GetFar())//후방평면 뒤에 있으면
+		{
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}
 glm::vec3 CollisionManager::RayCalculate(const glm::vec3& ndc_pos, const Camera& camera)
 {
 	// NDC를 클립 좌표로 변환
@@ -167,10 +182,7 @@ glm::vec3 CollisionManager::RayCalculate(const glm::vec3& ndc_pos, const Camera&
 	glm::vec3 rayWorld = glm::vec3(glm::inverse(camera.GetViewMatrix()) * rayEye);
 	rayWorld = glm::normalize(rayWorld);
 
-	// 광선의 방향
-	glm::vec3 rayDirection = rayWorld;
-
-	return rayDirection;
+	return rayWorld;//카메라에서 나가는 광선의 방향
 }
 bool CollisionManager::IsInViewFrustum(const glm::vec3& pos, const Camera& camera)
 {
@@ -230,34 +242,7 @@ bool CollisionManager::RayIntersectsBS(const glm::vec3& ray_origin, const glm::v
 	
 }
 
-bool CollisionManager::RayIntersectsSphere(const glm::vec3& s, const glm::vec3& d,
-	const BoundingSphere& bs , const Camera& camera)
-{
-	glm::vec3 c = bs.center;
 
-	float A = s.x * s.x + s.y * s.y + s.z * s.z;
-	float B = 2 * (d.x * (s.x - c.x) + d.x * (s.x - c.x) + d.x * (s.x - c.x));
-	float C = -2 * (s.x * c.x + s.y * c.y + s.z * c.z) + s.x * s.x + s.y * s.y + s.z * s.z - bs.radius * bs.radius;
-
-	float judge = B * B - 4 * A * C;
-	if (judge >= 0 )
-	{
-		//만난점의 위치 = t
-		/*float t1 = (-B + sqrt(judge)) / (2 * A);
-		float t2 = (-B - sqrt(judge)) / (2 * A);
-		float t;
-		if (t1 >= t2)
-			t = t2;
-		else
-			t = t1;*/
-		return true;
-	}
-
-
-
-
-	return false;
-}
 
 // 레이와 AABB 충돌 검사 함수
 bool CollisionManager::RayIntersectsAABB(const glm::vec3& ray, const AABB& aabb) {

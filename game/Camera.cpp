@@ -124,6 +124,8 @@ void Camera::Move()
 		ProcessKeyboard(LEFT);
 	if (KEY_HOLD(KEY::D))
 		ProcessKeyboard(RIGHT);
+    if (KEY_HOLD(KEY::SPACE))
+		Position.y += MovementSpeed * DT;
 }
 
 void Camera::ProcessMouseScroll(float yoffset)

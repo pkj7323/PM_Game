@@ -25,14 +25,12 @@ GLvoid MouseMotion(int x, int y);
 
 
 GLvoid mouseWheel(int button, int dir, int x, int y);
-
-void update_world();
 void game_loop();
-void init_world();
 
-GLuint loadCubeMap(vector<string> faces);
+
+
 ///------ 함수
-void main(int argc, char** argv)
+int main(int argc, char** argv)
 {
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);//--- glut 초기화
@@ -87,9 +85,7 @@ void game_loop()
 }
 GLvoid drawScene()
 {
-	
 	Core::Instance()->Render();
-	
 }
 GLvoid mouseWheel(int button, int dir, int x, int y)
 {

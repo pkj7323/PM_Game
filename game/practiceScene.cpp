@@ -8,7 +8,7 @@
 #include "ModelManager.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
-
+#include "rock.h"
 
 
 practiceScene::practiceScene()
@@ -29,7 +29,7 @@ void practiceScene::Enter()
 	m_camera = new Camera;
 	//TextureLoadManager::Instance()->Load("rock", "resources/rock/rock.png");
 	
-	
+	m_objects.push_back(new Rock);
 
 	m_model = ModelManager::Instance()->GetModel("rock");
 	m_planet = ModelManager::Instance()->GetModel("planet");
@@ -106,6 +106,11 @@ void practiceScene::Update()
 		exit(0);
 	}
 	m_camera->Move();
+
+	for (auto& obj : m_objects)
+	{
+		obj->Update();
+	}
 }
 
 void practiceScene::Render()
@@ -115,7 +120,7 @@ void practiceScene::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Shader shader = ShaderManager::Instance()->GetShader("PlanetShader");
-	glm::mat4 model = glm::mat4(1.0f);
+	/*glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = m_camera->GetViewMatrix();
 	glm::mat4 projection = m_camera->GetPerspectiveMatrix();
 
@@ -130,10 +135,72 @@ void practiceScene::Render()
 
 	shader.setMat4("model", model);
 
-	m_planet.Draw(shader);
+	m_planet.Draw(shader);*/
 
+	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
+	ModelShader.Use();
+	ModelShader.setBool("blinn", true);
+	ModelShader.setMat4("projection", m_camera->GetPerspectiveMatrix());
+	ModelShader.setMat4("view", m_camera->GetViewMatrix());
+	ModelShader.setVec3("viewPos", m_camera->GetPosition());
+	ModelShader.setFloat("material.shininess", 32.0f);
+	
+	ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-	shader = ShaderManager::Instance()->GetShader("asteroidShader");
+	
+	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);//포인트 라이트의 위치
+	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
+	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
+	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
+	ModelShader.setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
+	ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
+	ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
+	
+	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[1].diffuse", pointLightColor);
+	ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[1].constant", 1.0f);
+	ModelShader.setFloat("pointLights[1].linear", 0.09f);
+	ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
+
+	ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+	ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[2].diffuse", pointLightColor);
+	ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[2].constant", 1.0f);
+	ModelShader.setFloat("pointLights[2].linear", 0.09f);
+	ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
+
+	ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+	ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("pointLights[3].diffuse", pointLightColor);
+	ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("pointLights[3].constant", 1.0f);
+	ModelShader.setFloat("pointLights[3].linear", 0.09f);
+	ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
+	// spotLight
+	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
+	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
+	ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+	ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+	ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+	ModelShader.setFloat("spotLight.constant", 1.0f);
+	ModelShader.setFloat("spotLight.linear", 0.09f);
+	ModelShader.setFloat("spotLight.quadratic", 0.032f);
+	ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+	//손전등의 안쪽조명을 받을 각도
+	ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+	for (auto& obj : m_objects)
+	{
+		obj->Draw(ModelShader);
+	}
+
+	/*shader = ShaderManager::Instance()->GetShader("asteroidShader");
 	shader.Use();
 	shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
@@ -148,7 +215,7 @@ void practiceScene::Render()
 		);
 	}
 	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 
 	

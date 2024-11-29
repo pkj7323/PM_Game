@@ -4,7 +4,6 @@
 class Shader;
 class Rock : public object
 {
-	Model m_Rock;
 public:
 	Rock();
 	~Rock() override;

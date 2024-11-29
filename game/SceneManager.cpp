@@ -8,12 +8,7 @@
 void SceneManager::Init()
 {
 	m_CurrScene = nullptr;
-	arrScene.resize(static_cast<int>(SCENE_TYPE::END));
-
-	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)] = new practiceScene;
-	arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)]->SetName("StartScene");
-
-	m_CurrScene = arrScene[static_cast<UINT>(SCENE_TYPE::INTRO)];
+	m_CurrScene = new practiceScene;
 	m_CurrScene->Enter();
 }
 
@@ -29,9 +24,7 @@ void SceneManager::Render()
 
 void SceneManager::Release()
 {
-	delete m_CurrScene;
-	m_CurrScene = nullptr;
-	arrScene.clear();
+	
 }
 
 void SceneManager::mouse_motion(int x, int y)

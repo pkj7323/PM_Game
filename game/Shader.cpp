@@ -179,8 +179,7 @@ GLint Shader::findLocation(const string& name) const
 // -------------------------------------------------------------------------
 void Shader::setBool(const std::string& name, bool value) const
 {
-	
-	glUniform1i(findLocation(name), (int)value);
+	glUniform1i(findLocation(name), (value));
 }
 // ------------------------------------------------------------------------
 void Shader::setInt(const std::string& name, int value) const

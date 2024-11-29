@@ -3,13 +3,13 @@
 #include "ModelManager.h"
 #include "Shader.h"
 
-object::object() : bs(), Matrix(1), pos(0), scale(1), rotation(0)
+object::object() : pos(0), scale(1), rotation(0), Matrix(1), parentMatrix(1)
 {
 	model = Model();
 	//¿À·ù?
 }
 
-object::object(const string& name) :bs{}, Matrix(1), pos(0), scale(1), rotation(0)
+object::object(const string& name) : pos(0), scale(1), rotation(0), Matrix(1), parentMatrix(1)
 {
 	model = ModelManager::Instance()->GetModel(name);
 }
@@ -27,6 +27,7 @@ void object::Init()
 void object::Init(const string& name)
 {
 	model = ModelManager::Instance()->GetModel(name);
+	parentMatrix = glm::mat4(1.0f);
 	Matrix = glm::mat4(1.0f);
 	Matrix = glm::translate(Matrix, pos);
 	Matrix = glm::scale(Matrix, scale);
