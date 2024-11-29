@@ -32,7 +32,7 @@ void practiceScene::Enter()
 	m_objects.push_back(new Rock);
 
 	m_model = ModelManager::Instance()->GetModel("rock");
-	m_planet = ModelManager::Instance()->GetModel("planet");
+	m_planet = ModelManager::Instance()->GetModel("earth");
 	
 	modelMatrices = new glm::mat4[amount];
 	srand(static_cast<unsigned int>(glutGet(GLUT_ELAPSED_TIME)/1000)); // initialize random seed
@@ -89,68 +89,15 @@ void practiceScene::Enter()
 
 		glBindVertexArray(0);
 	}
-}
-
-void practiceScene::Exit()
-{
-	delete m_camera;
-
-	
-
-}
-
-void practiceScene::Update()
-{
-	if (KEY_TAP(KEY::ESC))
-	{
-		exit(0);
-	}
-	m_camera->Move();
-
-	for (auto& obj : m_objects)
-	{
-		obj->Update();
-	}
-}
-
-void practiceScene::Render()
-{
-	m_frameBuffer.Bind();
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);//배경을 0.1,0.1,0.1로 설정
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Shader shader = ShaderManager::Instance()->GetShader("PlanetShader");
-	/*glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 view = m_camera->GetViewMatrix();
-	glm::mat4 projection = m_camera->GetPerspectiveMatrix();
-
-	shader.Use();
-	shader.setMat4("view", view);
-	shader.setMat4("projection", projection);
-	
-	
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-
-	shader.setMat4("model", model);
-
-	m_planet.Draw(shader);*/
-
 	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
 	ModelShader.Use();
-	ModelShader.setBool("blinn", true);
-	ModelShader.setMat4("projection", m_camera->GetPerspectiveMatrix());
-	ModelShader.setMat4("view", m_camera->GetViewMatrix());
-	ModelShader.setVec3("viewPos", m_camera->GetPosition());
 	ModelShader.setFloat("material.shininess", 32.0f);
-	
+
 	ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-	
 	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);//포인트 라이트의 위치
 	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
 	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
@@ -158,7 +105,7 @@ void practiceScene::Render()
 	ModelShader.setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
 	ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
 	ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
-	
+
 	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
 	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("pointLights[1].diffuse", pointLightColor);
@@ -182,9 +129,7 @@ void practiceScene::Render()
 	ModelShader.setFloat("pointLights[3].constant", 1.0f);
 	ModelShader.setFloat("pointLights[3].linear", 0.09f);
 	ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
-	// spotLight
-	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
-	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
+
 	ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
 	ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
 	ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
@@ -194,12 +139,98 @@ void practiceScene::Render()
 	ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
 	//손전등의 안쪽조명을 받을 각도
 	ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+}
+
+void practiceScene::Exit()
+{
+	delete m_camera;
+
+	
+
+}
+
+void practiceScene::Update()
+{
+	if (KEY_TAP(KEY::ESC))
+	{
+		exit(0);
+	}
+	if (KEY_TAP(KEY::F1))
+	{
+		glEnable(GL_FRAMEBUFFER_SRGB);
+	}
+	if (KEY_TAP(KEY::F2))
+	{
+		glDisable(GL_FRAMEBUFFER_SRGB);
+	}
+	if (KEY_TAP(KEY::F3))
+	{
+		Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
+		ModelShader.Use();
+		blinn = !blinn;
+		ModelShader.setBool("blinn", blinn);
+	}
+	m_camera->Move();
+
+	for (auto& obj : m_objects)
+	{
+		obj->Update();
+	}
+}
+
+void practiceScene::Render()
+{
+	m_frameBuffer.Bind();
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);//배경을 0.1,0.1,0.1로 설정
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Shader shader = ShaderManager::Instance()->GetShader("PlanetShader");
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 view = m_camera->GetViewMatrix();
+	glm::mat4 projection = m_camera->GetPerspectiveMatrix();
+
+	shader.Use();
+	shader.setMat4("view", view);
+	shader.setMat4("projection", projection);
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 10.0f, -100.0f));
+	shader.setMat4("model", model);
+
+	m_planet.Draw(shader);
+
+	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
+	ModelShader.Use();
+	ModelShader.setMat4("projection", projection);
+	ModelShader.setMat4("view", view);
+	ModelShader.setVec3("viewPos", m_camera->GetPosition());
+	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);//포인트 라이트의 위치
+	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);//포인트 라이트의 위치
+	ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);//포인트 라이트의 위치
+	ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);//포인트 라이트의 위치
+	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
+	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
+	
 
 	for (auto& obj : m_objects)
 	{
 		obj->Draw(ModelShader);
 	}
 
+	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
+	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
+	lightCubeShader.setMat4("projection", projection);
+	lightCubeShader.setMat4("view", view);
+	// render the cube
+	for (int i = 0; i < 4; i++)
+	{
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, pointLightPositions[i]);
+		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+		//스케일이 먼저 적용
+		lightCubeShader.setMat4("model", model);
+		auto cube = ModelManager::Instance()->GetModel("cube");
+		cube.Draw(lightCubeShader);
+	}
 	/*shader = ShaderManager::Instance()->GetShader("asteroidShader");
 	shader.Use();
 	shader.setMat4("view", view);

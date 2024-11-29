@@ -35,4 +35,6 @@ private:
 	glm::mat4* modelMatrices;
 
 	vector<object*> m_objects;
+
+	bool blinn = false;
 };

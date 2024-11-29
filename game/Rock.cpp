@@ -6,6 +6,7 @@
 Rock::Rock() : object("rock")
 {
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
+	pos = { 0, 0, -10 };
 	bs.center={ 0, 0.5, 0 };
 	bs.radius = 2;
 }
@@ -22,7 +23,7 @@ void Rock::Init()
 void Rock::Update()
 {
 	rotation.y += 0.5f;
-	rotation.z += 0.5f;
+	//rotation.z += 0.5f;
 
 	object::Update();
 }
