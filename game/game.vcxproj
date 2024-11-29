@@ -86,6 +86,7 @@
     <None Include="asteroids_fs.glsl" />
     <None Include="asteroids_vs.glsl" />
     <None Include="basic_light_fs.glsl" />
+    <None Include="basic_light_vs.glsl" />
     <None Include="basic_vertex.glsl" />
     <None Include="cubemap_fs.glsl" />
     <None Include="cubemap_vs.glsl" />

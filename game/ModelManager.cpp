@@ -12,7 +12,7 @@ void ModelManager::Init()
 	Load("cube", "resources/cube.obj");
 	//Load("sphere", "resources/sphere.obj");
 	Load("planet", "resources/planet.obj");
-	//Load("backpack", "resources/backpack.obj");
+	Load("backpack", "resources/backpack.obj");
 	Load("space_ship", "resources/space_ship.obj");
 	Load("earth", "resources/earth/earth.obj");
 	cout << "ModelManager Init end" << endl;

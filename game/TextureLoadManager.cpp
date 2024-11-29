@@ -64,7 +64,8 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 	}
 	else
 	{
-		std::cout << "Texture failed to load at path: " << filename << std::endl;
+
+		std::cout<< name << ": Texture failed to load at path: " << filename << std::endl;
 		stbi_image_free(data);
 	}
 	
@@ -86,6 +87,7 @@ GLuint TextureLoadManager::GetTexture(const string& name)
 	}
 	else
 	{
+		std::cout << name << ": ";
 		std::cout << "Failed to find texture" << std::endl;
 		return -1;
 	}

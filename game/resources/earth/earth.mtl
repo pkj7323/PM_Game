@@ -11,5 +11,5 @@ newmtl wire_204204204
 	Kd 0.800000 0.800000 0.800000
 	Ks 0.350000 0.350000 0.350000
 	map_Kd earth.jpg
-	map_Ks earth_normal_map.jpg
-	map_bump earth_specular_map.jpg
+	map_Ks earth_specular_map.jpg
+	map_Kn earth_normal_map.jpg

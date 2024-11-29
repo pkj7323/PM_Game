@@ -46,9 +46,6 @@
     <Filter Include="1_Manager\Scene">
       <UniqueIdentifier>{57e7a9d1-37de-46fb-9dfc-a0b947d360cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1_Manager\Scene\Scenes">
-      <UniqueIdentifier>{2e9d848f-7305-4eb6-bef0-5b1b9f2104d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="6_Object">
       <UniqueIdentifier>{1fa90f19-7c43-479d-a141-5290f70bb82a}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="리소스 파일\stencil">
       <UniqueIdentifier>{578b3528-720d-485a-b838-58d345c83991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2_Common\Scenes">
+      <UniqueIdentifier>{2e9d848f-7305-4eb6-bef0-5b1b9f2104d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +133,7 @@
       <Filter>1_Manager\Scene</Filter>
     </ClCompile>
     <ClCompile Include="IntroScene.cpp">
-      <Filter>1_Manager\Scene\Scenes</Filter>
+      <Filter>2_Common\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>1_Manager\Scene</Filter>
@@ -154,7 +154,7 @@
       <Filter>6_Object\Objects</Filter>
     </ClCompile>
     <ClCompile Include="practiceScene.cpp">
-      <Filter>1_Manager\Scene\Scenes</Filter>
+      <Filter>2_Common\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,7 +207,7 @@
       <Filter>1_Manager\Scene</Filter>
     </ClInclude>
     <ClInclude Include="IntroScene.h">
-      <Filter>1_Manager\Scene\Scenes</Filter>
+      <Filter>2_Common\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>1_Manager\Scene</Filter>
@@ -225,7 +225,7 @@
       <Filter>1_Manager\Model</Filter>
     </ClInclude>
     <ClInclude Include="practiceScene.h">
-      <Filter>1_Manager\Scene\Scenes</Filter>
+      <Filter>2_Common\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -294,6 +294,9 @@
     </None>
     <None Include="stencil_testing_vs.glsl">
       <Filter>리소스 파일\stencil</Filter>
+    </None>
+    <None Include="basic_light_vs.glsl">
+      <Filter>리소스 파일\basic</Filter>
     </None>
   </ItemGroup>
 </Project>

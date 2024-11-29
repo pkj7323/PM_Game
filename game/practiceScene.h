@@ -17,6 +17,8 @@ public:
 	void mouse_motion(int x, int y) override;
 	void Mouse(int button, int state, int x, int y) override;
 	void mouse_wheel(int button, int dir, int x, int y) override;
+
+	void renderQuad();
 private:
 	Camera* m_camera;
 	bool firstMouse = true;
@@ -37,4 +39,7 @@ private:
 	vector<object*> m_objects;
 
 	bool blinn = false;
+
+	unsigned int quadVAO = 0;
+	unsigned int quadVBO;
 };

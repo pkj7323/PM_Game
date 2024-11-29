@@ -19,6 +19,7 @@ void ShaderManager::Init()
 		MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 		MakeShader("PlanetShader", "Planet_vs.glsl", "Planet_fs.glsl");
 		MakeShader("geoShader","Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
+		MakeShader("NormalMapShader","basic_light_vs.glsl","basic_light_fs.glsl");
 		cout << "쉐이더 컴파일 종료" << endl;
 	}
 }
