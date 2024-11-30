@@ -94,10 +94,8 @@ void practiceScene::Enter()
 	}
 	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
 	ModelShader.Use();
-	ModelShader.setVec3("PointLightPos[0]", pointLightPositions[0]);
-	ModelShader.setVec3("PointLightPos[1]", pointLightPositions[1]);
-	ModelShader.setVec3("PointLightPos[2]", pointLightPositions[2]);
-	ModelShader.setVec3("PointLightPos[3]", pointLightPositions[3]);
+	
+	
 
 
 	ModelShader.setFloat("material.shininess", 32.0f);
@@ -108,6 +106,7 @@ void practiceScene::Enter()
 	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
 	//포인트 라이트의 위치
+	ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
 	ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
 	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
 	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
@@ -115,7 +114,7 @@ void practiceScene::Enter()
 	ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
 	ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
 
-	
+	ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
 	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("pointLights[1].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
@@ -124,6 +123,7 @@ void practiceScene::Enter()
 	ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
 
 
+	ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
 	ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("pointLights[2].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
@@ -132,6 +132,7 @@ void practiceScene::Enter()
 	ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
 
 	
+	ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
 	ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("pointLights[3].diffuse", pointLightColor);
 	ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
@@ -139,6 +140,8 @@ void practiceScene::Enter()
 	ModelShader.setFloat("pointLights[3].linear", 0.09f);
 	ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
 
+	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
+	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
 	ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
 	ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
 	ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
@@ -207,33 +210,18 @@ void practiceScene::Render()
 
 	m_planet.Draw(shader);*/
 
-	/*Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
-	ModelShader.Use();
+	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
+	ModelShader.Use();  
+	ModelShader.setInt("material.diffuse", 0);
+	ModelShader.setInt("material.normal", 2);
 	ModelShader.setMat4("projection", projection);
 	ModelShader.setMat4("view", view);
 	ModelShader.setVec3("viewPos", m_camera->GetPosition());
-	ModelShader.setVec3("PointLightPos[0]", pointLightPositions[0]);
-	ModelShader.setVec3("PointLightPos[1]", pointLightPositions[1]);
-	ModelShader.setVec3("PointLightPos[2]", pointLightPositions[2]);
-	ModelShader.setVec3("PointLightPos[3]", pointLightPositions[3]);
-	ModelShader.setVec3("SpotLightPos", m_camera->GetPosition());
-	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());*/
-	
-	shader = ShaderManager::Instance()->GetShader("NormalMapShader");
-	shader.Use();
-	shader.setMat4("view", view);
-	shader.setMat4("projection", projection);
-	
-
-	// configure view/projection matrices
-
-
-	// render normal-mapped quad
+	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
+	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
 	model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
-	shader.setMat4("model", model);
-	shader.setVec3("viewPos", m_camera->GetPosition());
-	shader.setVec3("lightPos", pointLightPositions[0]);
+	//model = glm::rotate(model, glm::radians(90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
+	ModelShader.setMat4("model", model);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("diffuseWall"));
 	glActiveTexture(GL_TEXTURE1);
@@ -243,7 +231,7 @@ void practiceScene::Render()
 
 
 
-	for (auto& obj : m_objects)
+	/*for (auto& obj : m_objects)
 	{
 		obj->Draw(shader);
 	}
@@ -251,14 +239,14 @@ void practiceScene::Render()
 	model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
 	shader.setMat4("model",model);
 	m_planet.Draw(shader);
-	m_model.Draw(shader);
+	m_model.Draw(shader);*/
 
 	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
 	lightCubeShader.setMat4("projection", projection);
 	lightCubeShader.setMat4("view", view);
 	// render the cube
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, pointLightPositions[i]);

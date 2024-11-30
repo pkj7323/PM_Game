@@ -1,4 +1,6 @@
-#version 460 core
+#version 330 core
+out vec4 FragColor;
+
 struct Material {
 	sampler2D diffuse;
 	sampler2D specular;
@@ -17,8 +19,8 @@ struct DirLight {
 struct PointLight {
 	vec3 position;
 	
-	float constant;	//감쇠 상수항
-	float linear;	//감쇠 선형항(1차)
+	float constant;//감쇠 상수항
+	float linear;//감쇠 선형항(1차)
 	float quadratic;//감쇠 제곱항(2차)
 	
 	vec3 ambient;
@@ -32,8 +34,8 @@ struct SpotLight {
 	float cutOff;
 	float outerCutOff;
   
-	float constant;	//감쇠 상수항
-	float linear;	//감쇠 선형항(1차)
+	float constant;//감쇠 상수항
+	float linear;//감쇠 선형항(1차)
 	float quadratic;//감쇠 제곱항(2차)
   
 	vec3 ambient;
@@ -43,17 +45,15 @@ struct SpotLight {
 
 #define NR_POINT_LIGHTS 4
 
+
+
 in VS_OUT{
 	vec3 FragPos;
-    vec2 TexCoords;
-	vec3 TangentSpotLightPos;
-	vec3 TangentPointLightPos[NR_POINT_LIGHTS];
-    vec3 TangentViewPos;
-    vec3 TangentFragPos;
+	vec2 TexCoords;
+	mat3 TBN;
 } fs_in;
 
-
-
+uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
@@ -63,31 +63,30 @@ uniform bool blinn;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn,vec3 tangentLightPos);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn,vec3 tangentLightPos);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
 
-out vec4 FragColor;
 void main()
 {    
 	
 	// properties
-	vec3 normal = texture(material.normal, fs_in.TexCoords).rgb;
-    // transform normal vector to range [-1,1]
-    normal = normalize(normal * 2.0 - 1.0);
-
-	vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+	vec3 norm = texture(material.normal, fs_in.TexCoords).rgb;
+	norm = normalize(norm * 2.0 - 1.0);
+	norm = normalize(fs_in.TBN * norm);
+	vec3 viewDir = normalize(viewPos - fs_in.FragPos);
 	
-
+	// =======================================================
+	// 우리의 조명은 3단계로 설정됩니다: 방향성 조명, 점 조명, 그리고 선택적인 손전등입니다. 
+	// 각 단계마다 해당 램프의 색상을 계산하는 calculate 함수가 정의되어 있습니다. 
+	// main() 함수에서는 모든 계산된 색상을 합산하여 이 프래그먼트의 최종 색상을 만듭니다.
+	// =======================================================
 	// phase 1: directional lighting(방향성 조명, 태양광)
-	vec3 result = CalcDirLight(dirLight, normal, viewDir, blinn);
+	vec3 result = CalcDirLight(dirLight, norm, viewDir,blinn);
 	// phase 2: point lights ( 점 조명 )
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-	{
-		result += CalcPointLight(pointLights[i], normal, fs_in.FragPos, viewDir,blinn, fs_in.TangentPointLightPos[i]);    
-	}
-		
+		result += CalcPointLight(pointLights[i], norm, fs_in.FragPos, viewDir,blinn);    
 	// phase 3: spot light (손전등)
-	result += CalcSpotLight(spotLight, normal, fs_in.FragPos, viewDir, blinn, fs_in.TangentSpotLightPos);    
+	result += CalcSpotLight(spotLight, norm, fs_in.FragPos, viewDir,blinn);    
 	
 	FragColor = vec4(result, 1.0);
 }
@@ -123,9 +122,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn)
 }
 
 // 점 조명을 사용할 때 색상을 계산합니다.
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn, vec3 tangentLightPos)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn)
 {
-	vec3 lightDir = normalize(tangentLightPos - fs_in.TangentFragPos);
+	vec3 lightDir = normalize(light.position - fragPos);
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0);
 	// specular shading
@@ -145,8 +144,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bo
 	}
 	// attenuation
 	// 감쇠 (Attenuation)는 빛이 물체에 도달할 때 빛의 강도가 감소하는 것을 의미합니다.
-	float Distance = length(tangentLightPos - fs_in.TangentFragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * Distance + light.quadratic * (Distance * Distance));    
+	float distance = length(light.position - fragPos);
+	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 	// combine results
 	// 주변광(ambient) 색상을 계산합니다. 주변광은 물체의 재질(diffuse 텍스처)과 조명의 주변광 색상(light.ambient)을 곱하여 얻습니다.
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, fs_in.TexCoords));
@@ -159,9 +158,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bo
 }
 
 // 스포트라이트 조명을 사용할 때 색상을 계산합니다.
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn, vec3 tangentLightPos)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn)
 {
-	vec3 lightDir = normalize(tangentLightPos - fs_in.TangentFragPos);
+	vec3 lightDir = normalize(light.position - fragPos);
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0);
 	// specular shading
@@ -181,8 +180,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool
 	}
 	// attenuation
 	// 감쇠 (Attenuation)는 빛이 물체에 도달할 때 빛의 강도가 감소하는 것을 의미합니다.
-	float Distance = length(tangentLightPos - fs_in.TangentFragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * Distance + light.quadratic * (Distance * Distance));    
+	float distance = length(light.position - fragPos);
+	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 	// spotlight intensity
 	float theta = dot(lightDir, normalize(-light.direction)); 
 	float epsilon = light.cutOff - light.outerCutOff;
