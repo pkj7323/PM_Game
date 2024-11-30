@@ -220,11 +220,11 @@ void practiceScene::Render()
 	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
 	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
 	model = glm::mat4(1.0f);
-	//model = glm::rotate(model, glm::radians(90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
+	model = glm::rotate(model, glm::radians(-90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
 	ModelShader.setMat4("model", model);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("diffuseWall"));
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("normalWall"));
 	renderQuad();
 

@@ -43,15 +43,12 @@ struct SpotLight {
 	vec3 specular;       
 };
 
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 1
 
-
-
-in VS_OUT{
-	vec3 FragPos;
-	vec2 TexCoords;
-	mat3 TBN;
-} fs_in;
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+in vec3 Tangent;
 
 uniform vec3 viewPos;
 uniform DirLight dirLight;
@@ -65,15 +62,26 @@ uniform bool blinn;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
+vec3 CalcBumpNormal()
+{
+	vec3 normal = normalize(Normal);
+	vec3 tangent = normalize(Tangent);
+	tangent = normalize(tangent - dot(tangent, normal) * normal);
+	vec3 bitangent = cross(normal, tangent);
+	vec3 BumpMapNormal = texture(material.normal, TexCoords).xyz * 2.0 - 1.0;
+	BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+	vec3 NewNormal;
+	mat3 TBN = mat3(tangent, bitangent, normal);
+	NewNormal = normalize(TBN * BumpMapNormal);
+	return NewNormal;
+}
 
 void main()
 {    
 	
 	// properties
-	vec3 norm = texture(material.normal, fs_in.TexCoords).rgb;
-	norm = normalize(norm * 2.0 - 1.0);
-	norm = normalize(fs_in.TBN * norm);
-	vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+	vec3 norm = CalcBumpNormal();
+	vec3 viewDir = normalize(viewPos - FragPos);
 	
 	// =======================================================
 	// 우리의 조명은 3단계로 설정됩니다: 방향성 조명, 점 조명, 그리고 선택적인 손전등입니다. 
@@ -84,9 +92,9 @@ void main()
 	vec3 result = CalcDirLight(dirLight, norm, viewDir,blinn);
 	// phase 2: point lights ( 점 조명 )
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-		result += CalcPointLight(pointLights[i], norm, fs_in.FragPos, viewDir,blinn);    
+		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir,blinn);    
 	// phase 3: spot light (손전등)
-	result += CalcSpotLight(spotLight, norm, fs_in.FragPos, viewDir,blinn);    
+	result += CalcSpotLight(spotLight, norm, FragPos, viewDir,blinn);    
 	
 	FragColor = vec4(result, 1.0);
 }
@@ -115,9 +123,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn)
 	// combine results 
 	// 색상 혼합
 	// 주변광(ambient) 색상을 계산합니다. 주변광은 물체의 재질(diffuse 텍스처)과 조명의 주변광 색상(light.ambient)을 곱하여 얻습니다.
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, fs_in.TexCoords));
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, fs_in.TexCoords));
-	vec3 specular = light.specular * spec * vec3(texture(material.specular, fs_in.TexCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 	return (ambient + diffuse + specular);
 }
 
@@ -148,9 +156,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bo
 	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 	// combine results
 	// 주변광(ambient) 색상을 계산합니다. 주변광은 물체의 재질(diffuse 텍스처)과 조명의 주변광 색상(light.ambient)을 곱하여 얻습니다.
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, fs_in.TexCoords));
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, fs_in.TexCoords));
-	vec3 specular = light.specular * spec * vec3(texture(material.specular, fs_in.TexCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 	ambient *= attenuation;// 감쇠 (Attenuation)는 빛이 물체에 도달할 때 빛의 강도가 감소하는 것을 의미합니다.
 	diffuse *= attenuation;
 	specular *= attenuation;
@@ -187,9 +195,9 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool
 	float epsilon = light.cutOff - light.outerCutOff;
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 	// combine results
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, fs_in.TexCoords));
-	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, fs_in.TexCoords));
-	vec3 specular = light.specular * spec * vec3(texture(material.specular, fs_in.TexCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 	ambient *= attenuation * intensity;
 	diffuse *= attenuation * intensity;
 	specular *= attenuation * intensity;

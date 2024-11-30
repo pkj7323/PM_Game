@@ -7,16 +7,10 @@ layout (location = 4) in vec3 aBitangent;
 layout (location = 5) in vec3 aBoneIDs;
 layout (location = 6) in vec3 aWeights;
 
-
-
-
-out VS_OUT
-{
-	vec3 FragPos;
-	vec2 TexCoords;
-	mat3 TBN;
-} vs_out;
-
+out vec3 FragPos;
+out vec3 Normal;
+out vec2 TexCoords;
+out vec3 Tangent;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -24,19 +18,11 @@ uniform mat4 projection;
 
 void main()
 {
-	vs_out.FragPos = vec3(model * vec4(aPos, 1.0));
-	
-	vs_out.TexCoords = aTexCoords;
-	vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
-	vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
+    TexCoords = aTexCoords;
+    Tangent = mat3(transpose(inverse(model))) * aTangent;
 
-	T = normalize(T - dot(T, N) * N);
 
-	vec3 B = cross(N, T);
-
-	mat3 TBN = mat3(T, B, N);
-   
-
-	
-	gl_Position = projection * view * vec4(vs_out.FragPos, 1.0);
+    gl_Position = projection * view * vec4(FragPos, 1.0);
 }
