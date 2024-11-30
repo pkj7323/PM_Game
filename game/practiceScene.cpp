@@ -32,7 +32,7 @@ void practiceScene::Enter()
 	m_objects.push_back(new Rock);
 
 	m_model = ModelManager::Instance()->GetModel("backpack");
-	m_planet = ModelManager::Instance()->GetModel("earth");
+	m_planet = ModelManager::Instance()->GetModel("planet");
 
 	TextureLoadManager::Instance()->Load("diffuseWall", "resources/brick/brickwall.jpg");
 	TextureLoadManager::Instance()->Load("normalWall", "resources/brick/brickwall_normal.jpg");
@@ -227,19 +227,20 @@ void practiceScene::Render()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("normalWall"));
 	renderQuad();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 
 
-
-	/*for (auto& obj : m_objects)
-	{
-		obj->Draw(shader);
-	}
 	model = glm::mat4(1.0f);
-	model = glm::scale(model, glm::vec3(0.02, 0.02, 0.02));
-	shader.setMat4("model",model);
-	m_planet.Draw(shader);
-	m_model.Draw(shader);*/
+	ModelShader.setMat4("model", model);
+	m_planet.Draw(ModelShader);
+
+	for (auto& obj : m_objects)
+	{
+		obj->Draw(ModelShader);
+	}
+	
+	
 
 	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
