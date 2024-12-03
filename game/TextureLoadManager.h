@@ -12,7 +12,7 @@ public:
 	//return texture id = GLuint
 	GLuint GetTexture(const string& name);
 	void Use(const string& name, GLuint index = 0);
-
+	void Unbind(GLuint index = 12 + 1);
 	void loadCubeMap(const string& name, vector<string> faces);
 	
 };

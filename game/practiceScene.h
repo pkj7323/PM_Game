@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "Model.h"
 
+class Pyramid;
+
 class practiceScene : public Scene
 {
 public:
@@ -19,6 +21,7 @@ public:
 	void mouse_wheel(int button, int dir, int x, int y) override;
 
 	void renderQuad();
+
 private:
 	Camera* m_camera;
 	bool firstMouse = true;
@@ -28,8 +31,11 @@ private:
 	const int centerX = glutGet(GLUT_WINDOW_WIDTH) / 2;
 	const int centerY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
 
-	Model m_model;
-	Model m_planet;
+	Model m_cube;
+	Pyramid* m_pyramid;
+	int count = 0;
+
+
 	FrameBuffer m_frameBuffer;
 	vector<glm::vec3> pointLightPositions;
 	glm::vec3 pointLightColor;

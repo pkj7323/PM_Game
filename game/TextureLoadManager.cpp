@@ -10,16 +10,34 @@ void TextureLoadManager::Init()
 {
 	cout << "텍스쳐 로드" << endl;
 	Load("wall", "wall.jpg");
+	Load("brick_wall", "resources/brick/brickwall.jpg");
+	Load("brick_wall_normal", "resources/brick/brickwall_normal.jpg");
+
 	Load("container2", "container2.png");
 	Load("container2_specular", "container2_specular.png");
 	Load("marble", "resources/marble.jpg");
 	Load("metal", "resources/metal.png");
 	Load("space_ship", "resources/space_ship_test_color.png");
+
 	Load("earth", "resources/earth/earth.jpg");
+	Load("earth_normal_map", "resources/earth/earth_normal_map.jpg");
+
 	Load("sun", "resources/sun.jpg");
+	Load("sun_normal_map", "resources/sun_normal.png");
+
 	Load("mercury", "resources/mercury.jpg");
+	Load("mercury_normal_map", "resources/mercury_normal.png");
+
 	Load("venus_surface", "resources/venus_surface.jpg");
+	Load("venus_surface_normal_map", "resources/venus_surface_normal.png");
+
 	Load("venus_atmosphere", "resources/venus_atmosphere.jpg");
+	Load("venus_atmosphere_normal_map", "resources/venus_atmosphere_normal.png");
+
+	Load("snow", "resources/snow.jpg");
+	Load("snow_normal_map", "resources/snow_normal.png");
+
+	Load("cyan", "resources/Cyan.png");
 	vector<std::string> faces
 	{
 		"resources/right.jpg",
@@ -108,6 +126,15 @@ void TextureLoadManager::Use(const string& name, GLuint index)
 	else
 	{
 		std::cout << "Failed to find texture" << std::endl;
+	}
+}
+
+void TextureLoadManager::Unbind(GLuint index)
+{
+	for (int i = 0; i < index; i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 

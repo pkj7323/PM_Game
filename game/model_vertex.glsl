@@ -12,6 +12,15 @@ out vec3 Normal;
 out vec2 TexCoords;
 out vec3 Tangent;
 
+out VS_OUT
+{
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoords;
+	vec3 Tangent;
+} vs_out;
+
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -22,6 +31,11 @@ void main()
     Normal = mat3(transpose(inverse(model))) * aNormal;  
     TexCoords = aTexCoords;
     Tangent = mat3(transpose(inverse(model))) * aTangent;
+
+    vs_out.FragPos = FragPos;
+    vs_out.Normal = Normal;
+    vs_out.TexCoords = TexCoords;
+    vs_out.Tangent = Tangent;
 
 
     gl_Position = projection * view * vec4(FragPos, 1.0);

@@ -4,7 +4,7 @@ out vec4 FragColor;
 struct Material {
 	sampler2D diffuse;
 	sampler2D specular;
-	sampler2D normal;
+	sampler2D normalMap;
 	float shininess;
 }; 
 
@@ -62,17 +62,18 @@ uniform bool blinn;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
+
 vec3 CalcBumpNormal()
 {
 	vec3 normal = normalize(Normal);
 	vec3 tangent = normalize(Tangent);
 	tangent = normalize(tangent - dot(tangent, normal) * normal);
-	vec3 bitangent = cross(normal, tangent);
-	vec3 BumpMapNormal = texture(material.normal, TexCoords).xyz * 2.0 - 1.0;
-	BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+	vec3 bitangent = cross(tangent, normal);
+	vec3 BumpMapNormal = texture(material.normalMap, TexCoords).xyz * 2.0 - 1.0; // 이 줄만 필요합니다.
 	vec3 NewNormal;
 	mat3 TBN = mat3(tangent, bitangent, normal);
-	NewNormal = normalize(TBN * BumpMapNormal);
+    NewNormal = TBN * BumpMapNormal;
+	NewNormal = normalize(NewNormal);
 	return NewNormal;
 }
 
@@ -90,6 +91,7 @@ void main()
 	// =======================================================
 	// phase 1: directional lighting(방향성 조명, 태양광)
 	vec3 result = CalcDirLight(dirLight, norm, viewDir,blinn);
+	//vec3 result = vec3(0);
 	// phase 2: point lights ( 점 조명 )
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
 		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir,blinn);    

@@ -24,7 +24,7 @@ class Mesh
 public:
 	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
 	void Draw(Shader& shader);
-
+	void updateMesh();
 	GLuint VAO;
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
@@ -34,4 +34,5 @@ private:
 
 	GLuint VBO, EBO;
 	void setupMesh();
+	
 };

@@ -7,9 +7,9 @@ void ModelManager::Init()
 {
 	cout << "ModelManager Init" << endl;
 	//Load("rock", "resources/rock/rock.obj");
-	//Load("plane", "resources/plane.obj");
+	Load("plane", "resources/plane.obj");
 	Load("pyramid", "resources/pyramid.obj");
-	//Load("cube", "resources/cube.obj");
+	Load("cube", "resources/cube.obj");
 	Load("sphere", "resources/sphere.obj");
 	//Load("planet", "resources/planet.obj");
 	//Load("backpack", "resources/backpack.obj");
