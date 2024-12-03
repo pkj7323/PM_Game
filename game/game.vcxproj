@@ -22,6 +22,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Earth.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="IntroScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -56,6 +57,7 @@
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="Earth.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="IntroScene.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

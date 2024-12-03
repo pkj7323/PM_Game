@@ -15,6 +15,11 @@ void TextureLoadManager::Init()
 	Load("marble", "resources/marble.jpg");
 	Load("metal", "resources/metal.png");
 	Load("space_ship", "resources/space_ship_test_color.png");
+	Load("earth", "resources/earth/earth.jpg");
+	Load("sun", "resources/sun.jpg");
+	Load("mercury", "resources/mercury.jpg");
+	Load("venus_surface", "resources/venus_surface.jpg");
+	Load("venus_atmosphere", "resources/venus_atmosphere.jpg");
 	vector<std::string> faces
 	{
 		"resources/right.jpg",

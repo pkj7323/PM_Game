@@ -76,9 +76,9 @@ protected:
 	glm::vec3 pos;//x,y,z의 위치를 변경하고 싶은 만큼 각각 값 변경
 	glm::vec3 scale;//x,y,z의 크기를 변경하고 싶은 만큼 각각 값 변경
 	glm::vec3 rotation;//x,y,z의 회전 하고 싶은 만큼 각각 값 변경 degree
-	glm::mat4 Matrix;
-	glm::mat4 parentMatrix;
-	BoundingSphere bs;
+	glm::mat4 Matrix; // 얘는 값변경 대상이 아니고 변경된 애를 받아 갈수 만 있도록
+	glm::mat4 parentMatrix; // 부모의 Matrix
+	BoundingSphere bs;//충돌체크를 위한 bounding sphere
 public:
 	object();
 	object(const string& name);
@@ -93,7 +93,7 @@ public:
 	glm::mat4 GetMatrix() const { return Matrix; }
 
 
-	virtual BoundingSphere GetBS()
+	BoundingSphere GetBS()
 	{
 		auto center = glm::translate(glm::mat4(1.0f), pos) * glm::vec4(bs.center, 1.0f);
 		return {bs.radius,center};
