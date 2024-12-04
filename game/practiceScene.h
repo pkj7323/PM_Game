@@ -3,6 +3,7 @@
 #include "FrameBuffer.h"
 #include "Scene.h"
 #include "Model.h"
+#include "SkyBox.h"
 
 class Pyramid;
 
@@ -34,11 +35,18 @@ private:
 	const int centerY = glutGet(GLUT_WINDOW_HEIGHT) / 2;
 
 	Model m_cube;
-	Pyramid* m_pyramid;
-	int count = 0;
+	Model m_model;
+	Model m_sphere;
+	SkyBox m_skyBox;
+	vector<string> m_textures;
+	glm::mat4 matrix{1.0f};
+	int index = 0;
+
+
 	bool light_rotation = false;
-	bool light_on = true;
+	
 	bool do_update = true;
+
 	glm::vec3 ambient_light{ 0.05,0.05,0.05 };
 	glm::vec3 specular_light{ 1.0f,1.0f,1.0f };
 	glm::vec3 pointLightColor;
