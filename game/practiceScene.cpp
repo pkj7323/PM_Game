@@ -196,7 +196,7 @@ void practiceScene::Update()
 	}
 	if (KEY_TAP(KEY::F1))
 	{
-		
+		do_update = !do_update;
 	}
 	m_camera->Move();
 	if (do_update)

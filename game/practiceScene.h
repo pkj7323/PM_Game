@@ -38,7 +38,7 @@ private:
 	int count = 0;
 	bool light_rotation = false;
 	bool light_on = true;
-	bool do_update = truere
+	bool do_update = true;
 	glm::vec3 ambient_light{ 0.05,0.05,0.05 };
 	glm::vec3 specular_light{ 1.0f,1.0f,1.0f };
 	glm::vec3 pointLightColor;
