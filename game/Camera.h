@@ -48,6 +48,7 @@ public:
    
     glm::vec3 GetPosition() const { return Position; }
 	glm::vec3 GetFront() const { return Front; }
+    glm::vec3 GetUp() const { return Up; }
 	// calculate the perspective matrix zoom=degree
     void SetPerspective(float zoom, float _aspect, float _near,float _far );
 
@@ -60,6 +61,9 @@ public:
 
 	float GetNear() const { return m_Near; }
 	float GetFar() const { return m_Far; }
+    float GetSpeed() const { return MovementSpeed; }
+    float GetYaw() const { return Yaw; }
+    float GetPitch() const { return Pitch; }
 
 	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix() const;

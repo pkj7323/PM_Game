@@ -30,6 +30,7 @@ private:
 
 	Model m_model;
 	Model m_planet;
+	Model m_space_ship;
 	FrameBuffer m_frameBuffer;
 	vector<glm::vec3> pointLightPositions;
 	glm::vec3 pointLightColor;

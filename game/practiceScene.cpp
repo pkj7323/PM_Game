@@ -33,6 +33,7 @@ void practiceScene::Enter()
 
 	m_model = ModelManager::Instance()->GetModel("backpack");
 	m_planet = ModelManager::Instance()->GetModel("planet");
+	m_space_ship = ModelManager::Instance()->GetModel("space_ship");
 
 	TextureLoadManager::Instance()->Load("diffuseWall", "resources/brick/brickwall.jpg");
 	TextureLoadManager::Instance()->Load("normalWall", "resources/brick/brickwall_normal.jpg");
@@ -156,9 +157,6 @@ void practiceScene::Enter()
 void practiceScene::Exit()
 {
 	delete m_camera;
-
-	
-
 }
 
 void practiceScene::Update()
@@ -183,6 +181,7 @@ void practiceScene::Update()
 		ModelShader.setBool("blinn", blinn);
 	}
 	m_camera->Move();
+	m_space_ship.Move(m_camera->GetPosition(),m_camera->GetUp(),m_camera->GetFront());
 	pointLightPositions[0] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0, 1, 0)) * glm::vec4(pointLightPositions[0],1.0);
 	for (auto& obj : m_objects)
 	{
@@ -227,13 +226,25 @@ void practiceScene::Render()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("normalWall"));
 	renderQuad();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
+	/*model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", model);
+	m_planet.Draw(ModelShader);*/
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("space_ship"));
 
 	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(m_space_ship.GetPosition()));
+	model = glm::rotate(model, glm::radians(-m_space_ship.GetRotate_y()), glm::normalize(glm::vec3(0.0, 1.0, 0.0)));
+	model = glm::rotate(model, glm::radians(m_space_ship.GetRotate_x()), glm::normalize(glm::vec3(1.0, 0.0, 0.0)));
 	ModelShader.setMat4("model", model);
-	m_planet.Draw(ModelShader);
+	m_space_ship.Draw(ModelShader);
 
 	for (auto& obj : m_objects)
 	{
@@ -299,7 +310,9 @@ void practiceScene::mouse_motion(int x, int y)
 	lastY = ypos;
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
-
+	m_space_ship.Rotate_x(m_camera->GetPitch());
+	m_space_ship.Rotate_y(m_camera->GetYaw());
+	m_space_ship.Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
 	// 마우스를 중앙으로 이동
 	
 	glutWarpPointer(centerX, centerY);
