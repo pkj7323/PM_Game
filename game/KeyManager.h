@@ -6,6 +6,8 @@ enum class KEY_STATE {
 	AWAY
 };
 enum class KEY {
+	PLUS,
+	MINUS,
 	F1,
 	F2,
 	F3,

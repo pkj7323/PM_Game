@@ -10,9 +10,6 @@
 #include "ModelManager.h"
 #include "Plane.h"
 #include "Pyramid.h"
-#include "TextureLoadManager.h"
-#include "TimeManager.h"
-#include "rock.h"
 #include "Snow.h"
 #include "Venus.h"
 
@@ -38,10 +35,7 @@ void practiceScene::Enter()
 	m_objects.emplace_back(new Earth);
 	m_objects.emplace_back(new Plane);
 	m_pyramid = new Pyramid;
-	for (int i = 0; i < 100; i++)
-	{
-		m_objects.emplace_back(new Snow);
-	}
+	
 
 	m_cube = ModelManager::Instance()->GetModel("cube");
 	//Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
@@ -141,17 +135,88 @@ void practiceScene::Update()
 		m_pyramid->SetCount(++count);
 		m_pyramid->Sierpinsky();
 	}
+	if (KEY_TAP(KEY::E))
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			m_objects.emplace_back(new Snow);
+		}
+	}
+	if (KEY_TAP(KEY::R))
+	{
+		light_rotation = !light_rotation;
+	}
+	if (KEY_TAP(KEY::N))
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			glm::vec3 dir = glm::normalize(pointLightPositions[i]);
+			pointLightPositions[i] = glm::translate(glm::mat4(1.0f), dir)
+				* glm::vec4(pointLightPositions[i], 1.0);
+		}
+	}
+	if (KEY_TAP(KEY::F))
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			glm::vec3 dir = glm::normalize(pointLightPositions[i]);
+			pointLightPositions[i] = glm::translate(glm::mat4(1.0f), -dir)
+				* glm::vec4(pointLightPositions[i], 1.0);
+		}
+	}
+	if (KEY_TAP(KEY::PLUS))
+	{
+		ambient_light += 0.1f;
+		pointLightColor -= 0.1f;
+	}
+	if (KEY_TAP(KEY::MINUS))
+	{
+		ambient_light -= 0.1f;
+		pointLightColor -= 0.1f;
+	}
+	if (KEY_TAP(KEY::M))
+	{
+		light_on = !light_on;
+		if (light_on)
+		{
+			ambient_light = { 0.05,0.05,0.05 };
+			specular_light = { 1.0f,1.0f,1.0f };
+			pointLightColor = { 1.0f,1.0f,1.0f };
+		}
+		else
+		{
+			ambient_light = { 0.0f,0.0f,0.0f };
+			specular_light = { 0.0f,0.0f,0.0f };
+			pointLightColor = { 0.0f,0.0f,0.0f };
+		}
+	}
+	if (KEY_TAP(KEY::C))
+	{
+		pointLightColor = { randomFloats(dre),randomFloats(dre),randomFloats(dre) };
+	}
+	if (KEY_TAP(KEY::F1))
+	{
+		
+	}
 	m_camera->Move();
-	for (auto& obj : m_objects)
+	if (do_update)
 	{
-		obj->Update();
+		
+		for (auto& obj : m_objects)
+		{
+			obj->Update();
+		}
+		m_pyramid->Update();
 	}
-	m_pyramid->Update();
-	for (int i = 0; i < 4; i++)
+	if (light_rotation)
 	{
-		pointLightPositions[i] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-			* glm::vec4(pointLightPositions[i], 1.0);
+		for (int i = 0; i < 4; i++)
+		{
+			pointLightPositions[i] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f))
+				* glm::vec4(pointLightPositions[i], 1.0);
+		}
 	}
+	
 }
 
 void practiceScene::Render()
@@ -172,9 +237,17 @@ void practiceScene::Render()
 	shader.setMat4("projection", projection);
 	shader.setMat4("view", view);
 	shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+	shader.setVec3("pointLights[0].ambient", ambient_light);//포인트 라이트의 주변광
+	shader.setVec3("pointLights[0].diffuse", pointLightColor);
 	shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+	shader.setVec3("pointLights[1].ambient", ambient_light);//포인트 라이트의 주변광
+	shader.setVec3("pointLights[1].diffuse", pointLightColor);
 	shader.setVec3("pointLights[2].position", pointLightPositions[2]);
+	shader.setVec3("pointLights[2].ambient", ambient_light);//포인트 라이트의 주변광
+	shader.setVec3("pointLights[2].diffuse", pointLightColor);
 	shader.setVec3("pointLights[3].position", pointLightPositions[3]);
+	shader.setVec3("pointLights[3].ambient", ambient_light);//포인트 라이트의 주변광
+	shader.setVec3("pointLights[3].diffuse", pointLightColor);
 	for (auto& obj : m_objects)
 	{
 		obj->Draw(shader);

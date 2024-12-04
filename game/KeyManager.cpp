@@ -2,6 +2,8 @@
 #include "KeyManager.h"
 
 int arrVK[(int)KEY::LAST]{
+	VK_OEM_PLUS,
+	VK_OEM_MINUS,
 	VK_F1,
 	VK_F2,
 	VK_F3,

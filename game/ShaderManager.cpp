@@ -90,8 +90,8 @@ void ShaderManager::SetUniformModel(const string& name, const vector<glm::vec3>&
 	ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
 	ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
 	ModelShader.setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
-	ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
-	ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
+	ModelShader.setFloat("pointLights[0].linear", 0.09f);//포인트 라이트의 선형값(1차)
+	ModelShader.setFloat("pointLights[0].quadratic", 0.032f);//포인트 라이트의 이차값(2차)
 
 	ModelShader.setVec3("pointLights[1].position", light_pos[1]);
 	ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);

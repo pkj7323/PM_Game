@@ -90,9 +90,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="object.cpp">
       <Filter>6_Object</Filter>
     </ClCompile>
@@ -155,6 +152,27 @@
     </ClCompile>
     <ClCompile Include="practiceScene.cpp">
       <Filter>2_Common\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Earth.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Mercury.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Snow.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Venus.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +245,24 @@
     <ClInclude Include="practiceScene.h">
       <Filter>2_Common\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Mercury.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Venus.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Snow.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Earth.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vertex.glsl">
@@ -297,6 +333,9 @@
     </None>
     <None Include="basic_light_vs.glsl">
       <Filter>리소스 파일\basic</Filter>
+    </None>
+    <None Include="model_geometry.glsl">
+      <Filter>리소스 파일\model</Filter>
     </None>
   </ItemGroup>
 </Project>

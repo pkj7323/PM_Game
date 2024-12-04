@@ -23,6 +23,8 @@ public:
 	void renderQuad();
 
 private:
+	std::default_random_engine dre{ std::random_device{}() };
+	std::uniform_real_distribution<float> randomFloats{ 0.0, 1.0 };
 	Camera* m_camera;
 	bool firstMouse = true;
 	float lastX = glutGet(GLUT_WINDOW_WIDTH) / 2;
@@ -34,11 +36,16 @@ private:
 	Model m_cube;
 	Pyramid* m_pyramid;
 	int count = 0;
-
+	bool light_rotation = false;
+	bool light_on = true;
+	bool do_update = truere
+	glm::vec3 ambient_light{ 0.05,0.05,0.05 };
+	glm::vec3 specular_light{ 1.0f,1.0f,1.0f };
+	glm::vec3 pointLightColor;
 
 	FrameBuffer m_frameBuffer;
 	vector<glm::vec3> pointLightPositions;
-	glm::vec3 pointLightColor;
+	
 	unsigned int amount = 1000;
 	glm::mat4* modelMatrices;
 
