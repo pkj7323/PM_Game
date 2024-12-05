@@ -37,7 +37,7 @@ void Model::Move(glm::vec3 position,glm::vec3 up , glm::vec3 front)
 {
 	position -= up * 2.f;
 	position += front * 2.5f;
-	Position = position;
+	Position = glm::vec3(position.x,position.y - 2.f,position.z - 5.f);
 }
 
 void Model::Rotate_y(float yat)
