@@ -1,15 +1,11 @@
 ﻿#pragma once
 #include "object.h"
 
-class Snow : public object
+class Cube : public object
 {
-	float speed = 10.f;
-	
-	std::uniform_real_distribution<float> randPos{ -25.f, 25.f };
-	std::uniform_real_distribution<float> randSpeed{ 10.f, 30.f };
 public:
-	Snow();
-	~Snow() override;
+	Cube();
+	~Cube() override;
 	void Init() override;
 	void Update() override;
 	void Draw(Shader& shader) override;

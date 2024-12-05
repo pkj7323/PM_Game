@@ -161,5 +161,6 @@ void Camera::OrbitAroundOrigin(float angle)
 
     Position.x = Position.x * glm::cos(glm::radians(angle)) + Position.z * glm::sin(glm::radians(angle));
     Position.z = Position.x * -glm::sin(glm::radians(angle)) + Position.z * glm::cos(glm::radians(angle));
+	Yaw -= angle;
     updateCameraVectors();
 }

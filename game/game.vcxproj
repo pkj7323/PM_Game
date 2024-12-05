@@ -22,6 +22,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Earth.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="IntroScene.cpp">
@@ -62,6 +63,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Earth.h" />
     <ClInclude Include="FrameBuffer.h" />

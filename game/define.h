@@ -43,6 +43,7 @@ enum class SCENE_TYPE
 
 
 namespace math {
+	static std::default_random_engine dre{ std::random_device{}() };
 	static const float PI = 3.14159265358979323846f;
 	static void convertToWorldForVec2(float& x, float& y)
 	{

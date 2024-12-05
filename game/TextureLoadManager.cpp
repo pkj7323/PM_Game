@@ -38,6 +38,7 @@ void TextureLoadManager::Init()
 	Load("snow_normal_map", "resources/snow_normal.png");
 
 	Load("cyan", "resources/Cyan.png");
+	Load("window", "resources/blending_transparent_window.png");
 	vector<std::string> faces
 	{
 		"resources/right.jpg",
@@ -77,8 +78,9 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		// 튜토리얼을 위해 반투명한 테두리를 방지하기 위해 GL_CLAMP_TO_EDGE를 사용합니다. 보간으로 인해 다음 반복에서 텍셀을 가져옵니다.
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		m_texture[name] = textureID;

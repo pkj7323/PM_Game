@@ -5,13 +5,13 @@
 #include "ShaderManager.h"
 #include "Camera.h"
 #include "CollisionManager.h"
+#include "Cube.h"
 #include "Earth.h"
 #include "Mercury.h"
 #include "ModelManager.h"
 #include "Plane.h"
 #include "Pyramid.h"
 #include "Snow.h"
-#include "TextureLoadManager.h"
 #include "Venus.h"
 
 
@@ -22,13 +22,6 @@ practiceScene::practiceScene()
 	pointLightPositions.emplace_back(-4.0f, 2.0f, -12.0f);
 	pointLightPositions.emplace_back(0.0f, 0.0f, -3.0f);
 	pointLightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-	m_textures.emplace_back("sun");
-	m_textures.emplace_back("earth");
-	m_textures.emplace_back("mercury");
-	m_textures.emplace_back("venus_surface");
-	m_textures.emplace_back("venus_atmosphere");
-	m_textures.emplace_back("snow");
-
 }
 
 practiceScene::~practiceScene()
@@ -38,86 +31,22 @@ practiceScene::~practiceScene()
 void practiceScene::Enter()
 {
 	m_camera = new Camera;
-	
+	m_objects.emplace_back(new Mercury);
+	m_objects.emplace_back(new Venus);
+	m_objects.emplace_back(new Earth);
+	m_objects.emplace_back(new Plane);
 
-	
+	for (int i = 0; i< 10; i++)
+	{
+		cubes.emplace_back(new Cube);
+	}
+	m_pyramid = new Pyramid;
+
 
 	m_cube = ModelManager::Instance()->GetModel("cube");
-	m_model = ModelManager::Instance()->GetModel("cube");
-	m_sphere = ModelManager::Instance()->GetModel("sphere");
-	//Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
-	//auto projection = m_camera->GetPerspectiveMatrix();
-	//auto view = m_camera->GetViewMatrix();
-	//ModelShader.Use();
-	//
-	//ModelShader.setMat4("projection", projection);
-	//ModelShader.setMat4("view", view);
-	//ModelShader.setMat4("model", glm::mat4(1.0f));
-	//ModelShader.setVec3("viewPos", m_camera->GetPosition());
-	//
-	//ModelShader.setBool("blinn", true);
-	//ModelShader.setFloat("material.shininess", 32.0f);
-	//
-	//ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-	//ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-	//ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-	//ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-	//
-	////포인트 라이트의 위치
-	//ModelShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-	//ModelShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);//포인트 라이트의 주변광
-	//ModelShader.setVec3("pointLights[0].diffuse", pointLightColor);//포인트 라이트의 확산광
-	//ModelShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);//포인트 라이트의 반사광
-	//ModelShader.setFloat("pointLights[0].constant", 1.0f);//포인트 라이트의 상수값
-	//ModelShader.setFloat("pointLights[0].linear", 0.09);//포인트 라이트의 선형값(1차)
-	//ModelShader.setFloat("pointLights[0].quadratic", 0.032);//포인트 라이트의 이차값(2차)
-	//
-	//ModelShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-	//ModelShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	//ModelShader.setVec3("pointLights[1].diffuse", pointLightColor);
-	//ModelShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-	//ModelShader.setFloat("pointLights[1].constant", 1.0f);
-	//ModelShader.setFloat("pointLights[1].linear", 0.09f);
-	//ModelShader.setFloat("pointLights[1].quadratic", 0.032f);
-	//
-	//
-	//ModelShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-	//ModelShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	//ModelShader.setVec3("pointLights[2].diffuse", pointLightColor);
-	//ModelShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-	//ModelShader.setFloat("pointLights[2].constant", 1.0f);
-	//ModelShader.setFloat("pointLights[2].linear", 0.09f);
-	//ModelShader.setFloat("pointLights[2].quadratic", 0.032f);
-	//
-	//
-	//ModelShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-	//ModelShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	//ModelShader.setVec3("pointLights[3].diffuse", pointLightColor);
-	//ModelShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-	//ModelShader.setFloat("pointLights[3].constant", 1.0f);
-	//ModelShader.setFloat("pointLights[3].linear", 0.09f);
-	//ModelShader.setFloat("pointLights[3].quadratic", 0.032f);
-	//
-	//
-	//ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
-	//ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
-	//ModelShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-	//ModelShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-	//ModelShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-	//ModelShader.setFloat("spotLight.constant", 1.0f);
-	//ModelShader.setFloat("spotLight.linear", 0.09f);
-	//ModelShader.setFloat("spotLight.quadratic", 0.032f);
-	//ModelShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-	////손전등의 안쪽조명을 받을 각도
-	//ModelShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-	//
-	//
-	//ModelShader.setInt("material.diffuse", 0);
-	//ModelShader.setInt("material.specular", 1);
-	//ModelShader.setInt("material.normalMap", 2);
-	// 꼭 필요해 각 맵에 접근하려면
+	
 	ShaderManager::Instance()->SetUniformModel("ModelShader", pointLightPositions, *m_camera);
-	ShaderManager::Instance()->SetUniformModel("ModelShader_geometry", pointLightPositions,*m_camera);
+	ShaderManager::Instance()->SetUniformModel("ModelShader_geometry", pointLightPositions, *m_camera);
 }
 
 void practiceScene::Exit()
@@ -137,39 +66,91 @@ void practiceScene::Update()
 	{
 		exit(0);
 	}
-
-
+	if (KEY_TAP(KEY::F2))
+	{
+		m_pyramid->SetCount(++count);
+		m_pyramid->Sierpinsky();
+	}
+	if (KEY_HOLD(KEY::Y))
+	{
+		m_camera->OrbitAroundOrigin(1.0f);
+	}
+	if (KEY_TAP(KEY::E))
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			m_objects.emplace_back(new Snow);
+		}
+	}
 	if (KEY_TAP(KEY::R))
 	{
 		light_rotation = !light_rotation;
 	}
-
+	if (KEY_TAP(KEY::N))
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			glm::vec3 dir = glm::normalize(pointLightPositions[i]);
+			pointLightPositions[i] = glm::translate(glm::mat4(1.0f), dir)
+				* glm::vec4(pointLightPositions[i], 1.0);
+		}
+	}
+	if (KEY_TAP(KEY::F))
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			glm::vec3 dir = glm::normalize(pointLightPositions[i]);
+			pointLightPositions[i] = glm::translate(glm::mat4(1.0f), -dir)
+				* glm::vec4(pointLightPositions[i], 1.0);
+		}
+	}
+	if (KEY_TAP(KEY::PLUS))
+	{
+		ambient_light += 0.1f;
+		pointLightColor -= 0.1f;
+	}
+	if (KEY_TAP(KEY::MINUS))
+	{
+		ambient_light -= 0.1f;
+		pointLightColor -= 0.1f;
+	}
+	if (KEY_TAP(KEY::M))
+	{
+		light_on = !light_on;
+		if (light_on)
+		{
+			ambient_light = { 0.05,0.05,0.05 };
+			specular_light = { 1.0f,1.0f,1.0f };
+			pointLightColor = { 1.0f,1.0f,1.0f };
+		}
+		else
+		{
+			ambient_light = { 0.0f,0.0f,0.0f };
+			specular_light = { 0.0f,0.0f,0.0f };
+			pointLightColor = { 0.0f,0.0f,0.0f };
+		}
+	}
+	if (KEY_TAP(KEY::C))
+	{
+		pointLightColor = { randomFloats(dre),randomFloats(dre),randomFloats(dre) };
+	}
 	if (KEY_TAP(KEY::F1))
 	{
 		do_update = !do_update;
 	}
-	if (KEY_TAP(KEY::F2))
-	{
-		index = (index + 1) % m_textures.size();
-	}
-	if (KEY_TAP(KEY::F3))
-	{
-		m_model = ModelManager::Instance()->GetModel("cube");
-	}
-	if (KEY_TAP(KEY::F4))
-	{
-		m_model = ModelManager::Instance()->GetModel("pyramid");
-	}
-
 	m_camera->Move();
 	if (do_update)
 	{
-		
+
 		for (auto& obj : m_objects)
 		{
 			obj->Update();
 		}
-		
+		m_pyramid->Update();
+		for (auto cube : cubes)
+		{
+			cube->Update();
+		}
 	}
 	if (light_rotation)
 	{
@@ -188,7 +169,7 @@ void practiceScene::Render()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);//배경을 0.1,0.1,0.1로 설정
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
+
 	auto shader = ShaderManager::Instance()->GetShader("ModelShader");
 	auto projection = m_camera->GetPerspectiveMatrix();
 	auto view = m_camera->GetViewMatrix();
@@ -211,13 +192,22 @@ void practiceScene::Render()
 	shader.setVec3("pointLights[3].position", pointLightPositions[3]);
 	shader.setVec3("pointLights[3].ambient", ambient_light);//포인트 라이트의 주변광
 	shader.setVec3("pointLights[3].diffuse", pointLightColor);
+	for (auto& obj : m_objects)
+	{
+		obj->Draw(shader);
+	}
+	m_pyramid->Draw(shader);
 
-	shader.setMat4("model", matrix);
-	TextureLoadManager::Instance()->Use(m_textures[index]);
-	TextureLoadManager::Instance()->Use(m_textures[index] + "_normal_map",2);
-	m_model.Draw(shader);
-	TextureLoadManager::Instance()->Unbind(2);
+	shader = ShaderManager::Instance()->GetShader("PlanetShader");
+	shader.Use();
+	shader.setMat4("projection", projection);
+	shader.setMat4("view", view);
+	shader.setInt("texture1", 0);
 	
+	for (auto cube : cubes)
+	{
+		cube->Draw(shader);
+	}
 
 	/*shader.setMat4("model", glm::rotate(glm::mat4(1.0f),glm::radians(90.0f),glm::vec3(1.0f,0.f,0.f)));
 	glActiveTexture(GL_TEXTURE0);
@@ -227,7 +217,6 @@ void practiceScene::Render()
 	renderQuad();// 노멀 맵 테스트용 쿼드
 	glBindTexture(GL_TEXTURE_2D, 0);*/
 
-	
 
 	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
@@ -244,13 +233,6 @@ void practiceScene::Render()
 		lightCubeShader.setMat4("model", model);
 		m_cube.Draw(lightCubeShader);
 	}
-
-	Shader skyboxShader = ShaderManager::Instance()->GetShader("skyboxShader");
-	skyboxShader.Use();
-	view = glm::mat4(glm::mat3(m_camera->GetViewMatrix())); // remove translation from the view matrix
-	skyboxShader.setMat4("view", view);
-	skyboxShader.setMat4("projection", m_camera->GetPerspectiveMatrix());
-	m_skyBox.Draw(skyboxShader);
 	m_frameBuffer.Render();
 	glutSwapBuffers();
 }
@@ -276,7 +258,7 @@ void practiceScene::mouse_motion(int x, int y)
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 
 	// 마우스를 중앙으로 이동
-	
+
 	glutWarpPointer(centerX, centerY);
 
 	// 중앙으로 이동한 후의 위치를 lastX, lastY로 설정

@@ -7,8 +7,8 @@
 Snow::Snow() : object("sphere")
 {
 	
-	speed = randSpeed(dre);
-	pos = { randPos(dre), 40, randPos(dre) };
+	speed = randSpeed(math::dre);
+	pos = { randPos(math::dre), 40, randPos(math::dre) };
 	scale = { 0.05,0.05,0.05 };
 }
 
@@ -28,7 +28,7 @@ void Snow::Update()
 	if (pos.y <= 0)
 	{
 		pos.y = 40;
-		speed = randSpeed(dre);
+		speed = randSpeed(math::dre);
 	}
 	object::Update();
 }

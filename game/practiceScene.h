@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "SkyBox.h"
 
+class Cube;
 class Pyramid;
 
 class practiceScene : public Scene
@@ -37,14 +38,16 @@ private:
 	Model m_cube;
 	Model m_model;
 	Model m_sphere;
+	Pyramid* m_pyramid;
+	vector<Cube*> cubes;
 	SkyBox m_skyBox;
 	vector<string> m_textures;
 	glm::mat4 matrix{1.0f};
 	int index = 0;
 
-
+	int count = 0;
 	bool light_rotation = false;
-	
+	bool light_on = true;
 	bool do_update = true;
 
 	glm::vec3 ambient_light{ 0.05,0.05,0.05 };
