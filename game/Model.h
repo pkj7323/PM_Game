@@ -15,22 +15,8 @@ public:
 	string directory;
 	bool gammaCorrection;
 
-
-	void Move(glm::vec3 position, glm::vec3 up , glm::vec3 front);
-	void Rotate_y(float pitch);
-	void Rotate_x(float yat);
-
-	glm::vec3 GetPosition() const { return Position; }
-	float GetRotate_y() const { return rotate_y; }
-	float GetRotate_x() const { return rotate_x; }
-
 private:
-	float rotate_y;
-	float rotate_x; 
-	glm::vec3 Position;
-	glm::vec3 Front;
-	glm::vec3 Up;
-	glm::vec3 Right;
+	
 
 	void loadModel(string path);
 	void processNode(aiNode* node, const aiScene* scene);

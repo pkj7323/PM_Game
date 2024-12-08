@@ -10,3 +10,5 @@ newmtl wire_087224198
 	Ka 0.341176 0.878431 0.776471
 	Kd 0.341176 0.878431 0.776471
 	Ks 0.350000 0.350000 0.350000
+	map_Kd space_ship_test_color.png
+	map_Bump space_ship_test_color_normal.png
