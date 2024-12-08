@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "Shader.h"
 
+#include "KeyManager.h"
+#include "TimeManager.h"
+
 Model::Model(const string& path, bool gamma) : gammaCorrection(gamma)
 {
 	loadModel(path);
@@ -27,6 +30,24 @@ void Model::ChangeMode(GLuint mode)
 	{
 		mesh.mode = mode;
 	}
+}
+
+
+void Model::Move(glm::vec3 position,glm::vec3 up , glm::vec3 front)
+{
+	position -= up * 2.f;
+	position += front * 2.5f;
+	Position = glm::vec3(position.x,position.y - 2.f,position.z - 5.f);
+}
+
+void Model::Rotate_y(float yat)
+{
+	rotate_y = yat + 90;
+}
+
+void Model::Rotate_x(float pitch)
+{
+	rotate_x = pitch;
 }
 
 void Model::loadModel(string path)

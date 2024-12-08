@@ -53,10 +53,7 @@ void practiceScene::Exit()
 {
 	delete m_camera;
 
-	for (auto& obj : m_objects)
-	{
-		delete obj;
-	}
+	
 
 }
 
@@ -139,28 +136,11 @@ void practiceScene::Update()
 		do_update = !do_update;
 	}
 	m_camera->Move();
-	if (do_update)
+	pointLightPositions[0] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0, 1, 0)) * glm::vec4(pointLightPositions[0],1.0);
+	for (auto& obj : m_objects)
 	{
-
-		for (auto& obj : m_objects)
-		{
-			obj->Update();
-		}
-		m_pyramid->Update();
-		for (auto cube : cubes)
-		{
-			cube->Update();
-		}
+		obj->Update();
 	}
-	if (light_rotation)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			pointLightPositions[i] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-				* glm::vec4(pointLightPositions[i], 1.0);
-		}
-	}
-	
 }
 
 void practiceScene::Render()
@@ -201,10 +181,38 @@ void practiceScene::Render()
 	shader = ShaderManager::Instance()->GetShader("PlanetShader");
 	shader.Use();
 	shader.setMat4("projection", projection);
-	shader.setMat4("view", view);
-	shader.setInt("texture1", 0);
-	
-	for (auto cube : cubes)
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 10.0f, -100.0f));
+	shader.setMat4("model", model);
+
+	m_planet.Draw(shader);*/
+
+	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
+	ModelShader.Use();  
+	ModelShader.setInt("material.diffuse", 0);
+	ModelShader.setInt("material.normal", 2);
+	ModelShader.setMat4("projection", projection);
+	ModelShader.setMat4("view", view);
+	ModelShader.setVec3("viewPos", m_camera->GetPosition());
+	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
+	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
+	model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
+	ModelShader.setMat4("model", model);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("diffuseWall"));
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("normalWall"));
+	renderQuad();
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+
+	model = glm::mat4(1.0f);
+	ModelShader.setMat4("model", model);
+	m_planet.Draw(ModelShader);
+
+	for (auto& obj : m_objects)
 	{
 		cube->Draw(shader);
 	}
@@ -256,7 +264,9 @@ void practiceScene::mouse_motion(int x, int y)
 	lastY = ypos;
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
-
+	m_space_ship.Rotate_x(m_camera->GetPitch());
+	m_space_ship.Rotate_y(m_camera->GetYaw());
+	m_space_ship.Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
 	// 마우스를 중앙으로 이동
 
 	glutWarpPointer(centerX, centerY);

@@ -74,7 +74,6 @@ void Camera::updateCameraVectors()
 
 
 
-
 glm::mat4 Camera::GetViewMatrix() const
 {
     return glm::lookAt(Position, Position + Front, Up);
