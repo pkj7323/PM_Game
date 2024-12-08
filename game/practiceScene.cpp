@@ -5,6 +5,7 @@
 #include "ShaderManager.h"
 #include "Camera.h"
 #include "CollisionManager.h"
+#include "TextureLoadManager.h"
 #include "Cube.h"
 #include "Earth.h"
 #include "Mercury.h"
@@ -13,6 +14,7 @@
 #include "Pyramid.h"
 #include "Snow.h"
 #include "Venus.h"
+#include "spaceship.h"
 
 
 practiceScene::practiceScene()
@@ -41,7 +43,7 @@ void practiceScene::Enter()
 		cubes.emplace_back(new Cube);
 	}
 	m_pyramid = new Pyramid;
-
+	m_space_ship = new Spaceship;
 
 	m_cube = ModelManager::Instance()->GetModel("cube");
 	
@@ -52,8 +54,6 @@ void practiceScene::Enter()
 void practiceScene::Exit()
 {
 	delete m_camera;
-
-	
 
 }
 
@@ -136,6 +136,8 @@ void practiceScene::Update()
 		do_update = !do_update;
 	}
 	m_camera->Move();
+	static_cast<Spaceship*>(m_space_ship)->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
+	m_space_ship->Update();
 	pointLightPositions[0] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0, 1, 0)) * glm::vec4(pointLightPositions[0],1.0);
 	for (auto& obj : m_objects)
 	{
@@ -177,8 +179,8 @@ void practiceScene::Render()
 		obj->Draw(shader);
 	}
 	m_pyramid->Draw(shader);
-
-	shader = ShaderManager::Instance()->GetShader("PlanetShader");
+	m_space_ship->Draw(shader);
+	/*shader = ShaderManager::Instance()->GetShader("PlanetShader");
 	shader.Use();
 	shader.setMat4("projection", projection);
 	model = glm::mat4(1.0f);
@@ -196,7 +198,7 @@ void practiceScene::Render()
 	ModelShader.setVec3("viewPos", m_camera->GetPosition());
 	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
 	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
-	model = glm::mat4(1.0f);
+	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(-90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
 	ModelShader.setMat4("model", model);
 	glActiveTexture(GL_TEXTURE0);
@@ -212,10 +214,6 @@ void practiceScene::Render()
 	ModelShader.setMat4("model", model);
 	m_planet.Draw(ModelShader);
 
-	for (auto& obj : m_objects)
-	{
-		cube->Draw(shader);
-	}
 
 	/*shader.setMat4("model", glm::rotate(glm::mat4(1.0f),glm::radians(90.0f),glm::vec3(1.0f,0.f,0.f)));
 	glActiveTexture(GL_TEXTURE0);
@@ -230,7 +228,7 @@ void practiceScene::Render()
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
 	lightCubeShader.setMat4("projection", projection);
 	lightCubeShader.setMat4("view", view);
-	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::mat4(1.0f);
 	// render the cube
 	for (int i = 0; i < 4; i++)
 	{
@@ -264,9 +262,10 @@ void practiceScene::mouse_motion(int x, int y)
 	lastY = ypos;
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
-	m_space_ship.Rotate_x(m_camera->GetPitch());
-	m_space_ship.Rotate_y(m_camera->GetYaw());
-	m_space_ship.Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
+	static_cast<Spaceship*>(m_space_ship)->Rotate_x(m_camera->GetPitch());
+	static_cast<Spaceship*>(m_space_ship)->Rotate_y(m_camera->GetYaw());
+	static_cast<Spaceship*>(m_space_ship)->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
+	m_space_ship->Update();
 	// 마우스를 중앙으로 이동
 
 	glutWarpPointer(centerX, centerY);
