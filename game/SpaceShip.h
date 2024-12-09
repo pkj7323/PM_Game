@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "object.h"
-#include "practiceScene.h"
 
+class Camera;
 class SpaceShip:public object
 {
 public:
@@ -16,11 +16,15 @@ public:
 	void OnCollisionEnd(const string& group, object* other) override;
 
 
-	void Move(glm::vec3 position, glm::vec3 up, glm::vec3 front);
+	void Move(const Camera& camera);
 	glm::vec3 GetLightPos1() const;
 	glm::vec3 GetLightPos2() const;
+	glm::vec3 GetLightPos3() const;
 	
 	void ProcessMouseMovement(const Camera& camera);
 
 private:
+	float up_parm = 2.f;
+	float front_parm = 2.5f;
+	bool bool_TP_to_FP = true;
 };

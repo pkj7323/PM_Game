@@ -7,13 +7,16 @@
 #include "CollisionManager.h"
 #include "Cube.h"
 #include "Earth.h"
+#include "Mars.h"
 #include "Mercury.h"
 #include "ModelManager.h"
 #include "Plane.h"
-#include "Pyramid.h"
 #include "SpaceShip.h"
 #include "Venus.h"
-
+#include "SoundManager.h"
+#include "Sun.h"
+#include "FrameBuffer.h"
+#include "SkyBox.h"
 
 practiceScene::practiceScene()
 {
@@ -34,7 +37,9 @@ void practiceScene::Enter()
 	m_objects.emplace_back(new Venus);
 	m_objects.emplace_back(new Earth);
 	m_objects.emplace_back(new Plane);
-
+	m_objects.emplace_back(new Mars);
+	m_skyBox = new SkyBox;
+	m_frameBuffer = new FrameBuffer;
 	for (int i = 0; i< 10; i++)
 	{
 		cubes.emplace_back(new Cube);
@@ -46,6 +51,7 @@ void practiceScene::Enter()
 	
 	ShaderManager::Instance()->SetUniformModel("ModelShader", pointLightPositions, *m_camera);
 	ShaderManager::Instance()->SetUniformModel("ModelShader_geometry", pointLightPositions, *m_camera);
+	SoundManager::Instance()->Play("bgm");
 }
 
 void practiceScene::Exit()
@@ -76,7 +82,7 @@ void practiceScene::Update()
 	{
 		obj->Update();
 	}
-	m_space_ship->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
+	m_space_ship->Move(*m_camera);
 	m_space_ship->Update();
 	pointLightPositions[0] = m_space_ship->GetLightPos1();
 	pointLightPositions[1] = m_space_ship->GetLightPos2();
@@ -84,7 +90,7 @@ void practiceScene::Update()
 
 void practiceScene::Render()
 {
-	m_frameBuffer.Bind();
+	m_frameBuffer->Bind();
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);//배경을 0.1,0.1,0.1로 설정
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -95,7 +101,7 @@ void practiceScene::Render()
 	glm::mat4 model = glm::mat4(1.0f);
 	shader.Use();
 	shader.setVec3("viewPos", m_camera->GetPosition());
-	shader.setVec3("spotLight.position", m_camera->GetPosition());
+	shader.setVec3("spotLight.position", m_space_ship->GetLightPos3());
 	shader.setVec3("spotLight.direction", m_camera->GetFront());
 	shader.setBool("blinn", blinn);
 	shader.setMat4("projection", projection);
@@ -138,9 +144,9 @@ void practiceScene::Render()
 	shader.Use();
 	shader.setMat4("projection", projection);
 	shader.setMat4("view", view);
-	m_skyBox.Draw(shader);
+	m_skyBox->Draw(shader);
 
-	m_frameBuffer.Render();
+	m_frameBuffer->Render();
 	glutSwapBuffers();
 }
 

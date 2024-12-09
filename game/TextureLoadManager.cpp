@@ -20,7 +20,9 @@ void TextureLoadManager::Init()
 	Load("container2_specular", "container2_specular.png");
 	Load("marble", "resources/marble.jpg");
 	Load("metal", "resources/metal.png");
-	Load("space_ship", "resources/space_ship_test_color.png");
+
+	Load("mars", "resources/2k_mars.jpg");
+	Load("mars_normal_map", "resources/2k_mars_normal.png");
 
 	Load("earth", "resources/earth/earth.jpg");
 	Load("earth_normal_map", "resources/earth/earth_normal_map.jpg");

@@ -82,7 +82,7 @@ void ShaderManager::SetUniformModel(const string& name, const vector<glm::vec3>&
 	ModelShader.setBool("blinn", true);
 	ModelShader.setFloat("material.shininess", 32.0f);
 
-	ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	ModelShader.setVec3("dirLight.direction", 0.5f, -1.0f, 0.5f);
 	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);

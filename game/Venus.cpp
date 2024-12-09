@@ -5,8 +5,8 @@
 
 Venus::Venus() : object("sphere")
 {
-	pos = { 20,0,0 };
-	scale = { 0.9,0.9,0.9 };
+	pos = { 20,0,-60 };
+	scale = { 1.5,1.5,1.5 };
 }
 
 Venus::~Venus()
@@ -20,8 +20,6 @@ void Venus::Init()
 
 void Venus::Update()
 {
-	pos = glm::rotate(glm::mat4(1.0f), glm::radians(0.6f), glm::vec3(0.f, 1.f, 0.f))
-		* glm::vec4(pos, 1.0f);
 	object::Update();
 }
 

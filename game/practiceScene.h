@@ -1,16 +1,14 @@
 ﻿#pragma once
 #include "Camera.h"
-#include "FrameBuffer.h"
 #include "Scene.h"
 #include "Model.h"
-#include "SkyBox.h"
 
+
+class SkyBox;
+class Sound;
 class SpaceShip;
 class Cube;
-class Pyramid;
-
-
-
+class FrameBuffer;
 class practiceScene : public Scene
 {
 public:
@@ -40,18 +38,18 @@ private:
 	Model m_cube;//임시 조명 위치용
 	Model m_model;//임시 객체 테스트용
 	Model m_sphere;// 임시 구체 테스트용
-	//Pyramid* m_pyramid;
+
 	vector<Cube*> cubes;
-	SkyBox m_skyBox;
+	SkyBox* m_skyBox;
 
-
+	
 
 
 	glm::vec3 ambient_light{ 0.05,0.05,0.05 };
 	glm::vec3 specular_light{ 1.0f,1.0f,1.0f };
 
 	SpaceShip* m_space_ship;
-	FrameBuffer m_frameBuffer;
+	FrameBuffer* m_frameBuffer;
 	vector<glm::vec3> pointLightPositions;
 
 
