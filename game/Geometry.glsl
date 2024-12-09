@@ -1,11 +1,20 @@
 #version 460 core
 layout (triangles) in;
-in VS_OUT {
-    vec2 texCoords;
-} gs_in[];
 layout (triangle_strip, max_vertices = 3) out;
 
-out vec2 TexCoords;
+in VS_OUT{
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoords;
+	vec3 Tangent;
+} vs_out[];
+
+
+out vec3 Normal;
+out	vec3 FragPos;
+out	vec2 TexCoords;
+out vec3 Tangent;
+
 
 uniform float time;
 vec4 explode(vec4 pos,vec3 normal)
@@ -22,16 +31,22 @@ vec3 getNormal()
 }
 void main()
 {
+
+	Normal = vs_out[0].Normal;
+	FragPos = vs_out[0].FragPos;
+	Tangent = vs_out[0].Tangent;
+	
 	vec3 normal = getNormal();
 
 	gl_Position = explode(gl_in[0].gl_Position, normal);
-	TexCoords = gs_in[0].texCoords;
+	TexCoords = vs_out[0].TexCoords;
 	EmitVertex();
 	gl_Position = explode(gl_in[1].gl_Position, normal);
-	TexCoords = gs_in[1].texCoords;
+	TexCoords = vs_out[1].TexCoords;
 	EmitVertex();
 	gl_Position = explode(gl_in[2].gl_Position, normal);
-	TexCoords = gs_in[2].texCoords;
+	TexCoords = vs_out[2].TexCoords;
 	EmitVertex();
 	EndPrimitive();
+	
 }

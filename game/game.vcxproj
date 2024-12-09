@@ -121,7 +121,6 @@
     <None Include="framebuffer_screen_vs.glsl" />
     <None Include="Geometry.glsl" />
     <None Include="model_fragment.glsl" />
-    <None Include="model_geometry.glsl" />
     <None Include="model_vertex.glsl" />
     <None Include="OldFragment.glsl" />
     <None Include="OldVertex.glsl" />

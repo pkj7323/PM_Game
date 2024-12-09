@@ -58,6 +58,8 @@ void Core::Release()
 	TextureLoadManager::Instance()->Release();
 	ShaderManager::Instance()->Release();
 	ModelManager::Instance()->Release();
+
+	exit(0);
 }
 
 void Core::mouse_motion(int x, int y)

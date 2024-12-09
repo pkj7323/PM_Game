@@ -5,6 +5,7 @@
 #include "ShaderManager.h"
 #include "Camera.h"
 #include "CollisionManager.h"
+#include "Core.h"
 #include "Cube.h"
 #include "Earth.h"
 #include "Mars.h"
@@ -17,6 +18,7 @@
 #include "Sun.h"
 #include "FrameBuffer.h"
 #include "SkyBox.h"
+#include "TimeManager.h"
 
 practiceScene::practiceScene()
 {
@@ -50,7 +52,7 @@ void practiceScene::Enter()
 	m_cube = ModelManager::Instance()->GetModel("cube");
 	
 	ShaderManager::Instance()->SetUniformModel("ModelShader", pointLightPositions, *m_camera);
-	ShaderManager::Instance()->SetUniformModel("ModelShader_geometry", pointLightPositions, *m_camera);
+	ShaderManager::Instance()->SetUniformModel("geo_ModelShader", pointLightPositions, *m_camera);
 	SoundManager::Instance()->Play("bgm");
 }
 
@@ -74,7 +76,7 @@ void practiceScene::Update()
 {
 	if (KEY_TAP(KEY::ESC))
 	{
-		exit(0);
+		Core::Instance()->Release();
 	}
 	
 	m_camera->Move();
@@ -101,7 +103,7 @@ void practiceScene::Render()
 	glm::mat4 model = glm::mat4(1.0f);
 	shader.Use();
 	shader.setVec3("viewPos", m_camera->GetPosition());
-	shader.setVec3("spotLight.position", m_space_ship->GetLightPos3());
+	shader.setVec3("spotLight.position", m_space_ship->GetLightPos3());//우주선의 앞부분 위치
 	shader.setVec3("spotLight.direction", m_camera->GetFront());
 	shader.setBool("blinn", blinn);
 	shader.setMat4("projection", projection);
@@ -123,6 +125,10 @@ void practiceScene::Render()
 		obj->Draw(shader);
 	}
 	m_space_ship->Draw(shader);
+
+
+
+
 
 	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)

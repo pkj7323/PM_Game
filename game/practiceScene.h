@@ -59,4 +59,5 @@ private:
 
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
+	float time = 0;
 };
