@@ -5,16 +5,14 @@
 #include "ShaderManager.h"
 #include "Camera.h"
 #include "CollisionManager.h"
-#include "TextureLoadManager.h"
 #include "Cube.h"
 #include "Earth.h"
 #include "Mercury.h"
 #include "ModelManager.h"
 #include "Plane.h"
 #include "Pyramid.h"
-#include "Snow.h"
+#include "SpaceShip.h"
 #include "Venus.h"
-#include "spaceship.h"
 
 
 practiceScene::practiceScene()
@@ -23,7 +21,6 @@ practiceScene::practiceScene()
 	pointLightPositions.emplace_back(2.3f, -3.3f, -4.0f);
 	pointLightPositions.emplace_back(-4.0f, 2.0f, -12.0f);
 	pointLightPositions.emplace_back(0.0f, 0.0f, -3.0f);
-	pointLightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 practiceScene::~practiceScene()
@@ -42,8 +39,8 @@ void practiceScene::Enter()
 	{
 		cubes.emplace_back(new Cube);
 	}
-	m_pyramid = new Pyramid;
-	m_space_ship = new Spaceship;
+	
+	m_space_ship = new SpaceShip;
 
 	m_cube = ModelManager::Instance()->GetModel("cube");
 	
@@ -54,6 +51,16 @@ void practiceScene::Enter()
 void practiceScene::Exit()
 {
 	delete m_camera;
+	for(auto& obj : m_objects)
+	{
+		delete obj;
+	}
+	m_objects.clear();
+	for (auto& cube : cubes)
+	{
+		delete cube;
+	}
+	
 
 }
 
@@ -63,86 +70,16 @@ void practiceScene::Update()
 	{
 		exit(0);
 	}
-	if (KEY_TAP(KEY::F2))
-	{
-		m_pyramid->SetCount(++count);
-		m_pyramid->Sierpinsky();
-	}
-	if (KEY_HOLD(KEY::Y))
-	{
-		m_camera->OrbitAroundOrigin(1.0f);
-	}
-	if (KEY_TAP(KEY::E))
-	{
-		for (int i = 0; i < 100; i++)
-		{
-			m_objects.emplace_back(new Snow);
-		}
-	}
-	if (KEY_TAP(KEY::R))
-	{
-		light_rotation = !light_rotation;
-	}
-	if (KEY_TAP(KEY::N))
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			glm::vec3 dir = glm::normalize(pointLightPositions[i]);
-			pointLightPositions[i] = glm::translate(glm::mat4(1.0f), dir)
-				* glm::vec4(pointLightPositions[i], 1.0);
-		}
-	}
-	if (KEY_TAP(KEY::F))
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			glm::vec3 dir = glm::normalize(pointLightPositions[i]);
-			pointLightPositions[i] = glm::translate(glm::mat4(1.0f), -dir)
-				* glm::vec4(pointLightPositions[i], 1.0);
-		}
-	}
-	if (KEY_TAP(KEY::PLUS))
-	{
-		ambient_light += 0.1f;
-		pointLightColor -= 0.1f;
-	}
-	if (KEY_TAP(KEY::MINUS))
-	{
-		ambient_light -= 0.1f;
-		pointLightColor -= 0.1f;
-	}
-	if (KEY_TAP(KEY::M))
-	{
-		light_on = !light_on;
-		if (light_on)
-		{
-			ambient_light = { 0.05,0.05,0.05 };
-			specular_light = { 1.0f,1.0f,1.0f };
-			pointLightColor = { 1.0f,1.0f,1.0f };
-		}
-		else
-		{
-			ambient_light = { 0.0f,0.0f,0.0f };
-			specular_light = { 0.0f,0.0f,0.0f };
-			pointLightColor = { 0.0f,0.0f,0.0f };
-		}
-	}
-	if (KEY_TAP(KEY::C))
-	{
-		pointLightColor = { randomFloats(dre),randomFloats(dre),randomFloats(dre) };
-	}
-	if (KEY_TAP(KEY::F1))
-	{
-		do_update = !do_update;
-	}
+	
 	m_camera->Move();
-	static_cast<Spaceship*>(m_space_ship)->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
-	m_space_ship->Update();
-	pointLightPositions[0] = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0, 1, 0)) * glm::vec4(pointLightPositions[0],1.0);
 	for (auto& obj : m_objects)
 	{
 		obj->Update();
 	}
+	m_space_ship->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
+	m_space_ship->Update();
+	pointLightPositions[0] = m_space_ship->GetLightPos1();
+	pointLightPositions[1] = m_space_ship->GetLightPos2();
 }
 
 void practiceScene::Render()
@@ -155,6 +92,7 @@ void practiceScene::Render()
 	auto shader = ShaderManager::Instance()->GetShader("ModelShader");
 	auto projection = m_camera->GetPerspectiveMatrix();
 	auto view = m_camera->GetViewMatrix();
+	glm::mat4 model = glm::mat4(1.0f);
 	shader.Use();
 	shader.setVec3("viewPos", m_camera->GetPosition());
 	shader.setVec3("spotLight.position", m_camera->GetPosition());
@@ -164,65 +102,21 @@ void practiceScene::Render()
 	shader.setMat4("view", view);
 	shader.setVec3("pointLights[0].position", pointLightPositions[0]);
 	shader.setVec3("pointLights[0].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[0].diffuse", pointLightColor);
+	shader.setVec3("pointLights[0].diffuse", glm::vec3(0.8));
 	shader.setVec3("pointLights[1].position", pointLightPositions[1]);
 	shader.setVec3("pointLights[1].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[1].diffuse", pointLightColor);
+	shader.setVec3("pointLights[1].diffuse", glm::vec3(0.8));
 	shader.setVec3("pointLights[2].position", pointLightPositions[2]);
 	shader.setVec3("pointLights[2].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[2].diffuse", pointLightColor);
+	shader.setVec3("pointLights[2].diffuse", glm::vec3(0.8));
 	shader.setVec3("pointLights[3].position", pointLightPositions[3]);
 	shader.setVec3("pointLights[3].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[3].diffuse", pointLightColor);
+	shader.setVec3("pointLights[3].diffuse", glm::vec3(0.8));
 	for (auto& obj : m_objects)
 	{
 		obj->Draw(shader);
 	}
-	m_pyramid->Draw(shader);
 	m_space_ship->Draw(shader);
-	/*shader = ShaderManager::Instance()->GetShader("PlanetShader");
-	shader.Use();
-	shader.setMat4("projection", projection);
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 10.0f, -100.0f));
-	shader.setMat4("model", model);
-
-	m_planet.Draw(shader);*/
-
-	Shader ModelShader = ShaderManager::Instance()->GetShader("ModelShader");
-	ModelShader.Use();  
-	ModelShader.setInt("material.diffuse", 0);
-	ModelShader.setInt("material.normal", 2);
-	ModelShader.setMat4("projection", projection);
-	ModelShader.setMat4("view", view);
-	ModelShader.setVec3("viewPos", m_camera->GetPosition());
-	ModelShader.setVec3("spotLight.position", m_camera->GetPosition());
-	ModelShader.setVec3("spotLight.direction", m_camera->GetFront());
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(-90.0f), glm::normalize(glm::vec3(1.0, 0.0, 0.0))); // rotate the quad to show normal mapping from multiple directions
-	ModelShader.setMat4("model", model);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("diffuseWall"));
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("normalWall"));
-	renderQuad();
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-
-
-	model = glm::mat4(1.0f);
-	ModelShader.setMat4("model", model);
-	m_planet.Draw(ModelShader);
-
-
-	/*shader.setMat4("model", glm::rotate(glm::mat4(1.0f),glm::radians(90.0f),glm::vec3(1.0f,0.f,0.f)));
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("brick_wall"));
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, TextureLoadManager::Instance()->GetTexture("brick_wall_normal"));
-	renderQuad();// 노멀 맵 테스트용 쿼드
-	glBindTexture(GL_TEXTURE_2D, 0);*/
-
 
 	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
@@ -239,6 +133,13 @@ void practiceScene::Render()
 		lightCubeShader.setMat4("model", model);
 		m_cube.Draw(lightCubeShader);
 	}
+	shader = ShaderManager::Instance()->GetShader("skyboxShader");
+	view = glm::mat4(glm::mat3(m_camera->GetViewMatrix())); //존나 중요함 이거 없으면 스카이박스가 카메라를 따라다님
+	shader.Use();
+	shader.setMat4("projection", projection);
+	shader.setMat4("view", view);
+	m_skyBox.Draw(shader);
+
 	m_frameBuffer.Render();
 	glutSwapBuffers();
 }
@@ -250,29 +151,27 @@ void practiceScene::mouse_motion(int x, int y)
 
 	if (firstMouse)
 	{
-		lastX = xpos;
-		lastY = ypos;
+		last_x_ = xpos;
+		last_y_ = ypos;
 		firstMouse = false;
 	}
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	float xoffset = xpos - last_x_;
+	float yoffset = last_y_ - ypos; // reversed since y-coordinates go from bottom to top
 
-	lastX = xpos;
-	lastY = ypos;
+	last_x_ = xpos;
+	last_y_ = ypos;
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
-	static_cast<Spaceship*>(m_space_ship)->Rotate_x(m_camera->GetPitch());
-	static_cast<Spaceship*>(m_space_ship)->Rotate_y(m_camera->GetYaw());
-	static_cast<Spaceship*>(m_space_ship)->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
-	m_space_ship->Update();
+	m_space_ship->ProcessMouseMovement(*m_camera);
+	
 	// 마우스를 중앙으로 이동
 
-	glutWarpPointer(centerX, centerY);
+	glutWarpPointer(center_x_, center_y_);
 
 	// 중앙으로 이동한 후의 위치를 lastX, lastY로 설정
-	lastX = static_cast<float>(centerX);
-	lastY = static_cast<float>(centerY);
+	last_x_ = static_cast<float>(center_x_);
+	last_y_ = static_cast<float>(center_y_);
 
 }
 
@@ -283,16 +182,16 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 	CollisionManager::Instance()->Mouse(button, state, x, y, *m_camera);
 	if (firstMouse)
 	{
-		lastX = xpos;
-		lastY = ypos;
+		last_x_ = xpos;
+		last_y_ = ypos;
 		firstMouse = false;
 	}
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	float xoffset = xpos - last_x_;
+	float yoffset = last_y_ - ypos; // reversed since y-coordinates go from bottom to top
 
-	lastX = xpos;
-	lastY = ypos;
+	last_x_ = xpos;
+	last_y_ = ypos;
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 }

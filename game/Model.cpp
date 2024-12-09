@@ -1,9 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Model.h"
-#include "Shader.h"
 
-#include "KeyManager.h"
-#include "TimeManager.h"
 
 Model::Model(const string& path, bool gamma) : gammaCorrection(gamma)
 {
@@ -31,7 +28,6 @@ void Model::ChangeMode(GLuint mode)
 		mesh.mode = mode;
 	}
 }
-
 
 void Model::loadModel(string path)
 {

@@ -41,12 +41,12 @@ void TextureLoadManager::Init()
 	Load("window", "resources/blending_transparent_window.png");
 	vector<std::string> faces
 	{
-		"resources/right.jpg",
-		"resources/left.jpg",
-		"resources/top.jpg",
-		"resources/bottom.jpg",
-		"resources/front.jpg",
-		"resources/back.jpg"
+		"resources/skybox/right.png",
+		"resources/skybox/left.png",
+		"resources/skybox/top.png",
+		"resources/skybox/bottom.png",
+		"resources/skybox/front.png",
+		"resources/skybox/back.png"
 	};
 	loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
 	//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
