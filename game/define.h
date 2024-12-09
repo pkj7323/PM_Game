@@ -7,8 +7,8 @@
 			return &instance;\
 			}\
 			private:\
-			type() = default;\
-			~type() = default;
+			type();\
+			~type();
 
 #define KEY_CHECK(key, state) KeyManager::Instance()->GetKeyState(key) == state
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)

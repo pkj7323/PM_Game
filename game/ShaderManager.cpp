@@ -2,7 +2,10 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "Camera.h"
-
+ShaderManager::ShaderManager()
+= default;
+ShaderManager::~ShaderManager()
+= default;
 
 void ShaderManager::Init()
 {

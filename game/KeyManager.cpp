@@ -55,6 +55,10 @@ int arrVK[(int)KEY::LAST]{
 	//LAST
 };
 
+KeyManager::KeyManager()
+= default;
+KeyManager::~KeyManager()
+= default;
 
 void KeyManager::Init()
 {

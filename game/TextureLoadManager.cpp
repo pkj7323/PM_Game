@@ -4,7 +4,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-
+TextureLoadManager::TextureLoadManager()
+= default;
+TextureLoadManager::~TextureLoadManager()
+= default;
 
 void TextureLoadManager::Init()
 {

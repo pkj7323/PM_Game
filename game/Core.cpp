@@ -9,6 +9,10 @@
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
 
+Core::Core()
+= default;
+Core::~Core()
+= default;
 
 
 void Core::Init()

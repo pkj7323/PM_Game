@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "TimeManager.h"
 
-
-
+TimeManager::TimeManager()
+= default;
+TimeManager::~TimeManager()
+= default;
 
 void TimeManager::Init()
 {

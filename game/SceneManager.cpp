@@ -2,9 +2,24 @@
 #include "SceneManager.h"
 #include "IntroScene.h"
 #include "practiceScene.h"
+SceneManager::SceneManager()
+= default;
+SceneManager::~SceneManager()
+{
+	delete m_CurrScene;
+}
 
-
-
+template <typename T, typename>
+void SceneManager::Enter()
+{
+	if (m_CurrScene != nullptr)
+	{
+		m_CurrScene->Exit();
+		delete m_CurrScene;
+	}
+	m_CurrScene = new T;
+	m_CurrScene->Enter();
+}
 void SceneManager::Init()
 {
 	m_CurrScene = nullptr;

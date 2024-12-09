@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
 
+CollisionManager::CollisionManager()
+= default;
+CollisionManager::~CollisionManager()
+{
+	Release();
+}
 
 
 void CollisionManager::Init()

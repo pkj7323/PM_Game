@@ -30,6 +30,11 @@ using std::function;
 #include <gl/glm/ext.hpp>
 #include <gl/glm/gtc/matrix_transform.hpp>
 
+#include <fmod.h>
+#include <fmod.hpp>
+#include <fmod_errors.h>
+
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
