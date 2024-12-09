@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "SpaceShip.h"
+#include "KeyManager.h"
 
 SpaceShip::SpaceShip() : object("space_ship")
 {
@@ -21,6 +22,27 @@ void SpaceShip::Init(const string& name)
 
 void SpaceShip::Update()
 {
+	if (KEY_HOLD(KEY::A)) {
+		if (rotation.z < 45) {
+			rotation.z += 0.5f;;
+		}
+
+	}
+	else {
+		if (rotation.z >= 0) {
+			rotation.z -= 0.5f;
+		}
+	}
+	if (KEY_HOLD(KEY::D)) {
+		if (rotation.z > -45) {
+			rotation.z -= 0.5f;;
+		}
+	}
+	else {
+		if (rotation.z <= 0) {
+			rotation.z += 0.5f;;
+		}
+	}
 	object::Update();
 }
 

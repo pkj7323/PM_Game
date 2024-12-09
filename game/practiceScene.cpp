@@ -76,6 +76,7 @@ void practiceScene::Update()
 	{
 		obj->Update();
 	}
+	m_space_ship->Move(m_camera->GetPosition(), m_camera->GetUp(), m_camera->GetFront());
 	m_space_ship->Update();
 	pointLightPositions[0] = m_space_ship->GetLightPos1();
 	pointLightPositions[1] = m_space_ship->GetLightPos2();
