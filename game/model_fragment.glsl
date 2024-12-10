@@ -56,12 +56,12 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 uniform Material material;
 
-uniform bool blinn;
+
 
 // function prototypes
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 vec3 CalcBumpNormal()
 {
@@ -90,35 +90,32 @@ void main()
 	// main() 함수에서는 모든 계산된 색상을 합산하여 이 프래그먼트의 최종 색상을 만듭니다.
 	// =======================================================
 	// phase 1: directional lighting(방향성 조명, 태양광)
-	vec3 result = CalcDirLight(dirLight, norm, viewDir,blinn);
+	vec3 result = CalcDirLight(dirLight, norm, viewDir);
 	//vec3 result = vec3(0);
 	// phase 2: point lights ( 점 조명 )
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir,blinn);    
+		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
 	// phase 3: spot light (손전등)
-	result += CalcSpotLight(spotLight, norm, FragPos, viewDir,blinn);    
+	result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
 	
 	FragColor = vec4(result, 1.0);
 }
 
 // 방향성 조명을 사용할 때 색상을 계산합니다.
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
 	vec3 lightDir = normalize(-light.direction);
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0);
 	// specular shading
 	float spec = 0.0;
-	if (blinn)
-	{
-		vec3 halfDir = normalize(lightDir + viewDir);
-		spec = pow(max(dot(normal, halfDir), 0.0), material.shininess);
-	}	
-	else
-	{
-		vec3 reflectDir = reflect(-lightDir, normal);
-		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	}
+	vec3 halfDir = normalize(lightDir + viewDir);
+	spec = pow(max(dot(normal, halfDir), 0.0), material.shininess);
+//	else
+//	{
+//		vec3 reflectDir = reflect(-lightDir, normal);
+//		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+//	}
 	if (dot(viewDir, normal) < 0.0f) {
 		diff = spec = 0.0f;
 	}
@@ -132,23 +129,22 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,bool blinn)
 }
 
 // 점 조명을 사용할 때 색상을 계산합니다.
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
 	vec3 lightDir = normalize(light.position - fragPos);
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0);
 	// specular shading
 	float spec = 0.0;
-	if (blinn)
-	{
-		vec3 halfDir = normalize(lightDir + viewDir);
-		spec = pow(max(dot(normal, halfDir), 0.0), material.shininess);
-	}	
-	else
-	{
-		vec3 reflectDir = reflect(-lightDir, normal);
-		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	}
+	
+	vec3 halfDir = normalize(lightDir + viewDir);
+	spec = pow(max(dot(normal, halfDir), 0.0), material.shininess);
+		
+//	else
+//	{
+//		vec3 reflectDir = reflect(-lightDir, normal);
+//		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+//	}
 	if (dot(viewDir, normal) < 0.0f) {
 		diff = spec = 0.0f;
 	}
@@ -168,23 +164,22 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bo
 }
 
 // 스포트라이트 조명을 사용할 때 색상을 계산합니다.
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir,bool blinn)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
 	vec3 lightDir = normalize(light.position - fragPos);
 	// diffuse shading
 	float diff = max(dot(normal, lightDir), 0.0);
 	// specular shading
 	float spec = 0.0;
-	if (blinn)
-	{
-		vec3 halfDir = normalize(lightDir + viewDir);
-		spec = pow(max(dot(normal, halfDir), 0.0), material.shininess);
-	}	
-	else
-	{
-		vec3 reflectDir = reflect(-lightDir, normal);
-		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	}
+	
+	vec3 halfDir = normalize(lightDir + viewDir);
+	spec = pow(max(dot(normal, halfDir), 0.0), material.shininess);
+		
+//	else
+//	{
+//		vec3 reflectDir = reflect(-lightDir, normal);
+//		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+//	}
 	if (dot(viewDir, normal) < 0.0f) {
 		diff = spec = 0.0f;
 	}

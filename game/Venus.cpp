@@ -2,10 +2,11 @@
 #include "Venus.h"
 
 #include "TextureLoadManager.h"
+#include "TimeManager.h"
 
 Venus::Venus() : object("sphere")
 {
-	pos = { 20,0,-60 };
+	pos = { 80 + 100,0,-40 };
 	scale = { 1.5,1.5,1.5 };
 }
 
@@ -20,6 +21,8 @@ void Venus::Init()
 
 void Venus::Update()
 {
+	pos = glm::rotate(glm::mat4(1.0f), glm::radians(1.61f * DT), glm::vec3(0, 1, 0)) * glm::vec4(pos, 1.0f);
+	parentMatrix = glm::translate(glm::mat4(1.0f), { -200,0,-40 });
 	object::Update();
 }
 

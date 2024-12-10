@@ -4,6 +4,7 @@
 #include "Model.h"
 
 
+class Sun;
 class SkyBox;
 class Sound;
 class SpaceShip;
@@ -39,23 +40,22 @@ private:
 	Model m_model;//임시 객체 테스트용
 	Model m_sphere;// 임시 구체 테스트용
 
-	vector<Cube*> cubes;
+
 	SkyBox* m_skyBox;
 
-	
+	Sun* sun;
 
 
-	glm::vec3 ambient_light{ 0.05,0.05,0.05 };
-	glm::vec3 specular_light{ 1.0f,1.0f,1.0f };
+	glm::vec3 sun_ambient{ 0.05f,0.05f,0.05f };
+	glm::vec3 sun_diffuse{ 10.0f,10.0f,10.0f };
+	glm::vec3 sun_specular{ 1.0f,1.0f,1.0f };
 
 	SpaceShip* m_space_ship;
 	FrameBuffer* m_frameBuffer;
 	vector<glm::vec3> pointLightPositions;
 
 
-	vector<object*> m_objects;
-
-	bool blinn = true;
+	bool blinn = false;
 
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;

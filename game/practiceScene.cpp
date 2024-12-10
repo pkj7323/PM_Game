@@ -18,6 +18,7 @@
 #include "Sun.h"
 #include "FrameBuffer.h"
 #include "SkyBox.h"
+#include "TextureLoadManager.h"
 #include "TimeManager.h"
 
 practiceScene::practiceScene()
@@ -30,27 +31,23 @@ practiceScene::practiceScene()
 
 practiceScene::~practiceScene()
 {
+	Scene::~Scene();
 }
 
 void practiceScene::Enter()
 {
 	m_camera = new Camera;
-	m_objects.emplace_back(new Mercury);
-	m_objects.emplace_back(new Venus);
-	m_objects.emplace_back(new Earth);
-	m_objects.emplace_back(new Plane);
-	m_objects.emplace_back(new Mars);
+	m_vecObj.emplace_back(new Mercury);
+	m_vecObj.emplace_back(new Venus);
+	m_vecObj.emplace_back(new Earth);
+	m_vecObj.emplace_back(new Mars);
 	m_skyBox = new SkyBox;
 	m_frameBuffer = new FrameBuffer;
-	for (int i = 0; i< 10; i++)
-	{
-		cubes.emplace_back(new Cube);
-	}
-	
-	m_space_ship = new SpaceShip;
 
+	m_space_ship = new SpaceShip;
+	sun = new Sun;
 	m_cube = ModelManager::Instance()->GetModel("cube");
-	
+
 	ShaderManager::Instance()->SetUniformModel("ModelShader", pointLightPositions, *m_camera);
 	ShaderManager::Instance()->SetUniformModel("geo_ModelShader", pointLightPositions, *m_camera);
 	SoundManager::Instance()->Play("bgm");
@@ -59,16 +56,18 @@ void practiceScene::Enter()
 void practiceScene::Exit()
 {
 	delete m_camera;
-	for(auto& obj : m_objects)
+	delete m_skyBox;
+	delete m_frameBuffer;
+	delete m_space_ship;
+	delete sun;
+
+	for (auto& obj : m_vecObj)
 	{
 		delete obj;
 	}
-	m_objects.clear();
-	for (auto& cube : cubes)
-	{
-		delete cube;
-	}
+	m_vecObj.clear();
 	
+
 
 }
 
@@ -78,16 +77,18 @@ void practiceScene::Update()
 	{
 		Core::Instance()->Release();
 	}
-	
+
 	m_camera->Move();
-	for (auto& obj : m_objects)
+	for (auto& obj : m_vecObj)
 	{
 		obj->Update();
 	}
+	sun->Update();
 	m_space_ship->Move(*m_camera);
 	m_space_ship->Update();
 	pointLightPositions[0] = m_space_ship->GetLightPos1();
 	pointLightPositions[1] = m_space_ship->GetLightPos2();
+	pointLightPositions[2] = sun->GetPos();
 }
 
 void practiceScene::Render()
@@ -101,36 +102,24 @@ void practiceScene::Render()
 	auto projection = m_camera->GetPerspectiveMatrix();
 	auto view = m_camera->GetViewMatrix();
 	glm::mat4 model = glm::mat4(1.0f);
+
+	shader = ShaderManager::Instance()->GetShader("skyboxShader");
+	auto skyBoxView = glm::mat4(glm::mat3(m_camera->GetViewMatrix())); //존나 중요함 이거 없으면 스카이박스가 카메라를 따라다님
 	shader.Use();
-	shader.setVec3("viewPos", m_camera->GetPosition());
-	shader.setVec3("spotLight.position", m_space_ship->GetLightPos3());//우주선의 앞부분 위치
-	shader.setVec3("spotLight.direction", m_camera->GetFront());
-	shader.setBool("blinn", blinn);
+	shader.setMat4("projection", projection);
+	shader.setMat4("view", skyBoxView);
+	m_skyBox->Draw(shader);
+	
+	shader = ShaderManager::Instance()->GetShader("PlanetShader");
+	shader.Use();
+	shader.setInt("texture1", 0);
 	shader.setMat4("projection", projection);
 	shader.setMat4("view", view);
-	shader.setVec3("pointLights[0].position", pointLightPositions[0]);
-	shader.setVec3("pointLights[0].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[0].diffuse", glm::vec3(0.8));
-	shader.setVec3("pointLights[1].position", pointLightPositions[1]);
-	shader.setVec3("pointLights[1].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[1].diffuse", glm::vec3(0.8));
-	shader.setVec3("pointLights[2].position", pointLightPositions[2]);
-	shader.setVec3("pointLights[2].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[2].diffuse", glm::vec3(0.8));
-	shader.setVec3("pointLights[3].position", pointLightPositions[3]);
-	shader.setVec3("pointLights[3].ambient", ambient_light);//포인트 라이트의 주변광
-	shader.setVec3("pointLights[3].diffuse", glm::vec3(0.8));
-	for (auto& obj : m_objects)
-	{
-		obj->Draw(shader);
-	}
-	m_space_ship->Draw(shader);
+	model = glm::mat4(1.0f);
+	shader.setMat4("model", model);
+	sun->Draw(shader);
 
-
-
-
-
-	Shader lightCubeShader = ShaderManager::Instance()->GetShader("lightCubeShader");
+	Shader lightCubeShader = ShaderManager::Instance()->GetShader("LightCubeShader");
 	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
 	lightCubeShader.setMat4("projection", projection);
 	lightCubeShader.setMat4("view", view);
@@ -145,12 +134,43 @@ void practiceScene::Render()
 		lightCubeShader.setMat4("model", model);
 		m_cube.Draw(lightCubeShader);
 	}
-	shader = ShaderManager::Instance()->GetShader("skyboxShader");
-	view = glm::mat4(glm::mat3(m_camera->GetViewMatrix())); //존나 중요함 이거 없으면 스카이박스가 카메라를 따라다님
+
+	shader = ShaderManager::Instance()->GetShader("ModelShader");
 	shader.Use();
+	shader.setVec3("viewPos", m_camera->GetPosition());
+	shader.setVec3("spotLight.position", m_space_ship->GetLightPos3());//우주선의 앞부분 위치
+	shader.setVec3("spotLight.direction", m_camera->GetFront());
+	shader.setBool("blinn", blinn);
 	shader.setMat4("projection", projection);
 	shader.setMat4("view", view);
-	m_skyBox->Draw(shader);
+	shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+	shader.setVec3("pointLights[0].ambient", glm::vec3(0.05));//포인트 라이트의 주변광
+	shader.setVec3("pointLights[0].diffuse", glm::vec3(0.8));
+
+	shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+	shader.setVec3("pointLights[1].ambient", glm::vec3(0.05));//포인트 라이트의 주변광
+	shader.setVec3("pointLights[1].diffuse", glm::vec3(0.8));
+
+	shader.setVec3("pointLights[2].position", sun->GetPos());
+	shader.setVec3("pointLights[2].ambient", sun_ambient);//태양
+	shader.setVec3("pointLights[2].diffuse", sun_diffuse);
+	shader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+	shader.setFloat("pointLights[2].constant", 0.001f);
+	shader.setFloat("pointLights[2].linear", 0.001f);
+	shader.setFloat("pointLights[2].quadratic", 0.001f);
+
+
+	shader.setVec3("pointLights[3].position", pointLightPositions[3]);
+	shader.setVec3("pointLights[3].ambient", glm::vec3(0.05));//포인트 라이트의 주변광
+	shader.setVec3("pointLights[3].diffuse", glm::vec3(0.8));
+	for (auto& obj : m_vecObj)
+	{
+		obj->Draw(shader);
+	}
+	m_space_ship->Draw(shader,*m_camera);
+
+	
+
 
 	m_frameBuffer->Render();
 	glutSwapBuffers();
@@ -177,6 +197,7 @@ void practiceScene::mouse_motion(int x, int y)
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 	m_space_ship->ProcessMouseMovement(*m_camera);
 	
+	
 	// 마우스를 중앙으로 이동
 
 	glutWarpPointer(center_x_, center_y_);
@@ -191,7 +212,14 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 {
 	float xpos = static_cast<float>(x);
 	float ypos = static_cast<float>(y);
-	CollisionManager::Instance()->Mouse(button, state, x, y, *m_camera);
+
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		CollisionManager::Instance()->Mouse(button, state, x, y, *m_camera, m_space_ship->GetRayDes());
+		m_space_ship->MouseClick();
+	}
+
+
 	if (firstMouse)
 	{
 		last_x_ = xpos;
@@ -204,7 +232,7 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 
 	last_x_ = xpos;
 	last_y_ = ypos;
-
+	
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 }
 

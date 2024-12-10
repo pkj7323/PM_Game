@@ -3,10 +3,11 @@
 
 #include "Shader.h"
 #include "TextureLoadManager.h"
+#include "TimeManager.h"
 
 Earth::Earth() : object("sphere")
 {
-	pos = { 30,0,-50 };
+	pos = { 120 + 100,0,-40 };
 	scale = { 2,2,2 };
 }
 
@@ -21,6 +22,8 @@ void Earth::Init()
 
 void Earth::Update()
 {
+	pos = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * DT), glm::vec3(0, 1, 0)) * glm::vec4(pos, 1.0f);
+	parentMatrix = glm::translate(glm::mat4(1.0f), { -200,0,-40 });
 	object::Update();
 }
 

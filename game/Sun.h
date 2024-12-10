@@ -13,4 +13,6 @@ public:
 
 	void OnCollision(const string& group, object* other) override;
 	void OnCollisionEnd(const string& group, object* other) override;
+
+	glm::vec3 GetPos() { return pos; }
 };

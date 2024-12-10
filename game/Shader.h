@@ -49,7 +49,6 @@ public:
     void setMat3(const std::string& name, const glm::mat3& mat) const;
     // ------------------------------------------------------------------------
     void setMat4(const std::string& name, const glm::mat4& mat) const;
-	
 private:
 	GLint	make_fragmentShaders(const string& fragmentfile);
 	GLint	make_vertexShaders(const string& vertexfile);
@@ -57,6 +56,5 @@ private:
 	string	filetobuf(const string& filename);
 private:
 	GLuint	shaderProgramID; //--- 세이더 프로그램이름
-	
 
 };

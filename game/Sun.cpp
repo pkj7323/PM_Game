@@ -5,8 +5,8 @@
 
 Sun::Sun() : object("sphere")
 {
-	pos = { -30,50,-50 };
-	scale = { 2,2,2 };
+	pos = { -200,0,-40 };
+	scale = { 20,20,20 };
 }
 
 Sun::~Sun()

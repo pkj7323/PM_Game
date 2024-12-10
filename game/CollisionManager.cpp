@@ -98,7 +98,7 @@ bool CollisionManager::CollisionCheck(const string& group, object* left, object*
 	return false;
 }
 
-void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& camera)
+void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& camera,glm::vec3& collision_point)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -120,7 +120,7 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 				{
 					return;
 				}*/
-				if (RayIntersectsSphere(ray_position, ray_direction, a->GetBS(), camera))
+				if (RayIntersectsSphere(ray_position, ray_direction, a->GetBS(), camera, collision_point))
 				{
 					a->OnCollision(fst, nullptr);
 				}
@@ -131,17 +131,18 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 				{
 					return;
 				}*/
-				if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera))
+				if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera, collision_point))
 				{
 					b->OnCollision(fst, nullptr);
 				}
 			}
 
 		}
+		collision_point = ray_position + ray_direction;//debug
 	}
 }
 bool CollisionManager::RayIntersectsSphere(const glm::vec3& ray_pos, const glm::vec3& ray_dir,
-	const BoundingSphere& bs, const Camera& camera)
+	const BoundingSphere& bs, const Camera& camera, glm::vec3& collision_point)
 {
 	glm::vec3 d = ray_dir;
 	glm::vec3 s = ray_pos;
@@ -170,6 +171,7 @@ bool CollisionManager::RayIntersectsSphere(const glm::vec3& ray_pos, const glm::
 		{
 			return false;
 		}
+		collision_point = s + t * d;
 		return true;
 	}
 

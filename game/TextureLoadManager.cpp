@@ -44,6 +44,7 @@ void TextureLoadManager::Init()
 
 	Load("cyan", "resources/Cyan.png");
 	Load("window", "resources/blending_transparent_window.png");
+	Load("laser_effect", "resources/laser_effect.png");
 	vector<std::string> faces
 	{
 		"resources/skybox/right.png",

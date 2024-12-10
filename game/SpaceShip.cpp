@@ -2,6 +2,10 @@
 #include "SpaceShip.h"
 #include "KeyManager.h"
 #include "Camera.h"
+#include "TextureLoadManager.h"
+#include "Shader.h"
+#include "ShaderManager.h"
+#include "TimeManager.h"
 
 SpaceShip::SpaceShip() : object("space_ship")
 {
@@ -63,9 +67,50 @@ void SpaceShip::Update()
 	object::Update();
 }
 
-void SpaceShip::Draw(Shader& shader)
+void SpaceShip::Draw(Shader& shader,const Camera& c)
 {
 	object::Draw(shader);
+	if (is_fire)
+	{
+		shader = ShaderManager::Instance()->GetShader("PlanetShader");
+		shader.Use();
+		shader.setMat4("view", c.GetViewMatrix());
+		shader.setMat4("projection", c.GetPerspectiveMatrix());
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, GetLightPos3());
+		model = glm::scale(model, glm::vec3(0.5f));
+		shader.setMat4("model", model);
+		TextureLoadManager::Instance()->Unbind(2);
+		TextureLoadManager::Instance()->Use("laser_effect");
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		laser_effect.Draw(shader);
+		glDisable(GL_BLEND);
+		TextureLoadManager::Instance()->Unbind(0);
+		if (m_rayDes != glm::vec3{0,0,0})
+		{
+			shader = ShaderManager::Instance()->GetShader("LightCubeShader");
+			shader.Use();
+			shader.setMat4("view", c.GetViewMatrix());
+			shader.setMat4("projection", c.GetPerspectiveMatrix());
+			model = glm::mat4(1.0f);
+			
+			shader.setMat4("model", model);
+			glBegin(GL_LINE_STRIP);
+			glVertex3f(GetLightPos3().x,GetLightPos3().y,GetLightPos3().z);
+			glVertex3f(m_rayDes.x, m_rayDes.y, m_rayDes.z);
+			glEnd();
+		}
+
+
+		Timer += DT;
+		if (Timer > 0.1f)
+		{
+			Timer = 0.f;
+			m_rayDes = { 0,0,0 };
+			is_fire = false;
+		}
+	}
 }
 
 
@@ -109,7 +154,7 @@ glm::vec3 SpaceShip::GetLightPos3() const
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = 0.0f;
 	lightPos.y = 1.f;
-	lightPos.z = -2.1f;
+	lightPos.z = -2.3f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	r = glm::rotate(r, glm::radians(rotation.y), glm::vec3(0, 1, 0));
@@ -138,6 +183,14 @@ void SpaceShip::OnCollision(const string& group, object* other)
 
 void SpaceShip::OnCollisionEnd(const string& group, object* other)
 {
+}
+
+void SpaceShip::MouseClick()
+{
+	if (!is_fire)
+	{
+		is_fire = true;
+	}
 }
 
 void SpaceShip::Move(const Camera& camera)

@@ -10,6 +10,11 @@ Scene::~Scene()
 		delete obj;
 	}
 	m_vecObj.clear();
+	for (auto& obj : m_vecDeleteObj)
+	{
+		delete obj.first;
+	}
+	m_vecDeleteObj.clear();
 }
 
 
