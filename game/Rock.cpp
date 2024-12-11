@@ -10,7 +10,7 @@
 Rock::Rock() : object("rock")
 {
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
-	pos = { randPos(math::dre),randPos(math::dre), -500 };
+	pos = { randPos(math::dre),randPos(math::dre), -100 };
 	speed = randSpeed(math::dre);
 	bs.center={ 0, 0.5, 0 };
 	bs.radius = 2;
@@ -35,6 +35,11 @@ void Rock::Update()
 		speed += 8.f * DT;
 		pos += speed * DT * direction;
 		rotation.x += speed * DT;
+	}
+
+	if (pos.x > 500 || pos.x < -500 || pos.y > 500 || pos.y < -500 || pos.z > 500 || pos.z < -600)
+	{
+		isDead = true;
 	}
 	object::Update();
 }
