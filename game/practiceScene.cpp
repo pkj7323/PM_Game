@@ -206,6 +206,7 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 	last_y_ = ypos;
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
+	m_space_ship->ProcessMouseMovement(*m_camera);
 }
 
 void practiceScene::mouse_wheel(int button, int dir, int x, int y)

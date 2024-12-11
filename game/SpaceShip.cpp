@@ -31,7 +31,7 @@ void SpaceShip::Update()
 		}
 	}
 	else {
-		if (rotation.z >= 0) {
+		if (rotation.z > 0) {
 			rotation.z -= 0.5f;
 		}
 	}
@@ -41,7 +41,7 @@ void SpaceShip::Update()
 		}
 	}
 	else {
-		if (rotation.z <= 0) {
+		if (rotation.z < 0) {
 			rotation.z += 0.5f;
 		}
 	}
@@ -125,8 +125,7 @@ glm::vec3 SpaceShip::GetLightPos3() const
 void SpaceShip::ProcessMouseMovement(const Camera& camera)
 {
 	rotation.x = camera.GetPitch();
-	rotation.y = -(camera.GetYaw() + 90.f);
-	
+	rotation.y = -(camera.GetYaw() + 90);
 	this->Move(camera);
 }
 
@@ -138,6 +137,7 @@ void SpaceShip::OnCollision(const string& group, object* other)
 
 void SpaceShip::OnCollisionEnd(const string& group, object* other)
 {
+
 }
 
 void SpaceShip::Move(const Camera& camera)
@@ -145,7 +145,7 @@ void SpaceShip::Move(const Camera& camera)
 	auto position = camera.GetPosition();
 	auto up = camera.GetUp();
 	auto front = camera.GetFront();
-	position -= up * 3.0f;
+	position -= up * 3.f;
 	position += front * 6.0f;
-	pos = glm::vec3(position.x, position.y, position.z);
+	pos = position;
 }
