@@ -9,21 +9,11 @@ SceneManager::~SceneManager()
 	delete m_CurrScene;
 }
 
-template <typename T, typename>
-void SceneManager::Enter()
-{
-	if (m_CurrScene != nullptr)
-	{
-		m_CurrScene->Exit();
-		delete m_CurrScene;
-	}
-	m_CurrScene = new T;
-	m_CurrScene->Enter();
-}
+
 void SceneManager::Init()
 {
 	m_CurrScene = nullptr;
-	m_CurrScene = new practiceScene;
+	m_CurrScene = new IntroScene;
 	m_CurrScene->Enter();
 }
 

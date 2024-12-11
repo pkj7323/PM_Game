@@ -11,6 +11,57 @@ TextureLoadManager::~TextureLoadManager()
 
 void TextureLoadManager::Init()
 {
+	
+	Load("TUK", "resources/tuk_credit.png");
+	
+}
+
+void TextureLoadManager::Load(const string& name,const string& filename)
+{
+	if (m_texture.find(name) != m_texture.end())
+	{
+		return;
+	}
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		// 튜토리얼을 위해 반투명한 테두리를 방지하기 위해 GL_CLAMP_TO_EDGE를 사용합니다. 보간으로 인해 다음 반복에서 텍셀을 가져옵니다.
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		m_texture[name] = textureID;
+
+		stbi_image_free(data);
+	}
+	else
+	{
+
+		std::cout<< name << ": Texture failed to load at path: " << filename << std::endl;
+		stbi_image_free(data);
+	}
+	
+
+}
+
+void TextureLoadManager::TexturesLoad()
+{
 	cout << "텍스쳐 로드" << endl;
 	Load("wall", "wall.jpg");
 	Load("brick_wall", "resources/brick/brickwall.jpg");
@@ -57,50 +108,6 @@ void TextureLoadManager::Init()
 	loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
 	//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
 	cout << "텍스쳐 로드 종료" << endl;
-}
-
-void TextureLoadManager::Load(const string& name,const string& filename)
-{
-	if (m_texture.find(name) != m_texture.end())
-	{
-		return;
-	}
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		// 튜토리얼을 위해 반투명한 테두리를 방지하기 위해 GL_CLAMP_TO_EDGE를 사용합니다. 보간으로 인해 다음 반복에서 텍셀을 가져옵니다.
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		m_texture[name] = textureID;
-
-		stbi_image_free(data);
-	}
-	else
-	{
-
-		std::cout<< name << ": Texture failed to load at path: " << filename << std::endl;
-		stbi_image_free(data);
-	}
-	
-
 }
 
 void TextureLoadManager::Release()

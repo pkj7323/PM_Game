@@ -7,6 +7,7 @@ class Scene
 public:
 	Scene() = default;
 	virtual ~Scene();
+	void renderQuad();
 
 
 	virtual void Enter() = 0;
@@ -66,10 +67,9 @@ public:
 protected:
 	vector<std::unique_ptr<object>>	m_vecObj;
 	vector<std::unique_ptr<object>> m_vecDeleteObj;
-	string			m_strName;
+	string m_strName;
+	GLuint quadVAO = 0;
+	GLuint quadVBO;
 
-	
-	
-	
 };
 

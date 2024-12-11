@@ -2,6 +2,7 @@
 #include "Camera.h"
 
 #include "KeyManager.h"
+#include "SoundManager.h"
 #include "TimeManager.h"
 
 
@@ -107,16 +108,49 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 
 void Camera::Move()
 {
-	if (KEY_HOLD(KEY::W))
-		ProcessKeyboard(FORWARD);
+    
+    if (KEY_HOLD(KEY::W))
+    {
+        SoundManager::Instance()->Resume("spaceship_sfx");
+	    
+    	ProcessKeyboard(FORWARD);
+    }
+    
+
 	if (KEY_HOLD(KEY::S))
+	{
+        SoundManager::Instance()->Resume("spaceship_sfx");
 		ProcessKeyboard(BACKWARD);
+	}
+    
+
 	if (KEY_HOLD(KEY::A))
+	{
+        SoundManager::Instance()->Resume("spaceship_sfx");
 		ProcessKeyboard(LEFT);
+	}
+    
+
 	if (KEY_HOLD(KEY::D))
+	{
+        SoundManager::Instance()->Resume("spaceship_sfx");
 		ProcessKeyboard(RIGHT);
+	}
+    
+
     if (KEY_HOLD(KEY::SPACE))
-		Position.y += MovementSpeed * DT;
+    {
+        SoundManager::Instance()->Resume("spaceship_sfx");
+        Position.y += MovementSpeed * DT;
+    }
+
+    if(KEY_HOLD(KEY::W) == false && KEY_HOLD(KEY::S) == false && KEY_HOLD(KEY::A) == false && KEY_HOLD(KEY::D) == false
+       && KEY_HOLD(KEY::SPACE) == false)
+    {
+        SoundManager::Instance()->Pause("spaceship_sfx");
+    }
+        
+
 }
 
 void Camera::ProcessMouseScroll(float yoffset)

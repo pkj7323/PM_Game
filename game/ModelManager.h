@@ -9,6 +9,7 @@ public:
 	void Update();
 	void Render();
 	void Release();
+	void ModelLoad();
 	void Load(const string& name, const string& filename);
 	Model GetModel(const string& name);
 };

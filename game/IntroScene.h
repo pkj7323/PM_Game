@@ -1,16 +1,16 @@
 ﻿#pragma once
-#include "Model.h"
 #include "Scene.h"
+
+class FrameBuffer;
 
 class  IntroScene : public Scene
 {
-	Model ourModel;
-	Model ourCube;
-	Model ourPlane;
-	Model ourPyramid;
-	Model ourSphere;
+	std::unique_ptr<FrameBuffer> m_frameBuffer;
 
-	bool blinn = false;
+	bool firstMouse = true;
+	float lastX = 400, lastY = 400;
+
+	bool render = false;
 public:
 	IntroScene();
 	~IntroScene();

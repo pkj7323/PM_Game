@@ -379,5 +379,11 @@
     <None Include="basic_light_vs.glsl">
       <Filter>리소스 파일\basic</Filter>
     </None>
+    <None Include="basic_vs.glsl">
+      <Filter>리소스 파일\basic</Filter>
+    </None>
+    <None Include="basic_fs.glsl">
+      <Filter>리소스 파일\basic</Filter>
+    </None>
   </ItemGroup>
 </Project>
