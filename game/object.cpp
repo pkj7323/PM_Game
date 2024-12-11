@@ -3,13 +3,10 @@
 #include "ModelManager.h"
 #include "Shader.h"
 
-object::object() : pos(0), scale(1), rotation(0), Matrix(1), parentMatrix(1)
-{
-	model = Model();
-	//¿À·ù?
-}
 
-object::object(const string& name) : pos(0), scale(1), rotation(0), Matrix(1), parentMatrix(1)
+object::object(const string& name) : pos(0), scale(1), rotation(0), Matrix(1)
+, parentMatrix(1), timer(0), isDead(false)
+
 {
 	model = ModelManager::Instance()->GetModel(name);
 }

@@ -8,6 +8,7 @@ Mars::Mars() : object("sphere")
 {
 	pos = { 200 + 100,0,-40 };
 	scale = { 2,2,2 };
+	rotation.x = 25.2f;
 }
 
 Mars::~Mars()
@@ -29,6 +30,7 @@ void Mars::Update()
 {
 	pos = glm::rotate(glm::mat4(1.0f), glm::radians(0.53f * DT), glm::vec3(0, 1, 0)) * glm::vec4(pos, 1.0f);
 	parentMatrix = glm::translate(glm::mat4(1.0f), { -200,0,-40 });
+	rotation.y += 0.97f * DT * Planet_Rotation;
 	object::Update();
 }
 

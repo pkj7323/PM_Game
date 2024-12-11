@@ -41,6 +41,8 @@ enum class SCENE_TYPE
 	END
 };
 
+#define Planet_Rotation 20.f
+#define Planet_Revloution 1.f
 
 namespace math {
 	static std::default_random_engine dre{ std::random_device{}() };

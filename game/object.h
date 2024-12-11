@@ -67,7 +67,7 @@ struct BoundingSphere
 		glEnd();
 	}
 };
-
+#define DeathTime 1.0f
 class Shader;
 class object
 {
@@ -80,9 +80,11 @@ protected:
 	glm::mat4 Matrix; // 얘는 값변경 대상이 아니고 변경된 애를 받아 갈수 만 있도록
 	glm::mat4 parentMatrix; // 부모의 Matrix
 	BoundingSphere bs;//충돌체크를 위한 bounding sphere
-	
+
+	float time_to_die = DeathTime;
+	float timer;
+	bool isDead;
 public:
-	object();
 	object(const string& name);
 	virtual ~object() = default;
 

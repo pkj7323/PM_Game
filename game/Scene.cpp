@@ -12,7 +12,7 @@ Scene::~Scene()
 	m_vecObj.clear();
 	for (auto& obj : m_vecDeleteObj)
 	{
-		delete obj.first;
+		delete obj;
 	}
 	m_vecDeleteObj.clear();
 }

@@ -25,6 +25,8 @@ public:
 	glm::vec3& GetRayDes() { return m_rayDes; };
 	void ProcessMouseMovement(const Camera& camera);
 
+	void RenderBillBoardRect(const Camera& camera);
+
 private:
 	Model laser_effect = ModelManager::Instance()->GetModel("cube");
 	float up_parm = 2.f;

@@ -17,18 +17,7 @@ Camera::Camera()
     SetPerspective(Zoom, glutGet(GLUT_WINDOW_WIDTH)/glutGet(GLUT_WINDOW_HEIGHT), 0.1, 400);
     updateCameraVectors();
 }
-//Camera::Camera(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,
-//    float speed, float sensitivity)
-//{
-//    this->Position = Position;
-//    this->WorldUp = WorldUp;
-//    this->Yaw = Yawdegree;
-//    this->Pitch = pitchdegree;
-//    this->Zoom = zoom;
-//    this->MovementSpeed = speed;
-//    this->MouseSensitivity = sensitivity;
-//    updateCameraVectors();
-//}
+
 Camera::~Camera()
 = default;
 
@@ -78,6 +67,8 @@ glm::mat4 Camera::GetViewMatrix() const
 {
     return glm::lookAt(Position, Position + Front, Up);
 }
+
+
 
 void Camera::ProcessKeyboard(Camera_Movement direction)
 {

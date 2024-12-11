@@ -67,7 +67,13 @@ public:
 
 	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix() const;
+
+
+    
 private:
+    void setBillBoard();
+	GLuint BillBoard_VAO = 0;
+	GLuint BillBoard_VBO;
     // camera Attributes
     glm::vec3 Position;
     glm::vec3 Front;
@@ -96,4 +102,6 @@ private:
     float m_aspect;
 	float m_Near;
 	float m_Far;
+
+    
 };

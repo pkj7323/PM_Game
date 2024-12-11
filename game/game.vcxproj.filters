@@ -192,6 +192,12 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>1_Manager\Sound</Filter>
     </ClCompile>
+    <ClCompile Include="Mars.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sun.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object.h">
@@ -296,6 +302,12 @@
     <ClInclude Include="SoundManager.h">
       <Filter>1_Manager\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Mars.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sun.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vertex.glsl">
@@ -366,9 +378,6 @@
     </None>
     <None Include="basic_light_vs.glsl">
       <Filter>리소스 파일\basic</Filter>
-    </None>
-    <None Include="model_geometry.glsl">
-      <Filter>리소스 파일\model</Filter>
     </None>
   </ItemGroup>
 </Project>

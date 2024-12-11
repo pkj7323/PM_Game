@@ -8,6 +8,7 @@ Venus::Venus() : object("sphere")
 {
 	pos = { 80 + 100,0,-40 };
 	scale = { 1.5,1.5,1.5 };
+	rotation.x = 177.4f;
 }
 
 Venus::~Venus()
@@ -23,6 +24,7 @@ void Venus::Update()
 {
 	pos = glm::rotate(glm::mat4(1.0f), glm::radians(1.61f * DT), glm::vec3(0, 1, 0)) * glm::vec4(pos, 1.0f);
 	parentMatrix = glm::translate(glm::mat4(1.0f), { -200,0,-40 });
+	rotation.y += 0.041f * DT * Planet_Rotation;
 	object::Update();
 }
 

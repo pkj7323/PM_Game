@@ -215,6 +215,7 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
+		SoundManager::Instance()->Play("laser_effect");
 		CollisionManager::Instance()->Mouse(button, state, x, y, *m_camera, m_space_ship->GetRayDes());
 		m_space_ship->MouseClick();
 	}

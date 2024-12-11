@@ -1,5 +1,5 @@
 #pragma once
-class object;
+#include "object.h"
 class Scene
 {
 
@@ -23,7 +23,7 @@ public:
 
 protected:
 	vector<object*>	m_vecObj;
-	vector<std::pair<object*, float>> m_vecDeleteObj;
+	vector<object*> m_vecDeleteObj;
 	string			m_strName;
 
 	template<typename T>
@@ -35,26 +35,32 @@ protected:
 	}
 
 	template<typename T>
-	void DeleteObject(T* object)
+	void DeleteObject(T* obj)
 	{
-		auto iter = m_vecObj.begin();
-		for (; iter != m_vecObj.end(); ++iter)
+		for (auto& pObj : m_vecObj)
 		{
-			if (*iter == object)
+			if (pObj == obj)
 			{
-				delete* iter;
-				m_vecObj.erase(iter);
+				m_vecDeleteObj.push_back(pObj);
+				m_vecObj.erase(std::remove(m_vecObj.begin(), m_vecObj.end(), pObj), m_vecObj.end());
 				break;
 			}
 		}
 	}
-	template<typename T>
-	void AddDeleteObj(T* obj, float fTime)
-	{
-		std::pair<object*, float> pair = std::make_pair(obj, fTime);
-		m_vecDeleteObj.push_back(pair);
-	}
 
+	template<typename T>
+	void DeleteDeleteObject(T* obj)
+	{
+		for (auto& pObj : m_vecDeleteObj)
+		{
+			if (pObj == obj)
+			{
+				m_vecDeleteObj.erase(std::remove(m_vecDeleteObj.begin(), m_vecDeleteObj.end(), pObj), m_vecDeleteObj.end());
+				delete pObj;
+				break;
+			}
+		}
+	}
 
 	
 	
