@@ -2,7 +2,10 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "Camera.h"
-
+ShaderManager::ShaderManager()
+= default;
+ShaderManager::~ShaderManager()
+= default;
 
 void ShaderManager::Init()
 {
@@ -13,16 +16,15 @@ void ShaderManager::Init()
 		MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
 		MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
 		MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
-
-		MakeShader("ModelShader_geometry", "model_vertex.glsl", "model_fragment.glsl", 
-			"model_geometry.glsl");
+		MakeShader("geo_ModelShader", "Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
+		
 
 		MakeShader("lightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
 		MakeShader("cubeMapShader", "cubemap_vs.glsl", "cubemap_fs.glsl");
 		MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 		MakeShader("PlanetShader", "Planet_vs.glsl", "Planet_fs.glsl");
-		MakeShader("geoShader","Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
+		
 		MakeShader("NormalMapShader","basic_light_vs.glsl","basic_light_fs.glsl");
 		cout << "쉐이더 컴파일 종료" << endl;
 	}
@@ -41,6 +43,7 @@ void ShaderManager::MakeShader(const string& name, const string& VSPath, const s
 {
 	if(m_mapShader.find(name) != m_mapShader.end())
 	{
+		cout << name << ": ";
 		cout << "Shader name already exists" << endl;
 		return;
 	}
@@ -54,7 +57,7 @@ void ShaderManager::MakeShader(const string& name, const string& VSPath, const s
 {
 	if (m_mapShader.find(name) != m_mapShader.end())
 	{
-		cout << "Shader name already exists" << endl;
+		cout << name << " : " << "Shader name already exists" << endl;
 		return;
 	}
 	Shader shader;
@@ -79,7 +82,7 @@ void ShaderManager::SetUniformModel(const string& name, const vector<glm::vec3>&
 	ModelShader.setBool("blinn", true);
 	ModelShader.setFloat("material.shininess", 32.0f);
 
-	ModelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+	ModelShader.setVec3("dirLight.direction", 0.5f, -1.0f, 0.5f);
 	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
 	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
@@ -142,6 +145,7 @@ Shader ShaderManager::GetShader(const string& name)
 {
 	if (m_mapShader.find(name) == m_mapShader.end())
 	{
+		cout << name << ": ";
 		cout << "Shader name not found" << endl;
 		return Shader();
 	}

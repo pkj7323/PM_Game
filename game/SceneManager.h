@@ -22,15 +22,5 @@ private:
 	
 };
 
-template <typename T, typename>
-void SceneManager::Enter()
-{
-	if (m_CurrScene != nullptr)
-	{
-		m_CurrScene->Exit();
-		delete m_CurrScene;
-	}
-	m_CurrScene = new T;
-	m_CurrScene->Enter();
-}
+
 

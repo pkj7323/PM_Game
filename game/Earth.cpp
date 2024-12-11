@@ -6,7 +6,8 @@
 
 Earth::Earth() : object("sphere")
 {
-	pos = { 30,0,0 };
+	pos = { 30,0,-50 };
+	scale = { 2,2,2 };
 }
 
 Earth::~Earth()
@@ -20,8 +21,6 @@ void Earth::Init()
 
 void Earth::Update()
 {
-	pos = glm::rotate(glm::mat4(1.0f), glm::radians(0.5f), glm::vec3(0.f, 1.f, 0.f))
-		* glm::vec4(pos, 1.0f);
 	object::Update();
 }
 

@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "ModelManager.h"
 #include "Model.h"
-
+ModelManager::ModelManager()
+= default;
+ModelManager::~ModelManager()
+= default;;
 
 void ModelManager::Init()
 {

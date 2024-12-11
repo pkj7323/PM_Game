@@ -88,6 +88,9 @@
     <Filter Include="2_Common\Scenes">
       <UniqueIdentifier>{2e9d848f-7305-4eb6-bef0-5b1b9f2104d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1_Manager\Sound">
+      <UniqueIdentifier>{aa235477-d604-4f43-9990-da8c9662f755}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="object.cpp">
@@ -173,6 +176,21 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceShip.cpp">
+      <Filter>6_Object\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>5_Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>1_Manager\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>1_Manager\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +280,21 @@
     </ClInclude>
     <ClInclude Include="Earth.h">
       <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceShip.h">
+      <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>5_Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>1_Manager\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>1_Manager\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,13 +6,19 @@
 #include "ModelManager.h"
 #include "SceneManager.h"
 #include "ShaderManager.h"
+#include "SoundManager.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
 
+Core::Core()
+= default;
+Core::~Core()
+= default;
 
 
 void Core::Init()
 {
+	SoundManager::Instance()->Init();
 	ModelManager::Instance()->Init();
 	ShaderManager::Instance()->Init();
 	TextureLoadManager::Instance()->Init();
@@ -35,6 +41,7 @@ void Core::Update()
 	KeyManager::Instance()->Update();
 	CollisionManager::Instance()->Update();
 	SceneManager::Instance()->Update();
+	SoundManager::Instance()->Update();
 }
 
 void Core::Render()
@@ -46,10 +53,13 @@ void Core::Render()
 
 void Core::Release()
 {
+	SoundManager::Instance()->Release();
 	SceneManager::Instance()->Release();
 	TextureLoadManager::Instance()->Release();
 	ShaderManager::Instance()->Release();
 	ModelManager::Instance()->Release();
+
+	exit(0);
 }
 
 void Core::mouse_motion(int x, int y)

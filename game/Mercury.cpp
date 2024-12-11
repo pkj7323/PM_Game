@@ -6,8 +6,8 @@
 
 Mercury::Mercury() : object("sphere")
 {
-	pos = { 10,0,0 };
-	scale = { 0.3,0.3,0.3 };
+	pos = { -10,0,-40 };
+	scale = { 1,1,1 };
 }
 
 Mercury::~Mercury()
@@ -21,8 +21,6 @@ void Mercury::Init()
 
 void Mercury::Update()
 {
-	pos = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.f, 1.f, 0.f))
-		* glm::vec4(pos, 1.0f);
 	object::Update();
 }
 
