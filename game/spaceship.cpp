@@ -127,6 +127,8 @@ void SpaceShip::ProcessMouseMovement(const Camera& camera)
 	rotation.x = camera.GetPitch();
 	rotation.y = -(camera.GetYaw() + 90);
 	this->Move(camera);
+
+	object::Update();
 }
 
 
