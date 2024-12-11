@@ -28,6 +28,9 @@ public:
 
 	void RenderBillBoardRect(const Camera& camera);
 
+	glm::vec3 GetPosition() const { return pos; }
+
+
 private:
 	Model laser_effect = ModelManager::Instance()->GetModel("cube");
 	float up_parm = 2.f;
