@@ -77,8 +77,8 @@ glm::vec3 SpaceShip::GetLightPos1() const
 	lightPos.y = 0.8f;
 	lightPos.z = 1.5f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
-	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	r = glm::rotate(r, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	r = glm::rotate(r, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	r = glm::rotate(r, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 	lightPos = glm::vec3(r * glm::vec4(lightPos, 1.0f));
 	lightPos = glm::vec3(t * glm::vec4(lightPos, 1.0f));
@@ -93,8 +93,8 @@ glm::vec3 SpaceShip::GetLightPos2() const
 	lightPos.y = 0.8f;
 	lightPos.z = 1.5f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
-	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	r = glm::rotate(r, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	r = glm::rotate(r, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	r = glm::rotate(r, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 	lightPos = glm::vec3(r * glm::vec4(lightPos, 1.0f));
 	lightPos = glm::vec3(t * glm::vec4(lightPos, 1.0f));
@@ -111,13 +111,11 @@ glm::vec3 SpaceShip::GetLightPos3() const
 	lightPos.y = 1.f;
 	lightPos.z = -2.1f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
-	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	r = glm::rotate(r, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	r = glm::rotate(r, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	r = glm::rotate(r, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 	lightPos = glm::vec3(r * glm::vec4(lightPos, 1.0f));
 	lightPos = glm::vec3(t * glm::vec4(lightPos, 1.0f));
-
-
 
 	return lightPos;
 }
@@ -148,6 +146,6 @@ void SpaceShip::Move(const Camera& camera)
 	auto up = camera.GetUp();
 	auto front = camera.GetFront();
 	position -= up * 3.f;
-	position += front * 6.0f;
+	position += front * 8.0f;
 	pos = position;
 }

@@ -9,7 +9,7 @@ ModelManager::~ModelManager()
 void ModelManager::Init()
 {
 	cout << "ModelManager Init" << endl;
-	//Load("rock", "resources/rock/rock.obj");
+	Load("rock", "resources/rock/rock.obj");
 	Load("plane", "resources/plane.obj");
 	Load("pyramid", "resources/pyramid.obj");
 	Load("cube", "resources/cube.obj");

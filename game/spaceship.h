@@ -23,6 +23,9 @@ public:
 	
 	void ProcessMouseMovement(const Camera& camera);
 
+	glm::vec3 GetPosition() const { return pos; }
+
+
 private:
 	float up_parm = 2.f;
 	float front_parm = 2.5f;

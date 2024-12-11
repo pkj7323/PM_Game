@@ -8,6 +8,7 @@ class SkyBox;
 class Sound;
 class SpaceShip;
 class Cube;
+class Rock;
 class FrameBuffer;
 class practiceScene : public Scene
 {
@@ -54,6 +55,7 @@ private:
 
 
 	vector<object*> m_objects;
+	vector<Rock*> m_rocks;
 
 	bool blinn = true;
 

@@ -19,6 +19,7 @@
 #include "FrameBuffer.h"
 #include "SkyBox.h"
 #include "TimeManager.h"
+#include "Rock.h"
 
 practiceScene::practiceScene()
 {
@@ -78,16 +79,26 @@ void practiceScene::Update()
 	{
 		Core::Instance()->Release();
 	}
+	else if (KEY_TAP(KEY::L)) {
+		m_rocks.emplace_back(new Rock);
+		m_rocks.back()->SetDirection(*m_space_ship);
+	}
 	
 	m_camera->Move();
 	for (auto& obj : m_objects)
 	{
 		obj->Update();
 	}
+
+	for (auto& rock : m_rocks)
+	{
+		rock->Update();
+	}
 	m_space_ship->Move(*m_camera);
 	m_space_ship->Update();
 	pointLightPositions[0] = m_space_ship->GetLightPos1();
 	pointLightPositions[1] = m_space_ship->GetLightPos2();
+	pointLightPositions[2] = m_space_ship->GetLightPos3();
 }
 
 void practiceScene::Render()
@@ -126,7 +137,10 @@ void practiceScene::Render()
 	}
 	m_space_ship->Draw(shader);
 
-
+	for (auto& rock : m_rocks)
+	{
+		rock->Draw(shader);
+	}
 
 
 
@@ -176,7 +190,10 @@ void practiceScene::mouse_motion(int x, int y)
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 	m_space_ship->ProcessMouseMovement(*m_camera);
-	
+	pointLightPositions[0] = m_space_ship->GetLightPos1();
+	pointLightPositions[1] = m_space_ship->GetLightPos2();
+	pointLightPositions[2] = m_space_ship->GetLightPos3();
+
 	// 마우스를 중앙으로 이동
 
 	glutWarpPointer(center_x_, center_y_);
@@ -207,6 +224,9 @@ void practiceScene::Mouse(int button, int state, int x, int y)
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 	m_space_ship->ProcessMouseMovement(*m_camera);
+	pointLightPositions[0] = m_space_ship->GetLightPos1();
+	pointLightPositions[1] = m_space_ship->GetLightPos2();
+	pointLightPositions[2] = m_space_ship->GetLightPos3();
 }
 
 void practiceScene::mouse_wheel(int button, int dir, int x, int y)

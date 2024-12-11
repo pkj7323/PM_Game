@@ -30,6 +30,9 @@ void TextureLoadManager::Init()
 	Load("sun", "resources/sun.jpg");
 	Load("sun_normal_map", "resources/sun_normal.png");
 
+	Load("rock", "resources/rock/rock.png");
+	Load("rock_normal_map", "resources/rock/rock_normal.png");
+
 	Load("mercury", "resources/mercury.jpg");
 	Load("mercury_normal_map", "resources/mercury_normal.png");
 
