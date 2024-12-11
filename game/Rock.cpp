@@ -12,7 +12,6 @@ Rock::Rock() : object("rock")
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
 	pos = { randPos(math::dre),randPos(math::dre), -500 };
 	speed = randSpeed(math::dre);
-	pos = { 0, 0, 0 };
 	bs.center={ 0, 0.5, 0 };
 	bs.radius = 2;
 }

@@ -19,7 +19,6 @@ public:
 	void Enter() override;
 	void Exit() override;
 	void Update() override;
-	void RemoveDeadObjects();
 	void Render() override;
 	void mouse_motion(int x, int y) override;
 	void Mouse(int button, int state, int x, int y) override;

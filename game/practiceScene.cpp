@@ -38,10 +38,10 @@ practiceScene::~practiceScene()
 void practiceScene::Enter()
 {
 	m_camera = new Camera;
-	m_vecObj.emplace_back(new Mercury);
-	m_vecObj.emplace_back(new Venus);
-	m_vecObj.emplace_back(new Earth);
-	m_vecObj.emplace_back(new Mars);
+	AddObject<Mercury>();
+	AddObject<Venus>();
+	AddObject<Earth>();
+	AddObject<Mars>();
 	AddObject<Rock>();
 	m_skyBox = new SkyBox;
 	m_frameBuffer = new FrameBuffer;
@@ -90,23 +90,7 @@ void practiceScene::Update()
 
 	DeleteDeleteObject();
 }
-void practiceScene::RemoveDeadObjects() {
-	m_vecDeleteObj.erase(
-		std::remove_if(m_vecDeleteObj.begin(), m_vecDeleteObj.end(),
-			[](const std::unique_ptr<object>& obj) {
-				obj->Update();
-				if (obj->IsDead()) {
-					if (obj->GetTimer() > obj->GetTimeToDie()) {
-						return true; // 삭제할 요소
-					}
-					else {
-						obj->SetTimer(obj->GetTimer() + DT);
-					}
-				}
-				return false; // 삭제하지 않을 요소
-			}),
-		m_vecDeleteObj.end());
-}
+
 void practiceScene::Render()
 {
 	m_frameBuffer->Bind();
