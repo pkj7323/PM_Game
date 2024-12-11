@@ -104,5 +104,10 @@ public:
 	}
 	virtual void OnCollision(const string& group,object* other) = 0;
 	virtual void OnCollisionEnd(const string& group,object* other) = 0;
+
+	float GetTimer() const { return timer; }
+	float GetTimeToDie() const { return time_to_die; }
+	bool IsDead() const { return isDead; }
+	void SetTimer(float time) { this->timer = time; }
 };
 

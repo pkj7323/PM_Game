@@ -19,6 +19,7 @@ public:
 	void MouseClick();
 
 	void Move(const Camera& camera);
+	glm::vec3 GetPos() const { return pos; };
 	glm::vec3 GetLightPos1() const;
 	glm::vec3 GetLightPos2() const;
 	glm::vec3 GetLightPos3() const;

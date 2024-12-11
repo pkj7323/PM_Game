@@ -18,9 +18,9 @@ public:
 	void mouse_wheel(int button, int dir, int x, int y);
 
 	template <typename T>
-	void CurrentSceneAddObject()
+	T* CurrentSceneAddObject()
 	{
-		m_CurrScene->AddObject<T>();
+		return m_CurrScene->AddObject<T>();
 	}
 	template<typename T>
 	void CurrentSceneDeleteObject(T* obj)
@@ -28,9 +28,9 @@ public:
 		m_CurrScene->DeleteObject(obj);
 	}
 	template<typename T>
-	void CurrentSceneDeleteDeleteObject(T* obj)
+	void CurrentSceneDeleteDeleteObject()
 	{
-		m_CurrScene->DeleteDeleteObject(obj);
+		m_CurrScene->DeleteDeleteObject();
 	}
 private:
 	Scene* m_CurrScene = nullptr;

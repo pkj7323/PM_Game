@@ -1,5 +1,6 @@
 #pragma once
 #include "object.h"
+#include "TimeManager.h"
 class Scene
 {
 
@@ -24,42 +25,47 @@ public:
 	template<typename T>
 	T* AddObject()
 	{
-		T* pObj = new T;
-		m_vecObj.push_back(pObj);
-		return dynamic_cast<T*>(m_vecObj.back());
+		auto pObj = std::make_unique<T>();
+		T* pObjRaw = pObj.get();
+		m_vecObj.push_back(std::move(pObj));
+		return pObjRaw;
 	}
 
 	template<typename T>
 	void DeleteObject(T* obj)
 	{
-		for (auto& pObj : m_vecObj)
+		auto it = std::find_if(m_vecObj.begin(), m_vecObj.end(),
+			[obj](const std::unique_ptr<object>& pObj) { return pObj.get() == obj; });
+
+		if (it != m_vecObj.end())
 		{
-			if (pObj == obj)
-			{
-				m_vecDeleteObj.push_back(pObj);
-				m_vecObj.erase(std::remove(m_vecObj.begin(), m_vecObj.end(), pObj), m_vecObj.end());
-				break;
-			}
+			m_vecDeleteObj.push_back(std::move(*it));
+			m_vecObj.erase(it);
 		}
 	}
 
-	template<typename T>
-	void DeleteDeleteObject(T* obj)
+	void DeleteDeleteObject()
 	{
-		for (auto& pObj : m_vecDeleteObj)
-		{
-			if (pObj == obj)
-			{
-				m_vecDeleteObj.erase(std::remove(m_vecDeleteObj.begin(), m_vecDeleteObj.end(), pObj), m_vecDeleteObj.end());
-				delete pObj;
-				break;
-			}
-		}
+		m_vecDeleteObj.erase(
+			std::remove_if(m_vecDeleteObj.begin(), m_vecDeleteObj.end(),
+				[](const std::unique_ptr<object>& obj) {
+					obj->Update();
+					if (obj->IsDead()) {
+						if (obj->GetTimer() > obj->GetTimeToDie()) {
+							return true; // 삭제할 요소
+						}
+						else {
+							obj->SetTimer(obj->GetTimer() + DT);
+						}
+					}
+					return false; // 삭제하지 않을 요소
+				}),
+			m_vecDeleteObj.end());
 	}
 
 protected:
-	vector<object*>	m_vecObj;
-	vector<object*> m_vecDeleteObj;
+	vector<std::unique_ptr<object>>	m_vecObj;
+	vector<std::unique_ptr<object>> m_vecDeleteObj;
 	string			m_strName;
 
 	

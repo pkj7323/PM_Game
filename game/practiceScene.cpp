@@ -63,14 +63,7 @@ void practiceScene::Exit()
 	delete m_space_ship;
 	delete sun;
 
-	for (auto& obj : m_vecObj)
-	{
-		delete obj;
-	}
-	m_vecObj.clear();
-	
-
-
+	Scene::~Scene();
 }
 
 void practiceScene::Update()
@@ -79,7 +72,10 @@ void practiceScene::Update()
 	{
 		Core::Instance()->Release();
 	}
-
+	if (KEY_TAP(KEY::L)) {
+		auto rock = AddObject<Rock>();
+		rock->SetDirection(*m_space_ship);
+	}
 	m_camera->Move();
 	for (auto& obj : m_vecObj)
 	{
@@ -88,16 +84,29 @@ void practiceScene::Update()
 	sun->Update();
 	m_space_ship->Move(*m_camera);
 	m_space_ship->Update();
-	pointLightPositions[0] = m_space_ship->GetLightPos1();
-	pointLightPositions[1] = m_space_ship->GetLightPos2();
-	pointLightPositions[2] = sun->GetPos();
+	pointLightPositions[0] = m_space_ship->GetLightPos1();//디버그 용도
+	pointLightPositions[1] = m_space_ship->GetLightPos2();//디버그 용도
+	pointLightPositions[2] = sun->GetPos();//디버그 용도
 
-	for (auto& obj : m_vecDeleteObj)
-	{
-		obj->Update();
-	}
+	DeleteDeleteObject();
 }
-
+void practiceScene::RemoveDeadObjects() {
+	m_vecDeleteObj.erase(
+		std::remove_if(m_vecDeleteObj.begin(), m_vecDeleteObj.end(),
+			[](const std::unique_ptr<object>& obj) {
+				obj->Update();
+				if (obj->IsDead()) {
+					if (obj->GetTimer() > obj->GetTimeToDie()) {
+						return true; // 삭제할 요소
+					}
+					else {
+						obj->SetTimer(obj->GetTimer() + DT);
+					}
+				}
+				return false; // 삭제하지 않을 요소
+			}),
+		m_vecDeleteObj.end());
+}
 void practiceScene::Render()
 {
 	m_frameBuffer->Bind();
@@ -242,7 +251,7 @@ void practiceScene::mouse_motion(int x, int y)
 	// 중앙으로 이동한 후의 위치를 lastX, lastY로 설정
 	last_x_ = static_cast<float>(center_x_);
 	last_y_ = static_cast<float>(center_y_);
-
+	
 }
 
 void practiceScene::Mouse(int button, int state, int x, int y)

@@ -5,11 +5,13 @@
 #include "Shader.h"
 #include "SoundManager.h"
 #include "TimeManager.h"
-
+#include "SpaceShip.h"
 
 Rock::Rock() : object("rock")
 {
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
+	pos = { randPos(math::dre),randPos(math::dre), -500 };
+	speed = randSpeed(math::dre);
 	pos = { 0, 0, 0 };
 	bs.center={ 0, 0.5, 0 };
 	bs.radius = 2;
@@ -26,15 +28,14 @@ void Rock::Init()
 
 void Rock::Update()
 {
-	rotation.y += 0.5f;
-	//rotation.z += 0.5f;
 	if (isDead)
 	{
-		timer += DT;
-		if (timer >= time_to_die)
-		{
-			SceneManager::Instance()->CurrentSceneDeleteDeleteObject<Rock>(this);
-		}
+		
+	}else
+	{
+		speed += 8.f * DT;
+		pos += speed * DT * direction;
+		rotation.x += speed * DT;
 	}
 	object::Update();
 }
@@ -47,7 +48,7 @@ void Rock::Draw(Shader& shader)
 
 void Rock::OnCollision(const string& group, object* other)
 {
-	if (group == "Mouse:Rock")
+	if (group == "Mouse:Rock" && isDead == false)
 	{
 		SoundManager::Instance()->Play("explosion_effect");
 		SceneManager::Instance()->CurrentSceneDeleteObject<Rock>(this);
@@ -57,6 +58,11 @@ void Rock::OnCollision(const string& group, object* other)
 
 void Rock::OnCollisionEnd(const string& group, object* other)
 {
+}
+
+void Rock::SetDirection(const SpaceShip& spaceship)
+{
+	direction = glm::normalize(spaceship.GetPos() - pos);
 }
 
 
