@@ -11,54 +11,9 @@ TextureLoadManager::~TextureLoadManager()
 
 void TextureLoadManager::Init()
 {
-	cout << "텍스쳐 로드" << endl;
-	Load("wall", "wall.jpg");
-	Load("brick_wall", "resources/brick/brickwall.jpg");
-	Load("brick_wall_normal", "resources/brick/brickwall_normal.jpg");
-
-	Load("container2", "container2.png");
-	Load("container2_specular", "container2_specular.png");
-	Load("marble", "resources/marble.jpg");
-	Load("metal", "resources/metal.png");
-
-	Load("mars", "resources/2k_mars.jpg");
-	Load("mars_normal_map", "resources/2k_mars_normal.png");
-
-	Load("earth", "resources/earth/earth.jpg");
-	Load("earth_normal_map", "resources/earth/earth_normal_map.jpg");
-
-	Load("sun", "resources/sun.jpg");
-	Load("sun_normal_map", "resources/sun_normal.png");
-
-	Load("rock", "resources/rock/rock.png");
-	Load("rock_normal_map", "resources/rock/rock_normal.png");
-
-	Load("mercury", "resources/mercury.jpg");
-	Load("mercury_normal_map", "resources/mercury_normal.png");
-
-	Load("venus_surface", "resources/venus_surface.jpg");
-	Load("venus_surface_normal_map", "resources/venus_surface_normal.png");
-
-	Load("venus_atmosphere", "resources/venus_atmosphere.jpg");
-	Load("venus_atmosphere_normal_map", "resources/venus_atmosphere_normal.png");
-
-	Load("snow", "resources/snow.jpg");
-	Load("snow_normal_map", "resources/snow_normal.png");
-
-	Load("cyan", "resources/Cyan.png");
-	Load("window", "resources/blending_transparent_window.png");
-	vector<std::string> faces
-	{
-		"resources/skybox/right.png",
-		"resources/skybox/left.png",
-		"resources/skybox/top.png",
-		"resources/skybox/bottom.png",
-		"resources/skybox/front.png",
-		"resources/skybox/back.png"
-	};
-	loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
-	//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
-	cout << "텍스쳐 로드 종료" << endl;
+	
+	Load("TUK", "resources/tuk_credit.png");
+	
 }
 
 void TextureLoadManager::Load(const string& name,const string& filename)
@@ -103,6 +58,56 @@ void TextureLoadManager::Load(const string& name,const string& filename)
 	}
 	
 
+}
+
+void TextureLoadManager::TexturesLoad()
+{
+	cout << "텍스쳐 로드" << endl;
+	Load("wall", "wall.jpg");
+	Load("brick_wall", "resources/brick/brickwall.jpg");
+	Load("brick_wall_normal", "resources/brick/brickwall_normal.jpg");
+
+	Load("container2", "container2.png");
+	Load("container2_specular", "container2_specular.png");
+	Load("marble", "resources/marble.jpg");
+	Load("metal", "resources/metal.png");
+
+	Load("mars", "resources/2k_mars.jpg");
+	Load("mars_normal_map", "resources/2k_mars_normal.png");
+
+	Load("earth", "resources/earth/earth.jpg");
+	Load("earth_normal_map", "resources/earth/earth_normal_map.jpg");
+
+	Load("sun", "resources/sun.jpg");
+	Load("sun_normal_map", "resources/sun_normal.png");
+
+	Load("mercury", "resources/mercury.jpg");
+	Load("mercury_normal_map", "resources/mercury_normal.png");
+
+	Load("venus_surface", "resources/venus_surface.jpg");
+	Load("venus_surface_normal_map", "resources/venus_surface_normal.png");
+
+	Load("venus_atmosphere", "resources/venus_atmosphere.jpg");
+	Load("venus_atmosphere_normal_map", "resources/venus_atmosphere_normal.png");
+
+	Load("snow", "resources/snow.jpg");
+	Load("snow_normal_map", "resources/snow_normal.png");
+
+	Load("cyan", "resources/Cyan.png");
+	Load("window", "resources/blending_transparent_window.png");
+	Load("laser_effect", "resources/laser_effect.png");
+	vector<std::string> faces
+	{
+		"resources/skybox/right.png",
+		"resources/skybox/left.png",
+		"resources/skybox/top.png",
+		"resources/skybox/bottom.png",
+		"resources/skybox/front.png",
+		"resources/skybox/back.png"
+	};
+	loadCubeMap("skybox", faces);//스카이박스 텍스쳐 로드
+	//스카이박스는 로드가 다르다. 큐브맵함수들을 사용해서 로드하고 여러장의 사진 필요하기 에 faces벡터배열을 넘겨준다.
+	cout << "텍스쳐 로드 종료" << endl;
 }
 
 void TextureLoadManager::Release()

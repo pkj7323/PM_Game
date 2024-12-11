@@ -20,7 +20,14 @@ void SoundManager::Release()
 
 void SoundManager::Load()
 {
-	AddSound("bgm", "resources/sound/Gravitation_2018_Remix.mp3", false);
+	AddSound("bgm", "resources/sound/Gravitation_2018_Remix.mp3", true);
+	AddSound("laser_effect", "resources/sound/laser_sound.mp3", false);
+	AddSound("explosion_effect", "resources/sound/explosion_sound.mp3", false);
+	VolumeDown("explosion_effect");
+	VolumeDown("explosion_effect");
+	AddSound("spaceship_sfx", "resources/sound/spaceship-ambient-sfx.mp3", true);
+	Play("spaceship_sfx");
+	Pause("spaceship_sfx");
 }
 
 void SoundManager::Update()

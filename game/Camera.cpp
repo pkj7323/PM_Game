@@ -2,6 +2,7 @@
 #include "Camera.h"
 
 #include "KeyManager.h"
+#include "SoundManager.h"
 #include "TimeManager.h"
 
 
@@ -17,18 +18,7 @@ Camera::Camera()
     SetPerspective(Zoom, glutGet(GLUT_WINDOW_WIDTH)/glutGet(GLUT_WINDOW_HEIGHT), 0.1, 400);
     updateCameraVectors();
 }
-//Camera::Camera(glm::vec3 Position, glm::vec3 WorldUp, float Yawdegree, float pitchdegree, float zoom,
-//    float speed, float sensitivity)
-//{
-//    this->Position = Position;
-//    this->WorldUp = WorldUp;
-//    this->Yaw = Yawdegree;
-//    this->Pitch = pitchdegree;
-//    this->Zoom = zoom;
-//    this->MovementSpeed = speed;
-//    this->MouseSensitivity = sensitivity;
-//    updateCameraVectors();
-//}
+
 Camera::~Camera()
 = default;
 
@@ -79,9 +69,12 @@ glm::mat4 Camera::GetViewMatrix() const
     return glm::lookAt(Position, Position + Front, Up);
 }
 
+
+
 void Camera::ProcessKeyboard(Camera_Movement direction)
 {
     float velocity = MovementSpeed * DT;
+	
     if (direction == FORWARD)
         Position += Front * velocity;
     if (direction == BACKWARD)
@@ -115,16 +108,49 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 
 void Camera::Move()
 {
-	if (KEY_HOLD(KEY::W))
-		ProcessKeyboard(FORWARD);
+    
+    if (KEY_HOLD(KEY::W))
+    {
+        SoundManager::Instance()->Resume("spaceship_sfx");
+	    
+    	ProcessKeyboard(FORWARD);
+    }
+    
+
 	if (KEY_HOLD(KEY::S))
+	{
+        SoundManager::Instance()->Resume("spaceship_sfx");
 		ProcessKeyboard(BACKWARD);
+	}
+    
+
 	if (KEY_HOLD(KEY::A))
+	{
+        SoundManager::Instance()->Resume("spaceship_sfx");
 		ProcessKeyboard(LEFT);
+	}
+    
+
 	if (KEY_HOLD(KEY::D))
+	{
+        SoundManager::Instance()->Resume("spaceship_sfx");
 		ProcessKeyboard(RIGHT);
+	}
+    
+
     if (KEY_HOLD(KEY::SPACE))
-		Position.y += MovementSpeed * DT;
+    {
+        SoundManager::Instance()->Resume("spaceship_sfx");
+        Position.y += MovementSpeed * DT;
+    }
+
+    if(KEY_HOLD(KEY::W) == false && KEY_HOLD(KEY::S) == false && KEY_HOLD(KEY::A) == false && KEY_HOLD(KEY::D) == false
+       && KEY_HOLD(KEY::SPACE) == false)
+    {
+        SoundManager::Instance()->Pause("spaceship_sfx");
+    }
+        
+
 }
 
 void Camera::ProcessMouseScroll(float yoffset)

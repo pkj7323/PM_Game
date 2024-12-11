@@ -1,10 +1,8 @@
 ﻿#pragma once
 #include "object.h"
 #include "Model.h"
-
-
-class Shader;
 class SpaceShip;
+class Shader;
 class Rock : public object
 {
 	float speed = 10.f;

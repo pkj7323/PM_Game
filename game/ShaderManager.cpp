@@ -16,16 +16,17 @@ void ShaderManager::Init()
 		MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
 		MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
 		MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
-		MakeShader("geo_ModelShader", "Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
-		
+		MakeShader("Geo_ModelShader", "Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
 
-		MakeShader("lightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
+		MakeShader("BasicShader", "basic_vs.glsl", "basic_fs.glsl");
+
+		MakeShader("LightCubeShader", "OldVertex.glsl", "OldFragment.glsl");
 		MakeShader("cubeMapShader", "cubemap_vs.glsl", "cubemap_fs.glsl");
 		MakeShader("stencilShader", "stencil_testing_vs.glsl", "stencil_testing_fs.glsl");
 		MakeShader("stencilSingleColorShader", "stencil_testing_vs.glsl", "stencil_single_color_fs.glsl");
 		MakeShader("PlanetShader", "Planet_vs.glsl", "Planet_fs.glsl");
 		
-		MakeShader("NormalMapShader","basic_light_vs.glsl","basic_light_fs.glsl");
+		//MakeShader("NormalMapShader","basic_light_vs.glsl","basic_light_fs.glsl");
 		cout << "쉐이더 컴파일 종료" << endl;
 	}
 }
@@ -82,8 +83,8 @@ void ShaderManager::SetUniformModel(const string& name, const vector<glm::vec3>&
 	ModelShader.setBool("blinn", true);
 	ModelShader.setFloat("material.shininess", 32.0f);
 
-	ModelShader.setVec3("dirLight.direction", 0.5f, -1.0f, 0.5f);
-	ModelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+	ModelShader.setVec3("dirLight.direction", 0.5f, -1.0f, 5.0f);
+	ModelShader.setVec3("dirLight.ambient", 0.02f, 0.02f, 0.02f);
 	ModelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	ModelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 

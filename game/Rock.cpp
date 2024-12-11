@@ -1,19 +1,16 @@
 ﻿#include "stdafx.h"
 #include "Rock.h"
 #include "CollisionManager.h"
-
-#include "TextureLoadManager.h"
-#include "SpaceShip.h"
+#include "SceneManager.h"
+#include "Shader.h"
+#include "SoundManager.h"
 #include "TimeManager.h"
-
-#include "random"
+#include "SpaceShip.h"
 
 Rock::Rock() : object("rock")
 {
-
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
-
-	pos = { randPos(math::dre),randPos(math::dre), -500};
+	pos = { randPos(math::dre),randPos(math::dre), -100 };
 	speed = randSpeed(math::dre);
 	bs.center={ 0, 0.5, 0 };
 	bs.radius = 2;
@@ -30,25 +27,36 @@ void Rock::Init()
 
 void Rock::Update()
 {
-	speed += 8.f * DT;
-	pos += speed * DT * direction;
-	rotation.x += speed * DT;
+	if (isDead)
+	{
+		
+	}else
+	{
+		speed += 8.f * DT;
+		pos += speed * DT * direction;
+		rotation.x += speed * DT;
+	}
+
+	if (pos.x > 500 || pos.x < -500 || pos.y > 500 || pos.y < -500 || pos.z > 500 || pos.z < -600)
+	{
+		isDead = true;
+	}
 	object::Update();
 }
 
 void Rock::Draw(Shader& shader)
-{	
-	TextureLoadManager::Instance()->Use("rock");
-	TextureLoadManager::Instance()->Use("rock_normal_map", 2);
+{
+	shader.setFloat("time", timer);
 	object::Draw(shader);
-	TextureLoadManager::Instance()->Unbind(2);
 }
 
 void Rock::OnCollision(const string& group, object* other)
 {
-	if (group == "Mouse:Rock")
+	if (group == "Mouse:Rock" && isDead == false)
 	{
-		cout << "Rock Collision" << endl;
+		SoundManager::Instance()->Play("explosion_effect");
+		SceneManager::Instance()->CurrentSceneDeleteObject<Rock>(this);
+		isDead = true;
 	}
 }
 
@@ -58,7 +66,7 @@ void Rock::OnCollisionEnd(const string& group, object* other)
 
 void Rock::SetDirection(const SpaceShip& spaceship)
 {
-	direction = glm::normalize(spaceship.GetPosition() - pos);
+	direction = glm::normalize(spaceship.GetPos() - pos);
 }
 
 

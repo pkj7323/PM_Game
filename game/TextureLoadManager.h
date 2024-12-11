@@ -8,6 +8,7 @@ private:
 public:
 	void Init();
 	void Load(const string& name,const string& filename);
+	void TexturesLoad();
 	void Release();
 	//return texture id = GLuint
 	GLuint GetTexture(const string& name);

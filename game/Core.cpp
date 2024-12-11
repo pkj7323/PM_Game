@@ -18,10 +18,12 @@ Core::~Core()
 
 void Core::Init()
 {
-	SoundManager::Instance()->Init();
-	ModelManager::Instance()->Init();
 	ShaderManager::Instance()->Init();
 	TextureLoadManager::Instance()->Init();
+	
+	ModelManager::Instance()->Init();
+	SoundManager::Instance()->Init();
+	
 	CollisionManager::Instance()->Init();
 	KeyManager::Instance()->Init();
 
