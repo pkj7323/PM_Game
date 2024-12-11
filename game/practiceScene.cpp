@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "Sun.h"
 #include "FrameBuffer.h"
+#include "Rock.h"
 #include "SkyBox.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
@@ -41,6 +42,7 @@ void practiceScene::Enter()
 	m_vecObj.emplace_back(new Venus);
 	m_vecObj.emplace_back(new Earth);
 	m_vecObj.emplace_back(new Mars);
+	AddObject<Rock>();
 	m_skyBox = new SkyBox;
 	m_frameBuffer = new FrameBuffer;
 
@@ -49,7 +51,7 @@ void practiceScene::Enter()
 	m_cube = ModelManager::Instance()->GetModel("cube");
 
 	ShaderManager::Instance()->SetUniformModel("ModelShader", pointLightPositions, *m_camera);
-	ShaderManager::Instance()->SetUniformModel("geo_ModelShader", pointLightPositions, *m_camera);
+	ShaderManager::Instance()->SetUniformModel("Geo_ModelShader", pointLightPositions, *m_camera);
 	SoundManager::Instance()->Play("bgm");
 }
 
@@ -89,6 +91,11 @@ void practiceScene::Update()
 	pointLightPositions[0] = m_space_ship->GetLightPos1();
 	pointLightPositions[1] = m_space_ship->GetLightPos2();
 	pointLightPositions[2] = sun->GetPos();
+
+	for (auto& obj : m_vecDeleteObj)
+	{
+		obj->Update();
+	}
 }
 
 void practiceScene::Render()
@@ -169,8 +176,38 @@ void practiceScene::Render()
 	}
 	m_space_ship->Draw(shader,*m_camera);
 
-	
+	shader = ShaderManager::Instance()->GetShader("Geo_ModelShader");
+	shader.Use();
+	shader.setVec3("viewPos", m_camera->GetPosition());
+	shader.setVec3("spotLight.position", m_space_ship->GetLightPos3());//우주선의 앞부분 위치
+	shader.setVec3("spotLight.direction", m_camera->GetFront());
+	shader.setBool("blinn", blinn);
+	shader.setMat4("projection", projection);
+	shader.setMat4("view", view);
+	shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+	shader.setVec3("pointLights[0].ambient", glm::vec3(0.05));//포인트 라이트의 주변광
+	shader.setVec3("pointLights[0].diffuse", glm::vec3(0.8));
 
+	shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+	shader.setVec3("pointLights[1].ambient", glm::vec3(0.05));//포인트 라이트의 주변광
+	shader.setVec3("pointLights[1].diffuse", glm::vec3(0.8));
+
+	shader.setVec3("pointLights[2].position", sun->GetPos());
+	shader.setVec3("pointLights[2].ambient", sun_ambient);//태양
+	shader.setVec3("pointLights[2].diffuse", sun_diffuse);
+	shader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+	shader.setFloat("pointLights[2].constant", 0.001f);
+	shader.setFloat("pointLights[2].linear", 0.001f);
+	shader.setFloat("pointLights[2].quadratic", 0.001f);
+
+
+	shader.setVec3("pointLights[3].position", pointLightPositions[3]);
+	shader.setVec3("pointLights[3].ambient", glm::vec3(0.05));//포인트 라이트의 주변광
+	shader.setVec3("pointLights[3].diffuse", glm::vec3(0.8));
+	for (auto& obj: m_vecDeleteObj)
+	{
+		obj->Draw(shader);
+	}
 
 	m_frameBuffer->Render();
 	glutSwapBuffers();

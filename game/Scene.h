@@ -21,11 +21,6 @@ public:
 	virtual void Mouse(int button, int state, int i, int y) = 0;
 	virtual void mouse_wheel(int button, int dir, int x, int y) = 0;
 
-protected:
-	vector<object*>	m_vecObj;
-	vector<object*> m_vecDeleteObj;
-	string			m_strName;
-
 	template<typename T>
 	T* AddObject()
 	{
@@ -62,6 +57,12 @@ protected:
 		}
 	}
 
+protected:
+	vector<object*>	m_vecObj;
+	vector<object*> m_vecDeleteObj;
+	string			m_strName;
+
+	
 	
 	
 };

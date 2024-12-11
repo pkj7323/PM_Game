@@ -16,7 +16,7 @@ void ShaderManager::Init()
 		MakeShader("screenShader", "framebuffer_screen_vs.glsl", "framebuffer_screen_fs.glsl");
 		MakeShader("skyboxShader", "skybox_vs.glsl", "skybox_fs.glsl");
 		MakeShader("ModelShader", "model_vertex.glsl", "model_fragment.glsl");
-		MakeShader("geo_ModelShader", "Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
+		MakeShader("Geo_ModelShader", "Vertex.glsl", "Fragment.glsl", "Geometry.glsl");
 		
 
 		MakeShader("LightCubeShader", "OldVertex.glsl", "OldFragment.glsl");

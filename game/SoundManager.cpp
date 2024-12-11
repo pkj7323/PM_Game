@@ -22,6 +22,9 @@ void SoundManager::Load()
 {
 	AddSound("bgm", "resources/sound/Gravitation_2018_Remix.mp3", true);
 	AddSound("laser_effect", "resources/sound/laser_sound.mp3", false);
+	AddSound("explosion_effect", "resources/sound/explosion_sound.mp3", false);
+	VolumeDown("explosion_effect");
+	AddSound("launch_sound", "resources/sound/rocket-launch_sound.mp3", false);
 }
 
 void SoundManager::Update()
