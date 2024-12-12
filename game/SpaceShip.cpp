@@ -2,6 +2,7 @@
 #include "SpaceShip.h"
 #include "KeyManager.h"
 #include "Camera.h"
+#include "CollisionManager.h"
 #include "TextureLoadManager.h"
 #include "Shader.h"
 #include "ShaderManager.h"
@@ -11,6 +12,7 @@ SpaceShip::SpaceShip() : object("space_ship")
 {
 	bs.center.y += 1.0f;
 	bs.radius = 2.0f;
+	CollisionManager::Instance()->AddObject("SpaceShip:Rock", this, nullptr);
 }
 
 SpaceShip::~SpaceShip()
@@ -63,7 +65,16 @@ void SpaceShip::Update()
 		}
 		bool_TP_to_FP = !bool_TP_to_FP;
 	}
+	if (is_hit)
+	{
+		//TODO: 피격시 처리
 
+		hit_time += DT;
+		if (hit_time > Hit_Spanning_Time)
+		{
+			is_hit = false;
+		}
+	}
 	object::Update();
 }
 
@@ -90,10 +101,10 @@ void SpaceShip::Draw(Shader& shader,const Camera& c)
 		}
 
 
-		Timer += DT;
-		if (Timer > 0.1f)
+		timer += DT;
+		if (timer > 0.1f)
 		{
-			Timer = 0.f;
+			timer = 0.f;
 			m_rayDes = { 0,0,0 };
 			is_fire = false;
 		}
@@ -234,7 +245,17 @@ void SpaceShip::RenderBillBoardRect(const Camera& camera)
 
 void SpaceShip::OnCollision(const string& group, object* other)
 {
+	if (group == "SpaceShip:Rock")
+	{
+		if (!is_hit)
+		{
+			is_hit = true;
+			hit_time = 0.0f;
+			Life -= 1.f;
 
+			cout << Life << endl;
+		}
+	}
 }
 
 void SpaceShip::OnCollisionEnd(const string& group, object* other)

@@ -2,6 +2,7 @@
 #include "ModelManager.h"
 #include "object.h"
 
+#define Hit_Spanning_Time 1.0f
 class Camera;
 class SpaceShip:public object
 {
@@ -34,7 +35,10 @@ private:
 	float front_parm = 2.5f;
 	bool bool_TP_to_FP = true;
 	bool is_fire = false;
-	float Timer = 0.0;
 
+    float hit_time = 0.0f;
+	bool is_hit = false;
+
+	float Life = 10.f;
 	glm::vec3 m_rayDes;
 };

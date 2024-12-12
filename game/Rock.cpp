@@ -10,6 +10,7 @@
 Rock::Rock() : object("rock")
 {
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
+	CollisionManager::Instance()->AddObject("SpaceShip:Rock", nullptr, this);
 	pos = { randPos(math::dre),randPos(math::dre), -100 };
 	speed = randSpeed(math::dre);
 	bs.center={ 0, 0.5, 0 };

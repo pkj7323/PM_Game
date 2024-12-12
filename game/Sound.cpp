@@ -36,13 +36,13 @@ int Sound::Release() {
 
 
 int Sound::play() {
-    if (m_channel) {
-        FMOD_BOOL isPlaying;
-        FMOD_Channel_IsPlaying(m_channel, &isPlaying);
-        if (isPlaying) {
-            return 0; // 이미 재생 중인 경우 아무 작업도 하지 않음
-        }
-    }
+    //if (m_channel) {
+    //    FMOD_BOOL isPlaying;
+    //    FMOD_Channel_IsPlaying(m_channel, &isPlaying);
+    //    if (isPlaying) {
+    //        return 0; // 이미 재생 중인 경우 아무 작업도 하지 않음
+    //    }
+    //}
     FMOD_System_PlaySound(g_sound_system, m_sound, NULL, false, &m_channel);
     return 0;
 }
