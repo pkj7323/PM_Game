@@ -49,6 +49,7 @@ public:
     glm::vec3 GetPosition() const { return Position; }
 	glm::vec3 GetFront() const { return Front; }
     glm::vec3 GetUp() const { return Up; }
+    glm::vec3 GetRight() const { return Right; }
 	// calculate the perspective matrix zoom=degree
     void SetPerspective(float zoom, float _aspect, float _near,float _far );
 

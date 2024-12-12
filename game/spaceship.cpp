@@ -70,6 +70,13 @@ void SpaceShip::Update()
 		}
 
 	}
+	if (KEY_TAP(KEY::C))
+	{
+		if (is_shake == false) {
+			is_shake = true;
+			shake_cnt = 0;
+		}
+	}
 	if (is_roll) {
 		if (rotation.z < 0) {
 			if (rotation.z > -360) {
@@ -94,7 +101,20 @@ void SpaceShip::Update()
 			}
 		}
 	}
-	
+	if (is_shake) {
+		if (shake_cnt < 16) {
+			right_shake = randPos(math::dre);
+			up_shake = randPos(math::dre);
+			front_shake = randPos(math::dre);
+			shake_cnt++;
+		}
+		else {
+			is_shake = false;
+			up_shake = 0;
+			front_shake = 0;
+			right_shake = 0;
+		}
+	}
 	object::Update();
 }
 
@@ -305,7 +325,11 @@ void SpaceShip::Move(const Camera& camera)
 	auto position = camera.GetPosition();
 	auto up = camera.GetUp();
 	auto front = camera.GetFront();
+	auto right = camera.GetRight();
 	position -= up * 3.f;
 	position += front * 8.0f;
+	position -= up * up_shake;
+	position += front * front_shake;
+	position += right * right_shake;
 	pos = position;
 }

@@ -30,16 +30,27 @@ public:
 
 
 private:
+
+	std::uniform_real_distribution<float> randPos{ -0.4f, 0.4f };
+
+
 	Model laser_effect = ModelManager::Instance()->GetModel("cube");
 	float up_parm = 2.f;
 	float front_parm = 2.5f;
 	bool bool_TP_to_FP = true;
 	bool is_fire = false;
 	bool is_roll = false;
+	bool is_shake = false;
 	float Timer = 0.0;
-
+	
 	float angularVelocity = 1.0f; // 초기 각속도
 	float angularAcceleration = 0.15f; // 각가속도 (가속도 크기는 상황에 따라 조정)
+
+	
+	int shake_cnt{};
+	float up_shake{};
+	float front_shake{};
+	float right_shake{};
 
 	glm::vec3 m_rayDes;
 };
