@@ -28,8 +28,6 @@ public:
 
 	void RenderBillBoardRect(const Camera& camera);
 
-	glm::vec3 GetPosition() const { return pos; }
-
 
 private:
 	Model laser_effect = ModelManager::Instance()->GetModel("cube");
@@ -37,7 +35,11 @@ private:
 	float front_parm = 2.5f;
 	bool bool_TP_to_FP = true;
 	bool is_fire = false;
+	bool is_roll = false;
 	float Timer = 0.0;
+
+	float angularVelocity = 1.0f; // 초기 각속도
+	float angularAcceleration = 0.15f; // 각가속도 (가속도 크기는 상황에 따라 조정)
 
 	glm::vec3 m_rayDes;
 };

@@ -63,7 +63,38 @@ void SpaceShip::Update()
 		}
 		bool_TP_to_FP = !bool_TP_to_FP;
 	}
+	if (KEY_TAP(KEY::R))
+	{
+		if (is_roll == false) {
+			is_roll = true;
+		}
 
+	}
+	if (is_roll) {
+		if (rotation.z < 0) {
+			if (rotation.z > -360) {
+				angularVelocity -= angularAcceleration; // 가속도 반영하여 각속도 증가
+				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
+			}
+			else {
+				is_roll = false;
+				rotation.z = 0;
+				angularVelocity = 1.f; // 각속도 초기화
+			}
+		}
+		else {
+			if (rotation.z < 360) {
+				angularVelocity += angularAcceleration; // 가속도 반영하여 각속도 증가
+				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
+			}
+			else {
+				is_roll = false;
+				rotation.z = 0;
+				angularVelocity = 1.f; // 각속도 초기화
+			}
+		}
+	}
+	
 	object::Update();
 }
 
@@ -76,17 +107,37 @@ void SpaceShip::Draw(Shader& shader,const Camera& c)
 
 		if (m_rayDes != glm::vec3{0,0,0})
 		{
+
+			auto model = glm::mat4(1.0f);
+			float vertices[] = {
+				GetLightPos3().x, GetLightPos3().y, GetLightPos3().z,
+				m_rayDes.x, m_rayDes.y, m_rayDes.z
+			};
+			unsigned int VAO, VBO;
+			glGenVertexArrays(1, &VAO);
+			glGenBuffers(1, &VBO);
+
+			// VAO 바인드
+			glBindVertexArray(VAO);
+
+			// VBO 바인드 및 데이터 전달
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+			// 3. 좌표 속성 설정
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(0);
+
 			shader = ShaderManager::Instance()->GetShader("LightCubeShader");
 			shader.Use();
+			shader.setMat4("model", model);
 			shader.setMat4("view", c.GetViewMatrix());
 			shader.setMat4("projection", c.GetPerspectiveMatrix());
-			auto model = glm::mat4(1.0f);
-			
-			shader.setMat4("model", model);
-			glBegin(GL_LINE_STRIP);
-			glVertex3f(GetLightPos3().x,GetLightPos3().y,GetLightPos3().z);
-			glVertex3f(m_rayDes.x, m_rayDes.y, m_rayDes.z);
-			glEnd();
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_LINE_STRIP, 0, 2);
+
+			glDeleteVertexArrays(1, &VAO);
+			glDeleteBuffers(1, &VBO);
 		}
 
 

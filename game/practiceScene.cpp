@@ -228,7 +228,8 @@ void practiceScene::mouse_motion(int x, int y)
 
 	m_camera->ProcessMouseMovement(xoffset, yoffset);
 	m_space_ship->ProcessMouseMovement(*m_camera);
-	
+	pointLightPositions[0] = m_space_ship->GetLightPos1();//디버그 용도
+	pointLightPositions[1] = m_space_ship->GetLightPos2();//디버그 용도
 	
 	// 마우스를 중앙으로 이동
 
