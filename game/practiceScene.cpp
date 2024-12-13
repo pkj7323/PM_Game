@@ -8,6 +8,7 @@
 #include "Core.h"
 #include "Cube.h"
 #include "Earth.h"
+#include "endingScene.h"
 #include "Mars.h"
 #include "Mercury.h"
 #include "ModelManager.h"
@@ -18,6 +19,7 @@
 #include "Sun.h"
 #include "FrameBuffer.h"
 #include "Rock.h"
+#include "SceneManager.h"
 #include "SkyBox.h"
 #include "TextureLoadManager.h"
 #include "TimeManager.h"
@@ -37,6 +39,7 @@ practiceScene::~practiceScene()
 
 void practiceScene::Enter()
 {
+	glutSetCursor(GLUT_CURSOR_NONE);//커서를 안보이게 설정
 	m_camera = new Camera;
 	AddObject<Mercury>();
 	AddObject<Venus>();
@@ -91,6 +94,10 @@ void practiceScene::Update()
 	pointLightPositions[2] = sun->GetPos();//디버그 용도
 
 	DeleteDeleteObject();
+	if (m_space_ship->GetLife() < 0)
+	{
+		SceneManager::Instance()->Enter<endingScene>();
+	}
 }
 
 void practiceScene::Render()

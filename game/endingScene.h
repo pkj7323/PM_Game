@@ -1,8 +1,11 @@
 ﻿#pragma once
 #include "Scene.h"
 
+class FrameBuffer;
+
 class endingScene : public Scene
 {
+	std::unique_ptr<FrameBuffer> m_frameBuffer;
 public:
 	endingScene();
 	~endingScene() override;

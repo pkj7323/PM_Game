@@ -24,8 +24,7 @@ void IntroScene::Enter()
 {
    
 	m_frameBuffer = std::make_unique<FrameBuffer>();
-    
-	
+	glutSetCursor(GLUT_CURSOR_INHERIT); // 커서를 나타내는 모드로 설정
 }
 
 void IntroScene::Exit()

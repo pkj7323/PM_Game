@@ -3,6 +3,8 @@
 #include "KeyManager.h"
 #include "Camera.h"
 #include "CollisionManager.h"
+#include "endingScene.h"
+#include "SceneManager.h"
 #include "TextureLoadManager.h"
 #include "Shader.h"
 #include "ShaderManager.h"
@@ -17,6 +19,7 @@ SpaceShip::SpaceShip() : object("space_ship")
 
 SpaceShip::~SpaceShip()
 {
+	CollisionManager::Instance()->RemoveObject(this);
 }
 
 void SpaceShip::Init()
@@ -86,6 +89,8 @@ void SpaceShip::Update()
 	
 	
 	object::Update();
+
+	
 }
 
 void SpaceShip::Draw(Shader& shader,const Camera& c)
@@ -128,6 +133,7 @@ void SpaceShip::Draw(Shader& shader,const Camera& c)
 
 			glDeleteVertexArrays(1, &VAO);
 			glDeleteBuffers(1, &VBO);
+
 		}
 		timer += DT;
 		if (timer > 0.1f)
@@ -178,7 +184,7 @@ glm::vec3 SpaceShip::GetLightPos3() const
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = 0.0f;
 	lightPos.y = 0.2f;
-	lightPos.z = -2.3f;
+	lightPos.z = -3.0f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
 	r = glm::rotate(r, glm::radians(rotation.x), glm::vec3(1, 0, 0));

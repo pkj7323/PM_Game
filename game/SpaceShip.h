@@ -4,8 +4,8 @@
 
 #define Hit_Spanning_Time 1.0f
 
-#define FP_UP 1.f
-#define FP_FRONT -1.5f
+#define FP_UP 0.f
+#define FP_FRONT -0.f
 
 #define TP_UP 3.f
 #define TP_FRONT 8.0f
@@ -37,6 +37,8 @@ public:
 
 	void Shaking();
 	void Barrel_Roll();
+
+	float GetLife() const { return Life; };
 private:
 
 	std::uniform_real_distribution<float> randPos{ -0.4f, 0.4f };

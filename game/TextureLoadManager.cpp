@@ -13,7 +13,7 @@ void TextureLoadManager::Init()
 {
 	
 	Load("TUK", "resources/tuk_credit.png");
-	
+	Load("ending", "resources/ending.png");
 }
 
 void TextureLoadManager::Load(const string& name,const string& filename)
@@ -66,7 +66,7 @@ void TextureLoadManager::TexturesLoad()
 	Load("wall", "wall.jpg");
 	Load("cross_hair", "resources/Crosshair.png");
 
-	Load("ending", "resources/ending.png");
+	
 
 	Load("brick_wall", "resources/brick/brickwall.jpg");
 	Load("brick_wall_normal", "resources/brick/brickwall_normal.jpg");

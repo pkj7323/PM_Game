@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 	
 	//glEnable(GL_MULTISAMPLE);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glutSetCursor(GLUT_CURSOR_NONE);
+	
 
 	
 	

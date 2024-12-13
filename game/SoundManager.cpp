@@ -31,7 +31,10 @@ void SoundManager::Load()
 
 	AddSound("damage_sound", "resources/sound/damage_sound.mp3",false);
 
-	AddSound("ending", "resource/sound/Stellardrone_-_Pale_Blue_Dot.mp3", true);
+	AddSound("ending", "resources/sound/Stellardrone_-_Pale_Blue_Dot.mp3", true);
+	VolumeUp("ending");
+	VolumeUp("ending");
+	VolumeUp("ending");
 }
 
 void SoundManager::Update()
@@ -49,7 +52,7 @@ void SoundManager::AddSound(const string& name, const char* path, bool loop)
 
 void SoundManager::Play(const string& name)
 {
-	if (m_sounds[name] == nullptr)
+	if (!m_sounds.contains(name))
 	{
 		cout << "SoundManager::Play() : 사운드가 딕셔너리에 없음\n";
 		return;

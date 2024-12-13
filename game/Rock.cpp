@@ -19,6 +19,7 @@ Rock::Rock() : object("rock")
 
 Rock::~Rock()
 {
+	CollisionManager::Instance()->RemoveObject(this);
 }
 
 void Rock::Init()
@@ -61,10 +62,7 @@ void Rock::OnCollision(const string& group, object* other)
 		CollisionManager::Instance()->RemoveObject(this);
 		isDead = true;
 	}
-	if (group == "SpaceShip:Rock")
-	{
-		cout << "SpaceShip:Rock" << endl;
-	}
+	
 }
 
 void Rock::OnCollisionEnd(const string& group, object* other)
