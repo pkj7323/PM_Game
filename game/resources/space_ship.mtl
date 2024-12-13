@@ -1,14 +1,18 @@
 # 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
-# File Created: 26.11.2024 00:00:53
+# File Created: 13.12.2024 16:52:48
 
 newmtl wire_087224198
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
+	Kd 0.5000 0.5000 0.5000
+	Ks 1.0000 1.0000 1.0000
+	Tr 0.0000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000
+	Pr 0.0000
+	Pm 0.0000
+	Pc 0.0000
+	Pcr 0.0000
+	Ni 1.5200
+	Ke 0.0000 0.0000 0.0000
 	illum 2
-	Ka 0.341176 0.878431 0.776471
-	Kd 0.341176 0.878431 0.776471
-	Ks 0.350000 0.350000 0.350000
 	map_Kd space_ship_test_color.png
 	map_Bump space_ship_test_color_normal.png

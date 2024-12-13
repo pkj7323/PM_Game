@@ -11,7 +11,6 @@
 
 SpaceShip::SpaceShip() : object("space_ship")
 {
-	bs.center.y += 1.0f;
 	bs.radius = 2.0f;
 	CollisionManager::Instance()->AddObject("SpaceShip:Rock", this, nullptr);
 }
@@ -146,7 +145,6 @@ glm::vec3 SpaceShip::GetLightPos1() const
 {
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = -0.5f;
-	lightPos.y = 0.8f;
 	lightPos.z = 1.5f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
@@ -162,7 +160,6 @@ glm::vec3 SpaceShip::GetLightPos2() const
 {
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = 0.5f;
-	lightPos.y = 0.8f;
 	lightPos.z = 1.5f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
@@ -180,7 +177,7 @@ glm::vec3 SpaceShip::GetLightPos3() const
 {
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = 0.0f;
-	lightPos.y = 1.f;
+	lightPos.y = 0.2f;
 	lightPos.z = -2.3f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));

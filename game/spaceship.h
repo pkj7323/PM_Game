@@ -41,7 +41,7 @@ private:
 
 	std::uniform_real_distribution<float> randPos{ -0.4f, 0.4f };
 
-
+	glm::vec3 startPos{};
 	Model laser_effect = ModelManager::Instance()->GetModel("cube");
 	float up_parm = 3.f;
 	float front_parm = 8.0f;
@@ -54,8 +54,8 @@ private:
     float hit_time = 0.0f;
 	bool is_hit = false;
 	
-	float angularVelocity = 3.f; // 초기 각속도
-	float angularAcceleration = 0.5f; // 각가속도 (가속도 크기는 상황에 따라 조정)
+	float angularVelocity = 1.0f; // 초기 각속도
+	float angularAcceleration = 0.2f; // 각가속도 (가속도 크기는 상황에 따라 조정)
 
 	
 	int shake_cnt{};
