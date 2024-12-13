@@ -43,8 +43,8 @@ private:
 	bool is_shake = false;
 	float Timer = 0.0;
 	
-	float angularVelocity = 1.0f; // 초기 각속도
-	float angularAcceleration = 0.15f; // 각가속도 (가속도 크기는 상황에 따라 조정)
+	float angularVelocity = 3.f; // 초기 각속도
+	float angularAcceleration = 0.5f; // 각가속도 (가속도 크기는 상황에 따라 조정)
 
 	
 	int shake_cnt{};

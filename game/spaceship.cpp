@@ -79,25 +79,25 @@ void SpaceShip::Update()
 	}
 	if (is_roll) {
 		if (rotation.z < 0) {
-			if (rotation.z > -360) {
+			if (rotation.z > -720) {
 				angularVelocity -= angularAcceleration; // 가속도 반영하여 각속도 증가
 				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
 			}
 			else {
 				is_roll = false;
 				rotation.z = 0;
-				angularVelocity = 1.f; // 각속도 초기화
+				angularVelocity = 3.f; // 각속도 초기화
 			}
 		}
 		else {
-			if (rotation.z < 360) {
+			if (rotation.z < 720) {
 				angularVelocity += angularAcceleration; // 가속도 반영하여 각속도 증가
 				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
 			}
 			else {
 				is_roll = false;
 				rotation.z = 0;
-				angularVelocity = 1.f; // 각속도 초기화
+				angularVelocity = 3.f; // 각속도 초기화
 			}
 		}
 	}
@@ -328,7 +328,7 @@ void SpaceShip::Move(const Camera& camera)
 	auto right = camera.GetRight();
 	position -= up * 3.f;
 	position += front * 8.0f;
-	position -= up * up_shake;
+	position += up * up_shake;
 	position += front * front_shake;
 	position += right * right_shake;
 	pos = position;
