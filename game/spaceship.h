@@ -2,6 +2,13 @@
 #include "ModelManager.h"
 #include "object.h"
 
+#define Hit_Spanning_Time 1.0f
+
+#define FP_UP 1.f
+#define FP_FRONT -1.5f
+
+#define TP_UP 3.f
+#define TP_FRONT 8.0f
 class Camera;
 class SpaceShip:public object
 {
@@ -28,20 +35,24 @@ public:
 
 	void RenderBillBoardRect(const Camera& camera);
 
-
+	void Shaking();
+	void Barrel_Roll();
 private:
 
 	std::uniform_real_distribution<float> randPos{ -0.4f, 0.4f };
 
 
 	Model laser_effect = ModelManager::Instance()->GetModel("cube");
-	float up_parm = 2.f;
-	float front_parm = 2.5f;
+	float up_parm = 3.f;
+	float front_parm = 8.0f;
 	bool bool_TP_to_FP = true;
 	bool is_fire = false;
 	bool is_roll = false;
 	bool is_shake = false;
 	float Timer = 0.0;
+
+    float hit_time = 0.0f;
+	bool is_hit = false;
 	
 	float angularVelocity = 3.f; // 초기 각속도
 	float angularAcceleration = 0.5f; // 각가속도 (가속도 크기는 상황에 따라 조정)
@@ -52,5 +63,7 @@ private:
 	float front_shake{};
 	float right_shake{};
 
+
+	float Life = 10.f;
 	glm::vec3 m_rayDes;
 };
