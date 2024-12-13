@@ -115,15 +115,7 @@ void SpaceShip::Update()
 		}
 	}
 
-	Matrix = glm::mat4(1.0f);
-	Matrix = glm::translate(Matrix, pos);
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-	Matrix = glm::scale(Matrix, scale);
-	Matrix = glm::translate(Matrix, startPos);
-
-	Matrix = parentMatrix * Matrix;
+	object::Update();
 }
 
 void SpaceShip::Draw(Shader& shader,const Camera& c)
@@ -235,15 +227,7 @@ void SpaceShip::ProcessMouseMovement(const Camera& camera)
 	rotation.y = -(camera.GetYaw() + 90);
 	this->Move(camera);
 
-	Matrix = glm::mat4(1.0f);
-	Matrix = glm::translate(Matrix, pos);
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-	Matrix = glm::scale(Matrix, scale);
-	Matrix = glm::translate(Matrix, startPos);
-
-	Matrix = parentMatrix * Matrix;
+	object::Update();
 }
 
 void SpaceShip::RenderBillBoardRect(const Camera& camera)
