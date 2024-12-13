@@ -28,6 +28,8 @@ void SoundManager::Load()
 	AddSound("spaceship_sfx", "resources/sound/spaceship-ambient-sfx.mp3", true);
 	Play("spaceship_sfx");
 	Pause("spaceship_sfx");
+
+	AddSound("damage_sound", "resources/sound/damage_sound.mp3",false);
 }
 
 void SoundManager::Update()

@@ -6,6 +6,7 @@
 #include "TextureLoadManager.h"
 #include "Shader.h"
 #include "ShaderManager.h"
+#include "SoundManager.h"
 #include "TimeManager.h"
 
 SpaceShip::SpaceShip() : object("space_ship")
@@ -320,7 +321,7 @@ void SpaceShip::OnCollision(const string& group, object* other)
 {
 	if (group == "SpaceShip:Rock")
 	{
-		if (!is_hit)
+		if (!is_hit && !is_roll)
 		{
 			is_hit = true;
 			hit_time = 0.0f;
@@ -329,6 +330,7 @@ void SpaceShip::OnCollision(const string& group, object* other)
 				is_shake = true;
 				shake_cnt = 0;
 			}
+			SoundManager::Instance()->Play("damage_sound");
 			cout << Life << endl;
 		}
 	}
