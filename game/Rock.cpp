@@ -31,7 +31,8 @@ void Rock::Update()
 	if (isDead)
 	{
 		
-	}else
+	}
+	else
 	{
 		speed += 8.f * DT;
 		pos += speed * DT * direction;

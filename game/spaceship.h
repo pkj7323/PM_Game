@@ -2,7 +2,6 @@
 #include "ModelManager.h"
 #include "object.h"
 
-#define Hit_Spanning_Time 1.0f
 class Camera;
 class SpaceShip:public object
 {
@@ -43,9 +42,6 @@ private:
 	bool is_roll = false;
 	bool is_shake = false;
 	float Timer = 0.0;
-
-    float hit_time = 0.0f;
-	bool is_hit = false;
 	
 	float angularVelocity = 3.f; // 초기 각속도
 	float angularAcceleration = 0.5f; // 각가속도 (가속도 크기는 상황에 따라 조정)
@@ -56,7 +52,5 @@ private:
 	float front_shake{};
 	float right_shake{};
 
-
-	float Life = 10.f;
 	glm::vec3 m_rayDes;
 };

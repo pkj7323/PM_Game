@@ -15,10 +15,10 @@ void object::Init()
 {
 	Matrix = glm::mat4(1.0f);
 	Matrix = glm::translate(Matrix, pos);
-	Matrix = glm::scale(Matrix, scale);
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	Matrix = glm::scale(Matrix, scale);
 }
 
 void object::Init(const string& name)
@@ -27,10 +27,10 @@ void object::Init(const string& name)
 	parentMatrix = glm::mat4(1.0f);
 	Matrix = glm::mat4(1.0f);
 	Matrix = glm::translate(Matrix, pos);
-	Matrix = glm::scale(Matrix, scale);
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	Matrix = glm::scale(Matrix, scale);
 	Matrix = parentMatrix * Matrix;
 }
 
@@ -38,10 +38,10 @@ void object::Update()
 {
 	Matrix = glm::mat4(1.0f);
 	Matrix = glm::translate(Matrix, pos);
-	Matrix = glm::scale(Matrix, scale);
-	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	Matrix = glm::scale(Matrix, scale);
 
 	Matrix = parentMatrix * Matrix;
 }
