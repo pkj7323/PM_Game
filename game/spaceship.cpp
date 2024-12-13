@@ -9,7 +9,6 @@
 
 SpaceShip::SpaceShip() : object("space_ship")
 {
-	bs.center.y += 1.0f;
 	bs.radius = 2.0f;
 }
 
@@ -79,25 +78,25 @@ void SpaceShip::Update()
 	}
 	if (is_roll) {
 		if (rotation.z < 0) {
-			if (rotation.z > -720) {
+			if (rotation.z > -360) {
 				angularVelocity -= angularAcceleration; // 가속도 반영하여 각속도 증가
 				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
 			}
 			else {
 				is_roll = false;
 				rotation.z = 0;
-				angularVelocity = 3.f; // 각속도 초기화
+				angularVelocity = 1.f; // 각속도 초기화
 			}
 		}
 		else {
-			if (rotation.z < 720) {
+			if (rotation.z < 360) {
 				angularVelocity += angularAcceleration; // 가속도 반영하여 각속도 증가
 				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
 			}
 			else {
 				is_roll = false;
 				rotation.z = 0;
-				angularVelocity = 3.f; // 각속도 초기화
+				angularVelocity = 1.f; // 각속도 초기화
 			}
 		}
 	}
@@ -115,7 +114,16 @@ void SpaceShip::Update()
 			right_shake = 0;
 		}
 	}
-	object::Update();
+
+	Matrix = glm::mat4(1.0f);
+	Matrix = glm::translate(Matrix, pos);
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	Matrix = glm::scale(Matrix, scale);
+	Matrix = glm::translate(Matrix, startPos);
+
+	Matrix = parentMatrix * Matrix;
 }
 
 void SpaceShip::Draw(Shader& shader,const Camera& c)
@@ -177,7 +185,6 @@ glm::vec3 SpaceShip::GetLightPos1() const
 {
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = -0.5f;
-	lightPos.y = 0.8f;
 	lightPos.z = 1.5f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
@@ -193,7 +200,6 @@ glm::vec3 SpaceShip::GetLightPos2() const
 {
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = 0.5f;
-	lightPos.y = 0.8f;
 	lightPos.z = 1.5f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
@@ -211,7 +217,7 @@ glm::vec3 SpaceShip::GetLightPos3() const
 {
 	glm::vec3 lightPos(0.0f);
 	lightPos.x = 0.0f;
-	lightPos.y = 1.f;
+	lightPos.y = 0.2f;
 	lightPos.z = -2.3f;
 	glm::mat4 t = glm::translate(glm::mat4(1.0f), pos);
 	glm::mat4 r = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
@@ -229,7 +235,15 @@ void SpaceShip::ProcessMouseMovement(const Camera& camera)
 	rotation.y = -(camera.GetYaw() + 90);
 	this->Move(camera);
 
-	object::Update();
+	Matrix = glm::mat4(1.0f);
+	Matrix = glm::translate(Matrix, pos);
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	Matrix = glm::rotate(Matrix, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	Matrix = glm::scale(Matrix, scale);
+	Matrix = glm::translate(Matrix, startPos);
+
+	Matrix = parentMatrix * Matrix;
 }
 
 void SpaceShip::RenderBillBoardRect(const Camera& camera)
@@ -326,7 +340,7 @@ void SpaceShip::Move(const Camera& camera)
 	auto up = camera.GetUp();
 	auto front = camera.GetFront();
 	auto right = camera.GetRight();
-	position -= up * 3.f;
+	position -= up * 2.f;
 	position += front * 8.0f;
 	position += up * up_shake;
 	position += front * front_shake;

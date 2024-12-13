@@ -13,10 +13,12 @@ void ModelManager::Init()
 
 void ModelManager::Update()
 {
+
 }
 
 void ModelManager::Render()
 {
+
 }
 
 void ModelManager::Release()
