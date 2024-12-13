@@ -198,6 +198,9 @@
     <ClCompile Include="Sun.cpp">
       <Filter>6_Object\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="endingScene.cpp">
+      <Filter>2_Common\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object.h">
@@ -307,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="Sun.h">
       <Filter>6_Object\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="endingScene.h">
+      <Filter>2_Common\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

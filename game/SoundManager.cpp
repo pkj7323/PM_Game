@@ -30,6 +30,8 @@ void SoundManager::Load()
 	Pause("spaceship_sfx");
 
 	AddSound("damage_sound", "resources/sound/damage_sound.mp3",false);
+
+	AddSound("ending", "resource/sound/Stellardrone_-_Pale_Blue_Dot.mp3", true);
 }
 
 void SoundManager::Update()

@@ -24,6 +24,7 @@
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Earth.cpp" />
+    <ClCompile Include="endingScene.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="IntroScene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -71,6 +72,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Earth.h" />
+    <ClInclude Include="endingScene.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="IntroScene.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
