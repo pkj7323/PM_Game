@@ -55,13 +55,13 @@ void SpaceShip::Update()
 	{
 		if (bool_TP_to_FP)
 		{
-			up_parm = 0.f;
-			front_parm = 0.f;
+			up_parm = FP_UP;
+			front_parm = FP_FRONT;
 		}
 		else
 		{
-			up_parm = 2.f;
-			front_parm = 2.5f;
+			up_parm = TP_UP;
+			front_parm = TP_FRONT;
 		}
 		bool_TP_to_FP = !bool_TP_to_FP;
 	}
@@ -70,62 +70,21 @@ void SpaceShip::Update()
 		if (is_roll == false) {
 			is_roll = true;
 		}
-	if (is_hit)
-	{
-		//TODO: 피격시 처리
+	}
+	if (is_hit){
 
-	}
-	if (KEY_TAP(KEY::C))
-	{
-		if (is_shake == false) {
-			is_shake = true;
-			shake_cnt = 0;
-		}
-	}
-	if (is_roll) {
-		if (rotation.z < 0) {
-			if (rotation.z > -720) {
-				angularVelocity -= angularAcceleration; // 가속도 반영하여 각속도 증가
-				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
-			}
-			else {
-				is_roll = false;
-				rotation.z = 0;
-				angularVelocity = 3.f; // 각속도 초기화
-			}
-		}
-		else {
-			if (rotation.z < 720) {
-				angularVelocity += angularAcceleration; // 가속도 반영하여 각속도 증가
-				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
-			}
-			else {
-				is_roll = false;
-				rotation.z = 0;
-				angularVelocity = 3.f; // 각속도 초기화
-			}
-		}
-	}
-	if (is_shake) {
-		if (shake_cnt < 16) {
-			right_shake = randPos(math::dre);
-			up_shake = randPos(math::dre);
-			front_shake = randPos(math::dre);
-			shake_cnt++;
-		}
-		else {
-			is_shake = false;
-			up_shake = 0;
-			front_shake = 0;
-			right_shake = 0;
-		}
-	}
+		
 		hit_time += DT;
 		if (hit_time > Hit_Spanning_Time)
 		{
 			is_hit = false;
 		}
+		Shaking();
 	}
+
+	Barrel_Roll();
+	
+	
 	object::Update();
 }
 
@@ -170,8 +129,6 @@ void SpaceShip::Draw(Shader& shader,const Camera& c)
 			glDeleteVertexArrays(1, &VAO);
 			glDeleteBuffers(1, &VBO);
 		}
-
-
 		timer += DT;
 		if (timer > 0.1f)
 		{
@@ -312,6 +269,52 @@ void SpaceShip::RenderBillBoardRect(const Camera& camera)
 	glDeleteBuffers(1, &VBO);
 }
 
+void SpaceShip::Shaking()
+{
+	if (is_shake) {
+		if (shake_cnt < 16) {
+			right_shake = randPos(math::dre);
+			up_shake = randPos(math::dre);
+			front_shake = randPos(math::dre);
+			shake_cnt++;
+		}
+		else {
+			is_shake = false;
+			up_shake = 0;
+			front_shake = 0;
+			right_shake = 0;
+		}
+	}
+}
+
+void SpaceShip::Barrel_Roll()
+{
+	if (is_roll) {
+		if (rotation.z < 0) {
+			if (rotation.z > -720) {
+				angularVelocity -= angularAcceleration; // 가속도 반영하여 각속도 증가
+				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
+			}
+			else {
+				is_roll = false;
+				rotation.z = 0;
+				angularVelocity = 3.f; // 각속도 초기화
+			}
+		}
+		else {
+			if (rotation.z < 720) {
+				angularVelocity += angularAcceleration; // 가속도 반영하여 각속도 증가
+				rotation.z += angularVelocity; // 각속도 반영하여 각도 업데이트
+			}
+			else {
+				is_roll = false;
+				rotation.z = 0;
+				angularVelocity = 3.f; // 각속도 초기화
+			}
+		}
+	}
+}
+
 
 void SpaceShip::OnCollision(const string& group, object* other)
 {
@@ -322,7 +325,10 @@ void SpaceShip::OnCollision(const string& group, object* other)
 			is_hit = true;
 			hit_time = 0.0f;
 			Life -= 1.f;
-
+			if (is_shake == false) {
+				is_shake = true;
+				shake_cnt = 0;
+			}
 			cout << Life << endl;
 		}
 	}
@@ -347,8 +353,8 @@ void SpaceShip::Move(const Camera& camera)
 	auto up = camera.GetUp();
 	auto front = camera.GetFront();
 	auto right = camera.GetRight();
-	position -= up * 3.f;
-	position += front * 8.0f;
+	position -= up * up_parm;
+	position += front * front_parm;
 	position += up * up_shake;
 	position += front * front_shake;
 	position += right * right_shake;

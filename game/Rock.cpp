@@ -58,7 +58,12 @@ void Rock::OnCollision(const string& group, object* other)
 	{
 		SoundManager::Instance()->Play("explosion_effect");
 		SceneManager::Instance()->CurrentSceneDeleteObject<Rock>(this);
+		CollisionManager::Instance()->RemoveObject(this);
 		isDead = true;
+	}
+	if (group == "SpaceShip:Rock")
+	{
+		cout << "SpaceShip:Rock" << endl;
 	}
 }
 

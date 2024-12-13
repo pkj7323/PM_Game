@@ -64,6 +64,8 @@ void TextureLoadManager::TexturesLoad()
 {
 	cout << "텍스쳐 로드" << endl;
 	Load("wall", "wall.jpg");
+	Load("cross_hair", "resources/Crosshair.png");
+
 	Load("brick_wall", "resources/brick/brickwall.jpg");
 	Load("brick_wall_normal", "resources/brick/brickwall_normal.jpg");
 

@@ -23,8 +23,7 @@ public:
 	void mouse_motion(int x, int y) override;
 	void Mouse(int button, int state, int x, int y) override;
 	void mouse_wheel(int button, int dir, int x, int y) override;
-
-	void renderQuad();
+	void RenderCrosshair(const Camera& camera);
 
 private:
 	std::uniform_real_distribution<float> randomFloats{ 0.0, 1.0 };

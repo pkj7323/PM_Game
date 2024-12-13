@@ -204,6 +204,8 @@ void practiceScene::Render()
 		obj->Draw(shader);
 	}
 
+	RenderCrosshair(*m_camera);
+
 	m_frameBuffer->Render();
 	glutSwapBuffers();
 }
@@ -283,3 +285,69 @@ void practiceScene::mouse_wheel(int button, int dir, int x, int y)
 
 }
 
+void practiceScene::RenderCrosshair(const Camera& camera)
+{
+	// 카메라의 Right와 Up 벡터를 사용하여 빌보드의 네 모서리 위치를 계산합니다.
+	glm::vec3 right = glm::normalize(glm::cross(camera.GetFront(), glm::vec3(0, 1, 0))) * glm::vec3(1.0f) * 0.03f;
+	glm::vec3 up = glm::normalize(glm::cross(right, camera.GetFront())) * glm::vec3(1.0f) * 0.03f;
+
+	auto billboardPosition = camera.GetPosition() + camera.GetFront();
+
+	glm::vec3 topLeft = billboardPosition - right + up;
+	glm::vec3 topRight = billboardPosition + right + up;
+	glm::vec3 bottomLeft = billboardPosition - right - up;
+	glm::vec3 bottomRight = billboardPosition + right - up;
+
+	// 빌보드 사각형의 정점 데이터를 설정합니다.
+	float vertices[] = {
+		// positions          // texture coords
+		topLeft.x, topLeft.y, topLeft.z, 0.0f, 1.0f,
+		bottomLeft.x, bottomLeft.y, bottomLeft.z, 0.0f, 0.0f,
+		bottomRight.x, bottomRight.y, bottomRight.z, 1.0f, 0.0f,
+
+		topLeft.x, topLeft.y, topLeft.z, 0.0f, 1.0f,
+		bottomRight.x, bottomRight.y, bottomRight.z, 1.0f, 0.0f,
+		topRight.x, topRight.y, topRight.z, 1.0f, 1.0f
+	};
+
+	// VAO와 VBO를 생성하고 설정합니다.
+	GLuint VAO, VBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glBindVertexArray(0);
+
+	auto shader = ShaderManager::Instance()->GetShader("BasicShader");
+	shader.Use();
+	shader.setMat4("view", camera.GetViewMatrix());
+	shader.setMat4("projection", camera.GetPerspectiveMatrix());
+	glm::mat4 model = glm::mat4(1.0f);
+	shader.setMat4("model", model);
+	shader.setInt("texture1", 0);
+	TextureLoadManager::Instance()->Use("cross_hair");
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// 빌보드 사각형을 렌더링합니다.
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+
+	glDisable(GL_BLEND);
+	TextureLoadManager::Instance()->Unbind(0);
+
+
+	// VAO와 VBO를 정리합니다.
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+}

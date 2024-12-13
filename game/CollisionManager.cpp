@@ -110,30 +110,21 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 		glm::vec3 ray_direction = RayCalculate({ x_ndc,y_ndc,z_ndc }, camera);
 		for (auto& [fst, snd] : CollisionMap)
 		{
-			auto& pairs = snd;
-			auto& left = pairs[0];
-			auto& right = pairs[1];
-			for (auto& a : left)//아마 안불릴듯 마우스 객체는 없기 때문에
+			if (fst == "Mouse:Rock")
 			{
-				
-				/*if (!IsInViewFrustum(a->GetBS().center, camera))
+				auto& pairs = snd;
+				auto& left = pairs[0];
+				auto& right = pairs[1];
+				for (auto& a : left)
 				{
-					return;
-				}*/
-				if (RayIntersectsSphere(ray_position, ray_direction, a->GetBS(), camera, collision_point))
-				{
-					a->OnCollision(fst, nullptr);
+					//아마 안불릴듯 마우스 객체는 없기 때문에
 				}
-			}
-			for (auto& b : right)
-			{
-				/*if (!IsInViewFrustum(b->GetBS().center, camera))
+				for (auto& b : right)
 				{
-					return;
-				}*/
-				if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera, collision_point))
-				{
-					b->OnCollision(fst, nullptr);
+					if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera, collision_point))
+					{
+						b->OnCollision(fst, nullptr);
+					}
 				}
 			}
 
