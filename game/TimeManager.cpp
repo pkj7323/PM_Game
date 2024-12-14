@@ -28,16 +28,16 @@ float TimeManager::GetDeltaTime()
 
 void TimeManager::Render()
 {
-    wchar_t szFPS[64] = L"";
-    swprintf_s(szFPS, L"FPS : %f DeltaTime: %f\n", FPS, deltaTime);
-    HWND hwnd = GetActiveWindow();
-    //HDC hdc = GetDC(hwnd);
+    //wchar_t szFPS[64] = L"";
+    //swprintf_s(szFPS, L"FPS : %f DeltaTime: %f\n", FPS, deltaTime);
+    //HWND hwnd = GetActiveWindow();
+    ////HDC hdc = GetDC(hwnd);
 
-    //if (hdc)
-    //{
-    //    SetBkMode(hdc, TRANSPARENT); // Set background mode to transparent
-    //    TextOut(hdc, 10, 10, szFPS, wcslen(szFPS));
-    //    ReleaseDC(hwnd, hdc);
-    //}
-    SetWindowText(hwnd, szFPS);
+    ////if (hdc)
+    ////{
+    ////    SetBkMode(hdc, TRANSPARENT); // Set background mode to transparent
+    ////    TextOut(hdc, 10, 10, szFPS, wcslen(szFPS));
+    ////    ReleaseDC(hwnd, hdc);
+    ////}
+    //SetWindowText(hwnd, szFPS);
 }

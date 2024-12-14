@@ -18,6 +18,10 @@ endingScene::~endingScene()
 void endingScene::Enter()
 {
 	SoundManager::Instance()->Stop("bgm");
+	SoundManager::Instance()->Stop("laser_effect");
+	SoundManager::Instance()->Stop("explosion_effect");
+	SoundManager::Instance()->Stop("spaceship_sfx");
+
 	SoundManager::Instance()->Play("ending");
 
 	m_frameBuffer = std::make_unique<FrameBuffer>();
@@ -34,6 +38,7 @@ void endingScene::Update()
 	{
 		Core::Instance()->Release();
 	}
+	
 }
 
 void endingScene::Render()

@@ -143,6 +143,10 @@ void SpaceShip::Draw(Shader& shader,const Camera& c)
 			is_fire = false;
 		}
 	}
+	wchar_t szFPS[64] = L"";
+	swprintf_s(szFPS, L"HP : %f", Life);
+	HWND hwnd = GetActiveWindow();
+	SetWindowText(hwnd, szFPS);
 }
 
 
@@ -207,8 +211,8 @@ void SpaceShip::ProcessMouseMovement(const Camera& camera)
 void SpaceShip::RenderBillBoardRect(const Camera& camera)
 {
 	// 카메라의 Right와 Up 벡터를 사용하여 빌보드의 네 모서리 위치를 계산합니다.
-	glm::vec3 right = glm::normalize(glm::cross(camera.GetFront(), glm::vec3(0,1,0))) * glm::vec3(1.0f) * 0.5f;
-	glm::vec3 up = glm::normalize(glm::cross(right, camera.GetFront())) * glm::vec3(1.0f) * 0.5f;
+	glm::vec3 right = glm::normalize(glm::cross(camera.GetFront(), glm::vec3(0,1,0))) * glm::vec3(1.0f) * 0.3f;
+	glm::vec3 up = glm::normalize(glm::cross(right, camera.GetFront())) * glm::vec3(1.0f) * 0.3f;
 
 	auto billboardPosition = GetLightPos3();
 

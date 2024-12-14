@@ -129,7 +129,7 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 			}
 
 		}
-		collision_point = ray_position + ray_direction;//debug
+		collision_point = ray_position + ray_direction * camera.GetFar();
 	}
 }
 bool CollisionManager::RayIntersectsSphere(const glm::vec3& ray_pos, const glm::vec3& ray_dir,

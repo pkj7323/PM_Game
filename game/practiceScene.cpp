@@ -71,10 +71,19 @@ void practiceScene::Exit()
 
 void practiceScene::Update()
 {
+	asteroidTimer += DT + asteroidTimerAcc;
 	if (KEY_TAP(KEY::ESC))
 	{
 		Core::Instance()->Release();
 	}
+	if (asteroidTimer >= 2.0f)
+	{
+		auto rock = AddObject<Rock>();
+		rock->SetDirection(*m_space_ship);
+		asteroidTimer = 0;
+		asteroidTimerAcc += 0.001f;
+	}
+	
 	if (KEY_TAP(KEY::L)) {
 		auto rock = AddObject<Rock>();
 		rock->SetDirection(*m_space_ship);
@@ -128,21 +137,21 @@ void practiceScene::Render()
 	shader.setMat4("model", model);
 	sun->Draw(shader);
 
-	Shader lightCubeShader = ShaderManager::Instance()->GetShader("LightCubeShader");
-	lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
-	lightCubeShader.setMat4("projection", projection);
-	lightCubeShader.setMat4("view", view);
-	model = glm::mat4(1.0f);
-	// render the cube
-	for (int i = 0; i < 4; i++)
-	{
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, pointLightPositions[i]);
-		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-		//스케일이 먼저 적용
-		lightCubeShader.setMat4("model", model);
-		m_cube.Draw(lightCubeShader);
-	}
+	//Shader lightCubeShader = ShaderManager::Instance()->GetShader("LightCubeShader");
+	//lightCubeShader.Use();//조명의 위치를 보여주기위한 큐브들을 위한 쉐이더(모든색이 하얀색으로 설정됨)
+	//lightCubeShader.setMat4("projection", projection);
+	//lightCubeShader.setMat4("view", view);
+	//model = glm::mat4(1.0f);
+	//// render the cube
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	model = glm::mat4(1.0f);
+	//	model = glm::translate(model, pointLightPositions[i]);
+	//	model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+	//	//스케일이 먼저 적용
+	//	lightCubeShader.setMat4("model", model);
+	//	m_cube.Draw(lightCubeShader);
+	//}
 
 	shader = ShaderManager::Instance()->GetShader("ModelShader");
 	shader.Use();
