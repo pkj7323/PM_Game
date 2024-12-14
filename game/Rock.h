@@ -21,6 +21,7 @@ class Rock : public object
 
 	float m_rotate{};
 	float radius{};
+
 public:
 	Rock();
 	~Rock() override;

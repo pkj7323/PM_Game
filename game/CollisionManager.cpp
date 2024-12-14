@@ -124,6 +124,7 @@ void CollisionManager::Mouse(int button, int state, int x, int y,const Camera& c
 					if (RayIntersectsSphere(ray_position, ray_direction, b->GetBS(), camera, collision_point))
 					{
 						b->OnCollision(fst, nullptr);
+						Point++;
 					}
 				}
 			}

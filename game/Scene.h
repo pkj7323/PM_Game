@@ -44,6 +44,20 @@ public:
 			m_vecObj.erase(it);
 		}
 	}
+	
+	void RemoveObject()
+	{
+		m_vecObj.erase(
+			std::remove_if(m_vecObj.begin(), m_vecObj.end(),
+				[](const std::unique_ptr<object>& obj) {
+					obj->Update();
+					if (obj->IsNaturalDead()) {
+						return true; // 삭제할 요소
+					}
+					return false; // 삭제하지 않을 요소
+				}),
+			m_vecObj.end());
+	}
 
 	void DeleteDeleteObject()
 	{

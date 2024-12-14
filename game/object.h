@@ -83,7 +83,8 @@ protected:
 
 	float time_to_die = DeathTime;
 	float timer;
-	bool isDead;
+	bool isDead = false;
+	bool naturalDead = false;
 public:
 	object(const string& name);
 	virtual ~object() = default;
@@ -109,5 +110,6 @@ public:
 	float GetTimeToDie() const { return time_to_die; }
 	bool IsDead() const { return isDead; }
 	void SetTimer(float time) { this->timer = time; }
+	bool IsNaturalDead() const { return naturalDead; }
 };
 

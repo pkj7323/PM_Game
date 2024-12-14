@@ -45,7 +45,6 @@ void practiceScene::Enter()
 	AddObject<Venus>();
 	AddObject<Earth>();
 	AddObject<Mars>();
-	AddObject<Rock>();
 	m_skyBox = new SkyBox;
 	m_frameBuffer = new FrameBuffer;
 
@@ -91,6 +90,8 @@ void practiceScene::Update()
 
 	m_camera->Move();
 
+
+	RemoveObject();
 	for (auto& obj : m_vecObj)
 	{
 		obj->Update();

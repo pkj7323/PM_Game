@@ -81,12 +81,11 @@ void Rock::Update()
 	pos = glm::vec3(m_mat_r * glm::vec4(0 ,0 ,0, 1.0f));
 	pos = glm::vec3(m_mat_t * glm::vec4(pos ,1.0f));
 	
-	cout << pos.x << "    " << pos.y << "     " << pos.z << endl;
-	cout << m_rotate << endl;
+	
 
-	if (pos.x > 500 || pos.x < -500 || pos.y > 500 || pos.y < -500 || pos.z > 500 || pos.z < -600)
+	if (pos.x > 200 || pos.x < -200 || pos.y > 200 || pos.y < -200 || pos.z > 200 || pos.z < -200)
 	{
-		isDead = true;
+		naturalDead = true;
 	}
 
 

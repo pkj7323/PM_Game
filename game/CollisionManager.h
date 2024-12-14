@@ -21,9 +21,11 @@ public:
 	void Release();
 
 	glm::vec3 GetRayDes() { return m_rayDes; }
+	int GetPoint() const { return Point; }
 private:
 	std::unordered_map<object*, std::unordered_map<object*, bool>> previousCollisions;
 	unordered_map<string, vector<vector<object*>>> CollisionMap;
 	glm::vec3 m_rayDes{};
+	int Point = 0;
 };
 
