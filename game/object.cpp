@@ -50,5 +50,5 @@ void object::Draw(Shader& shader)
 {
 	shader.setMat4("model", Matrix);
 	model.Draw(shader);
-	bs.Draw();
+	//bs.Draw();
 }
