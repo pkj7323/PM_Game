@@ -16,7 +16,6 @@ constexpr float SPEED = 30.f;
 constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM = 45.0f;
 
-class SpaceSpip;
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
 {
