@@ -89,6 +89,7 @@ void main()
 	// 각 단계마다 해당 램프의 색상을 계산하는 calculate 함수가 정의되어 있습니다. 
 	// main() 함수에서는 모든 계산된 색상을 합산하여 이 프래그먼트의 최종 색상을 만듭니다.
 	// =======================================================
+
 	// phase 1: directional lighting(방향성 조명, 태양광)
 	vec3 result = CalcDirLight(dirLight, norm, viewDir);
 	//vec3 result = vec3(0);

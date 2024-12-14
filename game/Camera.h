@@ -73,8 +73,7 @@ public:
     
 private:
     void setBillBoard();
-	GLuint BillBoard_VAO = 0;
-	GLuint BillBoard_VBO;
+	
     // camera Attributes
     glm::vec3 Position;
     glm::vec3 Front;
@@ -84,11 +83,7 @@ private:
 
     glm::mat4 PerspectiveMatrix;
 
-    //움직임 처리
-    bool left{};
-    bool right{};
-    bool front{};
-    bool back{};
+ 
 
 
     // euler Angles
