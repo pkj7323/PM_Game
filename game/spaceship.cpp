@@ -144,7 +144,7 @@ void SpaceShip::Draw(Shader& shader,const Camera& c)
 		}
 	}
 	wchar_t szFPS[64] = L"";
-	swprintf_s(szFPS, L"HP : %f", Life);
+	swprintf_s(szFPS, L"HP : %f Point : %d", Life,CollisionManager::Instance()->GetPoint());
 	HWND hwnd = GetActiveWindow();
 	SetWindowText(hwnd, szFPS);
 }
