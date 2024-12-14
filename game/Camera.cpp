@@ -71,9 +71,15 @@ glm::mat4 Camera::GetViewMatrix() const
 
 
 
-void Camera::ProcessKeyboard(Camera_Movement direction)
+void Camera::ProcessKeyboard(Camera_Movement direction , const bool is_roll)
 {
-    float velocity = MovementSpeed * DT;
+    float velocity{};
+    if (is_roll) {
+        velocity = 2.f * MovementSpeed * DT;
+    }
+    else {
+        velocity = MovementSpeed * DT;
+    }
 	
     if (direction == FORWARD)
         Position += Front * velocity;
@@ -106,35 +112,35 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
     updateCameraVectors();
 }
 
-void Camera::Move()
+void Camera::Move(const bool is_roll)
 {
     
     if (KEY_HOLD(KEY::W))
     {
         SoundManager::Instance()->Resume("spaceship_sfx");
 	    
-    	ProcessKeyboard(FORWARD);
+    	ProcessKeyboard(FORWARD , is_roll);
     }
     
 
 	if (KEY_HOLD(KEY::S))
 	{
         SoundManager::Instance()->Resume("spaceship_sfx");
-		ProcessKeyboard(BACKWARD);
+		ProcessKeyboard(BACKWARD, is_roll);
 	}
     
 
 	if (KEY_HOLD(KEY::A))
 	{
         SoundManager::Instance()->Resume("spaceship_sfx");
-		ProcessKeyboard(LEFT);
+		ProcessKeyboard(LEFT, is_roll);
 	}
     
 
 	if (KEY_HOLD(KEY::D))
 	{
         SoundManager::Instance()->Resume("spaceship_sfx");
-		ProcessKeyboard(RIGHT);
+		ProcessKeyboard(RIGHT, is_roll);
 	}
     
 
