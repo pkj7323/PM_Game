@@ -80,7 +80,7 @@ void practiceScene::Update()
 		rock->SetDirection(*m_space_ship);
 	}
 
-	m_camera->Move();
+	m_camera->Move(m_space_ship->GetisRoll());
 
 	for (auto& obj : m_vecObj)
 	{

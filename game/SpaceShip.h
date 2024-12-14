@@ -31,6 +31,7 @@ public:
 	glm::vec3 GetLightPos2() const;
 	glm::vec3 GetLightPos3() const;
 	glm::vec3& GetRayDes() { return m_rayDes; };
+	bool GetisRoll() const { return is_roll; };
 	void ProcessMouseMovement(const Camera& camera);
 
 	void RenderBillBoardRect(const Camera& camera);
