@@ -5,7 +5,7 @@
 #define Hit_Spanning_Time 1.0f
 
 #define FP_UP 0.f
-#define FP_FRONT -0.f
+#define FP_FRONT 0.f
 
 #define TP_UP 3.f
 #define TP_FRONT 8.0f
@@ -26,11 +26,11 @@ public:
 	void MouseClick();
 
 	void Move(const Camera& camera);
-	glm::vec3 GetPos() const { return pos; };
+	glm::vec3 GetPos() const { return pos; }
 	glm::vec3 GetLightPos1() const;
 	glm::vec3 GetLightPos2() const;
 	glm::vec3 GetLightPos3() const;
-	glm::vec3& GetRayDes() { return m_rayDes; };
+	glm::vec3& GetRayDes() { return m_rayDes; }
 	void ProcessMouseMovement(const Camera& camera);
 
 	void RenderBillBoardRect(const Camera& camera);
@@ -38,7 +38,7 @@ public:
 	void Shaking();
 	void Barrel_Roll();
 
-	float GetLife() const { return Life; };
+	float GetLife() const { return Life; }
 private:
 
 	std::uniform_real_distribution<float> randPos{ -0.4f, 0.4f };
