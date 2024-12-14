@@ -11,10 +11,21 @@ Rock::Rock() : object("rock")
 {
 	CollisionManager::Instance()->AddObject("Mouse:Rock", nullptr, this);
 	CollisionManager::Instance()->AddObject("SpaceShip:Rock", nullptr, this);
-	pos = { randPos(math::dre),randPos(math::dre), -100 };
+	m_pos = { randPos(math::dre),randPos(math::dre), -100 };
 	speed = randSpeed(math::dre);
+	type = Type(randType(math::dre));
 	bs.center={ 0, 0.5, 0 };
+	if (type == Type::Spin) {
+		radius = 14.f;
+	}
 	bs.radius = 2;
+	m_mat_r = glm::mat4(1.0f);
+	m_mat_t = glm::mat4(1.0f);
+	m_mat_t = glm::translate(m_mat_t, m_pos);
+	m_mat_r = glm::rotate(m_mat_r, glm::radians(m_rotate), glm::vec3(0, 0, 1));
+	m_mat_r = glm::translate(m_mat_r, glm::vec3(radius, 0, 0));
+	pos = glm::vec3(m_mat_r * glm::vec4(0, 0, 0, 1.0f));
+	pos = glm::vec3(m_mat_t * glm::vec4(pos, 1.0f));
 }
 
 Rock::~Rock()
@@ -24,6 +35,13 @@ Rock::~Rock()
 
 void Rock::Init()
 {
+	m_mat_r = glm::mat4(1.0f);
+	m_mat_t = glm::mat4(1.0f);
+	m_mat_t = glm::translate(m_mat_t, m_pos);
+	m_mat_r = glm::rotate(m_mat_r, glm::radians(m_rotate), glm::vec3(0, 0, 1));
+	m_mat_r = glm::translate(m_mat_r, glm::vec3(radius, 0, 0));
+	pos = glm::vec3(m_mat_r * glm::vec4(0, 0, 0, 1.0f));
+	pos = glm::vec3(m_mat_t * glm::vec4(pos, 1.0f));
 	object::Init();
 }
 
@@ -35,15 +53,43 @@ void Rock::Update()
 	}
 	else
 	{
-		speed += 8.f * DT;
-		pos += speed * DT * direction;
-		rotation.x += speed * DT;
+		switch (type)
+		{
+		case Type::Normal: {
+			speed += 8.f * DT;
+			m_pos += speed * DT * direction;
+			rotation.x += speed * DT;
+			break;
+			}
+		case Type::Spin:{
+			speed += 8.f * DT;
+			m_pos += speed * DT * direction;
+			rotation.x += speed * DT;
+			m_rotate += 3 * speed * DT;
+			break;
+			}
+		default:
+			break;
+		}
 	}
+
+	m_mat_r = glm::mat4(1.0f);
+	m_mat_t = glm::mat4(1.0f);
+	m_mat_t = glm::translate(m_mat_t, m_pos);
+	m_mat_r = glm::rotate(m_mat_r, glm::radians(m_rotate) , glm::vec3(0, 0, 1));
+	m_mat_r = glm::translate(m_mat_r, glm::vec3 (radius , 0 , 0));
+	pos = glm::vec3(m_mat_r * glm::vec4(0 ,0 ,0, 1.0f));
+	pos = glm::vec3(m_mat_t * glm::vec4(pos ,1.0f));
+	
+	cout << pos.x << "    " << pos.y << "     " << pos.z << endl;
+	cout << m_rotate << endl;
 
 	if (pos.x > 500 || pos.x < -500 || pos.y > 500 || pos.y < -500 || pos.z > 500 || pos.z < -600)
 	{
 		isDead = true;
 	}
+
+
 	object::Update();
 }
 
